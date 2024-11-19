@@ -1,0 +1,335 @@
+K-Text = GS1 AI ID Table for ISO/IEC 15961 Format 9,,,,,,
+K-Version = 1.00,,,,,,
+K-ISO15434=05,,,,,,
+K-Text = Primary Base Table,,,,,,
+K-TableID = F9B0,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 90,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+0,1,0,0,SSCC (Serial Shipping Container Code),SSCC,18n
+1,2,1,1,Global Trade Item Number,GTIN,14n
+02 + 37,3,(2)(37),(02)(37),GTIN + Count of trade items contained in a logistic unit,CONTENT + COUNT,(14n)(1*8n)
+10,4,10,10,Batch or lot number,BATCH/LOT,1*20an
+11,5,11,11,Production date (YYMMDD),PROD DATE,6n
+12,6,12,12,Due date (YYMMDD),DUE DATE,6n
+13,7,13,13,Packaging date (YYMMDD),PACK DATE,6n
+15,8,15,15,Best before date (YYMMDD),BEST BEFORE OR SELL BY,6n
+17,9,17,17,Expiration date (YYMMDD),USE BY OR EXPIRY,6n
+20,10,20,20,Internal product variant,VARIANT,2n
+21,11,21,21,Serial number,SERIAL,1*20an
+22,12,22,22,Consumer product variant,CPV,1*20an
+240,13,240,240,Additional product identification assigned by the manufacturer,ADDITIONAL ID,1*30an
+241,14,241,241,Customer part number,CUST. PART NO.,1*30an
+242,15,242,242,Made-to-Order Variation Number,VARIATION NUMBER,1*6n
+250,16,250,250,Secondary serial number,SECONDARY SERIAL,1*30an
+251,17,251,251,Reference to source entity,REF. TO SOURCE,1*30an
+253,18,253,253,Global Document Type Identifier,DOC. ID,13n 0*17an
+30,19,30,30,Variable count,VAR. COUNT,1*8n
+310n 320n etc,20,K-Secondary = S00,,"Net weight, kilograms or pounds or troy oz (Variable Measure Trade Item)",,
+311n 321n etc,21,K-Secondary = S01,,Length of first dimension (Variable Measure Trade Item),,
+312n 324n etc,22,K-Secondary = S02,,"Width, diameter, or second dimension (Variable Measure Trade Item)",,
+313n 327n etc,23,K-Secondary = S03,,"Depth, thickness, height, or third dimension (Variable Measure Trade Item)",,
+314n 350n etc,24,K-Secondary = S04,,Area (Variable Measure Trade Item),,
+315n 316n etc,25,K-Secondary = S05,,Net volume (Variable Measure Trade Item),,
+330n or 340n,26,330%x30-36 / 340%x30-36,330%x30-36 / 340%x30-36,"Logistic weight, kilograms or pounds",GROSS WEIGHT (kg) or (lb),6n / 6n
+"331n, 341n, etc",27,K-Secondary = S09,,Length or first dimension,,
+"332n, 344n, etc",28,K-Secondary = S10,,"Width, diameter, or second dimension",,
+"333n, 347n, etc",29,K-Secondary = S11,,"Depth, thickness, height, or third dimension",,
+334n 353n etc,30,K-Secondary = S07,,Logistic Area,,
+335n 336n etc,31,K-Secondary = S06,335%x30-36,Logistic volume,,
+337(***),32,337%x30-36,337%x30-36,Kilograms per square metre,KG PER m^2,6n
+390n or 391n,33,390%x30-39 / 391%x30-39,390%x30-39 / 391%x30-39,Amount payable - single monetary area or with ISO currency code,AMOUNT,1*15n / 4*18n
+392n or 393n,34,392%x30-39 / 393%x30-39,392%x30-39 / 393%x30-39,Amount payable for Variable Measure Trade Item - single monetary unit or ISO cc, PRICE,1*15n / 4*18n
+400,35,400,400,Customer's purchase order number,ORDER NUMBER,1*30an
+401,36,401,401,Global Identification Number for Consignment,GINC,1*30an
+402,37,402,402,Global Shipment Identification Number,GSIN,17n
+403,38,403,403,Routing code,ROUTE,1*30an
+410,39,410,410,Ship to - Deliver to Global Location Number,SHIP TO LOC,13n
+411,40,411,411,Bill to - Invoice to Global Location Number,BILL TO,13n
+412,41,412,412,Purchased from Global Location Number,PURCHASE FROM,13n
+413,42,413,413,Ship for - Deliver for - Forward to Global Location Number,SHIP FOR LOC,13n
+414 and 254,43,(414) [254],(414) [254],"Identification of a physical location GLN, and optional Extension",LOC No + GLN EXTENSION,(13n) [1*20an]
+415 and 8020,44,(415) (8020),(415) (8020),Global Location Number of the Invoicing Party and Payment Slip Reference Number,PAY + REF No,(13n) (1*25an)
+420 or 421,45,(420/421),(420/421),Ship-to / Deliver-to postal code,SHIP TO POST,(1*20an / 3n 1*9an)
+422,46,422,422,Country of origin of a trade item,ORIGIN,3n
+423,47,423,423,Country of initial processing,COUNTRY - INITIAL PROCESS.,3*15n
+424,48,424,424,Country of processing,COUNTRY - PROCESS.,3n
+425,49,425,425,Country of disassembly,COUNTRY - DISASSEMBLY,3n
+426,50,426,426,Country covering full process chain,COUNTRY - FULL PROCESS,3n
+7001,51,7001,7001,NATO stock number,NSN,13n
+7002,52,7002,7002,UN/ECE meat carcasses and cuts classification,MEAT CUT,1*30an
+7003,53,7003,7003,Expiration Date and Time,EXPIRY DATE/TIME,10n
+7004,54,7004,7004,Active Potency,ACTIVE POTENCY,1*4n
+703s,55,7030,7030,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,56,7031,7031,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,57,7032,7032,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,58,7033,7033,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,59,7034,7034,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,60,7035,7035,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,61,7036,7036,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,62,7037,7037,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,63,7038,7038,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+703s,64,7039,7039,Approval number of processor with ISO country code,PROCESSOR # s,3n 1*27an
+8001,65,8001,8001,"Roll products - width, length, core diameter, direction, splices",DIMENSIONS,14n
+8002,66,8002,8002,Electronic serial identifier for cellular mobile telephones,CMT No,1*20an
+8003,67,8003,8003,Global Returnable Asset Identifier,GRAI,14n 0*16an
+8004,68,8004,8004,Global Individual Asset Identifier,GIAI,1*30an
+8005,69,8005,8005,Price per unit of measure,PRICE PER UNIT,6n
+8006,70,8006,8006,Identification of the component of a trade item,GCTIN,18n
+8007,71,8007,8007,International Bank Account Number,IBAN,1*30an
+8008,72,8008,8008,Date and time of production,PROD TIME,8*12n
+8018,73,8018,8018,Global Service Relation Number - Recipient,GSRN - RECIPIENT,18n
+8100 8101 etc,74,K-Secondary = S08,,Coupon Codes,,
+90,75,90,90,Information mutually agreed between trading partners (including FACT DIs),INTERNAL,1*30an
+91,76,91,91,Company internal information,INTERNAL,1*an
+92,77,92,92,Company internal information,INTERNAL,1*an
+93,78,93,93,Company internal information,INTERNAL,1*an
+94,79,94,94,Company internal information,INTERNAL,1*an
+95,80,95,95,Company internal information,INTERNAL,1*an
+96,81,96,96,Company internal information,INTERNAL,1*an
+97,82,97,97,Company internal information,INTERNAL,1*an
+98,83,98,98,Company internal information,INTERNAL,1*an
+99,84,99,99,Company internal information,INTERNAL,1*an
+nnn,85,K-Secondary = S12,,Additional AIs,,
+K-TableEnd = F9B0,,,,,,
+
+"K-Text = Sec. IDT - Net weight, kilograms or pounds or troy oz (Variable Measure Trade Item)",,,,,,
+K-TableID = F9S00,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+310(***),0,310%x30-35,310%x30-35,"Net weight, kilograms (Variable Measure Trade Item)",NET WEIGHT (kg),6n
+320(***),1,320%x30-35,320%x30-35,"Net weight, pounds (Variable Measure Trade Item)",NET WEIGHT (lb),6n
+356(***),2,356%x30-35,356%x30-35,"Net weight, troy ounces (Variable Measure Trade Item)",NET WEIGHT (t),6n
+K-TableEnd = F9S00,,,,,,
+
+K-Text = Sec. IDT - Length of first dimension (Variable Measure Trade Item),,,,,,
+K-TableID = F9S01,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+311(***),0,311%x30-35,311%x30-35,"Length of first dimension, metres (Variable Measure Trade Item)",LENGTH (m),6n
+321(***),1,321%x30-35,321%x30-35,"Length or first dimension, inches (Variable Measure Trade Item)",LENGTH (i),6n
+322(***),2,322%x30-35,322%x30-35,"Length or first dimension, feet (Variable Measure Trade Item)",LENGTH (f),6n
+323(***),3,323%x30-35,323%x30-35,"Length or first dimension, yards (Variable Measure Trade Item)",LENGTH (y),6n
+K-TableEnd = F9S01,,,,,,
+
+"K-Text = Sec. IDT - Width, diameter, or second dimension (Variable Measure Trade Item)",,,,,,
+K-TableID = F9S02,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+312(***),0,312%x30-35,312%x30-35,"Width, diameter, or second dimension, metres (Variable Measure Trade Item)",WIDTH (m),6n
+324(***),1,324%x30-35,324%x30-35,"Width, diameter, or second dimension, inches (Variable Measure Trade Item)",WIDTH (i),6n
+325(***),2,325%x30-35,325%x30-35,"Width, diameter, or second dimension, (Variable Measure Trade Item)",WIDTH (f),6n
+326(***),3,326%x30-35,326%x30-35,"Width, diameter, or second dimension, yards (Variable Measure Trade Item)",WIDTH (y),6n
+K-TableEnd = F9S02,,,,,,
+
+"K-Text = Sec. IDT - Depth, thickness, height, or third dimension (Variable Measure Trade Item)",,,,,,
+K-TableID = F9S03,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+313(***),0,313%x30-35,313%x30-35,"Depth, thickness, height, or third dimension, metres (Variable Measure Trade Item)",HEIGHT (m),6n
+327(***),1,327%x30-35,327%x30-35,"Depth, thickness, height, or third dimension, inches (Variable Measure Trade Item)",HEIGHT (i),6n
+328(***),2,328%x30-35,328%x30-35,"Depth, thickness, height, or third dimension, feet (Variable Measure Trade Item)",HEIGHT (f),6n
+329(***),3,329%x30-35,329%x30-35,"Depth, thickness, height, or third dimension, yards (Variable Measure Trade Item)",HEIGHT (y),6n
+K-TableEnd = F9S03,,,,,,
+
+K-Text = Sec. IDT - Area (Variable Measure Trade Item),,,,,,
+K-TableID = F9S04,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+314(***),0,314%x30-35,314%x30-35,"Area, square metres (Variable Measure Trade Item)",AREA (m^2),6n
+350(***),1,350%x30-35,350%x30-35,"Area, square inches (Variable Measure Trade Item)",AREA (i^2),6n
+351(***),2,351%x30-35,351%x30-35,"Area, square feet (Variable Measure Trade Item)",AREA (f^2),6n
+352(***),3,352%x30-35,352%x30-35,"Area, square yards (Variable Measure Trade Item)",AREA (y^2),6n
+K-TableEnd = F9S04,,,,,,
+
+K-Text = Sec. IDT - Net volume (Variable Measure Trade Item),,,,,,
+K-TableID = F9S05,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 8,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+315(***),0,315%x30-35,315%x30-35,"Net volume, litres (Variable Measure Trade Item)",NET VOLUME (l),6n
+316(***),1,316%x30-35,316%x30-35,"Net volume, cubic metres (Variable Measure Trade Item)",NET VOLUME (m^3),6n
+357(***),2,357%x30-35,357%x30-35,"Net weight (or volume), ounces (Variable Measure Trade Item)",NET VOLUME (oz),6n
+360(***),3,360%x30-35,360%x30-35,"Net volume, quarts (Variable Measure Trade Item)",NET VOLUME (q),6n
+361(***),4,361%x30-35,361%x30-35,"Net volume, gallons U.S. (Variable Measure Trade Item)",NET VOLUME (g),6n
+364(***),5,364%x30-35,364%x30-35,"Net volume, cubic inches","VOLUME (i^3), log",6n
+365(***),6,365%x30-35,365%x30-35,"Net volume, cubic feet (Variable Measure Trade Item)","VOLUME (f^3), log",6n
+366(***),7,366%x30-35,366%x30-35,"Net volume, cubic yards (Variable Measure Trade Item)","VOLUME (y^3), log",6n
+K-TableEnd = F9S05,,,,,,
+
+K-Text = Sec. IDT - Logistic Volume,,,,,,
+K-TableID = F9S06,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 8,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+335(***),0,335%x30-35,335%x30-35,"Logistic volume, litres","VOLUME (l), log",6n
+336(***),1,336%x30-35,336%x30-35,"Logistic volume, cubic meters","VOLUME (m^3), log",6n
+362(***),2,362%x30-35,362%x30-35,"Logistic volume, quarts","VOLUME (q), log",6n
+363(***),3,363%x30-35,363%x30-35,"Logistic volume, gallons","VOLUME (g), log",6n
+367(***),4,367%x30-35,367%x30-35,"Logistic volume, cubic inches","VOLUME (q), log",6n
+368(***),5,368%x30-35,368%x30-35,"Logistic volume, cubic feet","VOLUME (g), log",6n
+369(***),6,369%x30-35,369%x30-35,"Logistic volume, cubic yards","VOLUME (i^3), log",6n
+K-TableEnd = F9S06,,,,,,
+
+K-Text = Sec. IDT - Logistic Area,,,,,,
+K-TableID = F9S07,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+334(***),0,334%x30-35,334%x30-35,"Area, square metres","AREA (m^2), log",6n
+353(***),1,353%x30-35,353%x30-35,"Area, square inches","AREA (i^2), log",6n
+354(***),2,354%x30-35,354%x30-35,"Area, square feet","AREA (f^2), log",6n
+355(***),3,355%x30-35,355%x30-35,"Area, square yards","AREA (y^2), log",6n
+K-TableEnd = F9S07,,,,,,
+
+K-Text = Sec. IDT - Coupon Codes,,,,,,
+K-TableID = F9S08,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 8,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+8100,0,8100,8100,GS1-128 Coupon Extended Code - NSC + Offer Code ** DEPRECATED as of GS1GS15i2 **,-,6n
+8101,1,8101,8101,GS1-128 Coupon Extended Code - NSC + Offer Code + end of offer code ** DEPRECATED as of GS1GS15i2 **,-,10n
+8102,2,8102,8102,GS1-128 Coupon Extended Code - NSC ** DEPRECATED as of GS1GS15i2 **,-,2n
+8110,3,8110,8110,Coupon Code Identification for Use in North America,,1*70an
+8111,22,8111,8111,Loyalty points of a coupon,POINTS,4n
+K-TableEnd = F9S08,,,,,,
+
+K-Text = Sec. IDT - Length or first dimension,,,,,,
+K-TableID = F9S09,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+331(***),0,331%x30-35,331%x30-35,"Length or first dimension, metres","LENGTH (m), log",6n
+341(***),1,341%x30-35,341%x30-35,"Length or first dimension, inches","LENGTH (i), log",6n
+342(***),2,342%x30-35,342%x30-35,"Length or first dimension, feet","LENGTH (f), log",6n
+343(***),3,343%x30-35,343%x30-35,"Length or first dimension, yards","LENGTH (y), log",6n
+K-TableEnd = F9S09,,,,,,
+
+"K-Text = Sec. IDT - Width, diameter, or second dimension",,,,,,
+K-TableID = F9S10,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+332(***),0,332%x30-35,332%x30-35,"Width, diameter, or second dimension, metres","WIDTH (m), log",6n
+344(***),1,344%x30-35,344%x30-35,"Width, diameter, or second dimension","WIDTH (i), log",6n
+345(***),2,345%x30-35,345%x30-35,"Width, diameter, or second dimension","WIDTH (f), log",6n
+346(***),3,346%x30-35,346%x30-35,"Width, diameter, or second dimension","WIDTH (y), log",6n
+K-TableEnd = F9S10,,,,,,
+
+"K-Text = Sec. IDT - Depth, thickness, height, or third dimension",,,,,,
+K-TableID = F9S11,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 4,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+333(***),0,333%x30-35,333%x30-35,"Depth, thickness, height, or third dimension, metres","HEIGHT (m), log",6n
+347(***),1,347%x30-35,347%x30-35,"Depth, thickness, height, or third dimension","HEIGHT (i), log",6n
+348(***),2,348%x30-35,348%x30-35,"Depth, thickness, height, or third dimension","HEIGHT (f), log",6n
+349(***),3,349%x30-35,349%x30-35,"Depth, thickness, height, or third dimension","HEIGHT (y), log",6n
+K-TableEnd = F9S11,,,,,,
+
+K-Text = Sec. IDT - Additional AIs,,,,,,
+K-TableID = F9S12,,,,,,
+K-RootOID = urn:oid:1.0.15961.9,,,,,,
+K-IDsize = 128,,,,,,
+AI or AIs,IDvalue,OIDs,IDstring,Name,Data Title,FormatString
+243,0,243,243,Packaging Component Number,PCN,1*20an
+255,1,255,255,Global Coupon Number,GCN,13n 0*12n
+427,2,427,427,Country Subdivision of Origin Code for a Trade Item,ORIGIN SUBDIVISION,1*3an
+710,3,710,710,National Healthcare Reimbursement Number - Germany (PZN),NHRN PZN,3n 1*27an
+711,4,711,711,National Healthcare Reimbursement Number - France (CIP),NHRN CIP,3n 1*27an
+712,5,712,712,National Healthcare Reimbursement Number - Spain (CN),NHRN CN,3n 1*27an
+713,6,713,713,National Healthcare Reimbursement Number - Brazil (DRN),NHRN DRN,3n 1*27an
+8010,7,8010,8010,Component / Part Identifier,CPID,1*30an
+8011,8,8011,8011,Component / Part Identifier Serial Number,CPID Serial,1*12n
+8017,9,8017,8017,Global Service Relation Number - Provider,GSRN - PROVIDER,18n
+8019,10,8019,8019,Service Relation Instance Number,SRIN,1*10n
+8200,11,8200,8200,Extended Packaging URL,PRODUCT URL,1*70an
+16,12,16,16,Sell by date (YYMMDD),SELL BY,6n
+394n,13,394%x30-39,394%x30-39,Percentage discount of a coupon,PCT OFF,4n
+7005,14,7005,7005,Catch area,CATCH AREA,1*12an
+7006,15,7006,7006,First freeze date,FIRST FREEZE DATE,6n
+7007,16,7007,7007,Harvest date,HARVEST DATE,6*12an
+7008,17,7008,7008,Species for fishery purposes,ACQUATIC SPECIES,1*3an
+7009,18,7009,7009,Fishing gear type,FISHING GEAR TYPE,1*10an
+7010,19,7010,7010,Production method,PROD METHOD,1*2an
+8012,20,8012,8012,Software version,VERSION,1*20an
+416,21,416,416,GLN of the production or servie location,PROD/SERV/LOC,13n
+7020,22,7020,7020,Refurbishment lot ID,REFURB LOT,1*20an
+7021,23,7021,7021,Functional status,FUNC STAT,1*20an
+7022,24,7022,7022,Revision status,REV STAT,1*20an
+7023,25,7023,7023,Global Individual Assset Identifier (GIAI) of an Assembly,GIAI-ASSEMBLY,1*30an
+235,26,235,235,"Third party controlled, serialised extension of GTIN",TPX,1*28n
+417,27,417,417,Global Location Number of Party,PGLN,13n
+714,28,714,714,National Healthcare Reimbursement Number - Portugal (AIM),NHRH AIM,1*an20
+7040,29,7040,7040,Unique Identification Code with Extensions (per EU 2018/574),UIC,1n 1*3an
+8013,30,8013,8013,Global Model Number,GMN,1*an30
+8026,31,8026,8026,Identification of pieces of a trade item (ITIP) contained in a logistics unit,ITIP CONTENT,18n
+8112,32,8112,8112,Paperless coupon code identification for use in North America,,1*an70
+7240,33,7240,7240,Protocol ID,PROTOCOL,1*20an
+395(***),34,395%x30-35,395%x30-35,Amount Payable per unit of measure single monetary area (variable measure trade item),PRICE/UoM,6n
+4300,35,4300,4300,Ship-to / Deliver-to company name,SHIP TO COMP,1*35an
+4301,36,4301,4301,Ship-to / Deliver-to contact name,SHIP TO NAME,1*35an
+4302,37,4302,4302,Ship-to / Deliver-to address line 1,SHIP TO ADD1,1*70an
+4303,38,4303,4303,Ship-to / Deliver-to address line 2,SHIP TO ADD2,1*70an
+4304,39,4304,4304,Ship-to / Deliver-to suburb,SHIP TO SUB,1*70an
+4305,40,4305,4305,Ship-to / Deliver-to locality,SHIP TO LOC,1*70an
+4306,41,4306,4306,Ship-to / Deliver-to region,SHIP TO REG,1*70an
+4307,42,4307,4307,Ship-to / Deliver-to country code,SHIP TO COUNTRY,2an
+4308,43,4308,4308,Ship-to / Deliver-to telephone number,SHIP TO PHONE,1*30an
+4309,44,4309,4309,Ship-to / Deliver-to GEO location,SHIP TO GEO,20n
+4310,45,4310,4310,Return-to company name,RTN TO COMP,1*35an
+4311,46,4311,4311,Return-to contact name,RTN TO NAME,1*35an
+4312,47,4312,4312,Return-to address line 1,RTN TO ADD1,1*70an
+4313,48,4313,4313,Return-to address line 2,RTN TO ADD2,1*70an
+4314,49,4314,4314,Return-to suburb,RTN TO SUB,1*70an
+4315,50,4315,4315,Return-to locality,RTN TO LOC,1*70an
+4316,51,4316,4316,Return-to region,RTN TO REG,1*70an
+4317,52,4317,4317,Return-to country code,RTN TO COUNTRY,2an
+4318,53,4318,4318,Return-to postal code,RTN TO POST,1*20an
+4319,54,4319,4319,Return-to telephone number,RTN TO PHONE,1*30an
+4320,55,4320,4320,Service code,SRV,1*35an
+4321,56,4321,4321,Dangerous goods flag,DANGEROUS GOODS,1n
+4322,57,4322,4322,Authority to leave flag,AUTH LEAV,1n
+4323,58,4323,4323,Signature required flag,SIG REQUIRED,1n
+4324,59,4324,4324,Not before delivery date/time,NBEF DEL DT,10n
+4325,60,4325,4325,Not after delivery date/time,NAFT DEL DT,10n
+4326,61,4326,4326,Release date,REL DATE,6n
+715,62,715,715,National Healthcare Reimbursement Number - United States of America (NDC),NHRN NDC,1*an20
+723s,63,7230,7230,Certification reference,CERT # s,2an 1*28an
+723s,64,7231,7231,Certification reference,CERT # s,2an 1*28an
+723s,65,7232,7232,Certification reference,CERT # s,2an 1*28an
+723s,66,7233,7233,Certification reference,CERT # s,2an 1*28an
+723s,67,7234,7234,Certification reference,CERT # s,2an 1*28an
+723s,68,7235,7235,Certification reference,CERT # s,2an 1*28an
+723s,69,7236,7236,Certification reference,CERT # s,2an 1*28an
+723s,70,7237,7237,Certification reference,CERT # s,2an 1*28an
+723s,71,7238,7238,Certification reference,CERT # s,2an 1*28an
+723s,72,7239,7239,Certification reference,CERT # s,2an 1*28an
+7241,73,7241,7241,AIDC Media Type,AIDC MEDIA TYPE,2an
+7242,74,7242,7242,Version Control Number (VCN),VCN,1*25an
+8030,75,7239,8030,Digital Signature (DigSig),DIGSIG,1*90an
+7011,76,7011,7011,Test by date,TEST BY DATE,6n 0*4n
+4330,77,4330,4330, Maximum temperature in Fahrenheit,MAX TEMP F,6n 0*1an
+4331,78,4331,4331, Maximum temperature in Celsius,MAX TEMP C,6n 0*1an
+4332,79,4332,4332, Minimum temperature in Farenheit,MIN TEMP F,6n 0*1an
+4333,80,4333,4333, Minimum temperature in Celsius,MIN TEMP C,6n 0*1an
+7002,81,7002,7002,UNECE meat carcasses and cuts classification,MEAT CUT,1*30an
+7041,82,7041,7041,UN/CEFACT freight unit type,UFRGT UNIT TYPE,1*an4
+716,83,716,716, National Healthcare Reimbursement Number - Italy AIC,NHRN AIC,1*an20
+7250,84,7250,7250,Date of birth,DOB,8n
+7251,85,7251,7251,Date and time of birth,DOB TIME,12n
+7252,86,7252,7252,Biological sex,BIO SEX,1n
+7253,87,7253,7253,Family name of person,FAMILY NAME,1*an40
+7254,88,7254,7254,Given name of person,GIVEN NAME,1*an40
+7255,89,7255,7255,Name suffix of person,SUFFIX,1*an10
+7256,90,7256,7256,Full name of person,FULL NAME,1*an90
+7257,91,7257,7257,Address of person,PERSON ADDR,1*an70
+7258,92,7258,7258,Baby birth sequence indicator,BIRTH SEQUENCE,1*an1 1n 1*an1
+7259,93,7259,7259,Baby birth of family,BABY,1*an40
+K-TableEnd = F9S12,,,,,,
+
