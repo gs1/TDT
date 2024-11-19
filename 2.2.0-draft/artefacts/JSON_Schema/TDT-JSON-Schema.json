@@ -1,0 +1,267 @@
+{
+  "type": "object",
+  "properties": {
+    "tdt:epcTagDataTranslation": {
+      "type": "object",
+      "required": [
+        "version",
+        "date",
+        "epcTDSVersion"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "epcTDSVersion": {
+          "type": "string"
+        },
+        "scheme": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "optionKey": {
+              "type": "string"
+            },
+            "tagLength": {
+              "type": "integer"
+            },
+            "level": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "prefixMatch"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "BINARY",
+                      "TAG_ENCODING",
+                      "PURE_IDENTITY",
+                      "ELEMENT_STRING",
+                      "GS1_AI_JSON",
+                      "GS1_DIGITAL_LINK",
+                      "TEI",
+                      "BARE_IDENTIFIER",
+                      "BARE_IDENTIFIER_ALT"
+                    ]
+                  },
+                  "prefixMatch": {
+                    "type": "string"
+                  },
+                  "requiredFormattingParameters": {
+                    "type": "string"
+                  },
+                  "requiredParsingParameters": {
+                    "type": "string"
+                  },
+                  "gs1DigitalLinkKeyQualifiers": {
+                    "type": "array",
+                    "items": {
+                    	"type": "string",
+                        "pattern": "^[0-9]{2,4}$"  
+                    }
+                  },
+                  "option": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "optionKey",
+                        "pattern",
+                        "grammar"
+                      ],
+                      "properties": {
+                        "optionKey": {
+                          "type": "string",
+                          "format": "integer"
+                        },
+                        "pattern": {
+                          "type": "string"
+                        },
+                        "grammar": {
+                          "type": "string"
+                        },
+                        "aiSequence": {
+                          "type": "array",
+                          "items": {
+                          	"type": "string",
+                            "pattern": "^[0-9]{2,4}$"  
+                          }
+                        },
+                        "encodedAI": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "seq": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "ai": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "field": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "seq",
+                              "name",
+                              "characterSet"
+                            ],
+                            "properties": {
+                              "seq": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "characterSet": {
+                                "type": "string"
+                              },
+                              "bitLength": {
+                                "type": "integer"
+                              },
+                              "compaction": {
+                                "type": "string"
+                              },
+                              "compression": {
+                                "type": "string"
+                              },
+                              "padChar": {
+                                "type": "string"
+                              },
+                              "padDir": {
+                                "type": "string",
+                                "enum": [
+                                  "LEFT",
+                                  "RIGHT"
+                                ]
+                              },
+                              "bitPadDir": {
+                                "type": "string",
+                                "enum": [
+                                  "LEFT",
+                                  "RIGHT"
+                                ]
+                              },
+                              "decimalMinimum": {
+                                "type": "string",
+                                "format": "integer"
+                              },
+                              "decimalMaximum": {
+                                "type": "string",
+                                "format": "integer"
+                              },
+                              "length": {
+                                "type": "number"
+                              },
+                              "gcpOffset": {
+                                "type": "integer",
+                                "enum": [
+                                  0,
+                                  1
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "rule": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "seq",
+                        "newFieldName",
+                        "function",
+                        "type",
+                        "inputFormat",
+                        "characterSet"
+                      ],
+                      "properties": {
+                        "seq": {
+                          "type": "integer"
+                        },
+                        "newFieldName": {
+                          "type": "string"
+                        },
+                        "function": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "EXTRACT",
+                            "FORMAT"
+                          ]
+                        },
+                        "inputFormat": {
+                          "type": "string",
+                          "enum": [
+                            "STRING",
+                            "BINARY"
+                          ]
+                        },
+                        "characterSet": {
+                          "type": "string"
+                        },
+                        "length": {
+                          "type": "integer"
+                        },
+                        "padChar": {
+                          "type": "string"
+                        },
+                        "padDir": {
+                          "type": "string",
+                          "enum": [
+                            "LEFT",
+                            "RIGHT"
+                          ]
+                        },
+                        "bitPadDir": {
+                          "type": "string",
+                          "enum": [
+                            "LEFT",
+                            "RIGHT"
+                          ]
+                        },
+                        "decimalMinimum": {
+                          "type": "string",
+                          "format": "integer"
+                        },
+                        "decimalMaximum": {
+                          "type": "string",
+                          "format": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

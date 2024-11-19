@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+	<date>2024-04-18T12:00:00Z</date>
+	<definitionFiles>
+		<artefact scheme="SGTIN+" file="SGTIN+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="DSGTIN+" file="DSGTIN+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="ITIP+" file="ITIP+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SSCC+" file="SSCC+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGLN+" file="SGLN+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GRAI+" file="GRAI+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GIAI+" file="GIAI+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GDTI+" file="GDTI+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GSRN+" file="GSRN+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GSRNP+" file="GSRNP+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGCN+" file="SGCN+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="CPI+" file="CPI+.xml" sinceTDSversion="2.0" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGTIN-96" file="SGTIN-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGTIN-198" file="SGTIN-198.xml" sinceTDSversion="1.3" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="ITIP-110" file="ITIP-110.xml" sinceTDSversion="1.11" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="ITIP-212" file="ITIP-212.xml" sinceTDSversion="1.11" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SSCC-96" file="SSCC-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGLN-96" file="SGLN-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGLN-195" file="SGLN-195.xml" sinceTDSversion="1.3" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GID-96" file="GID-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GRAI-96" file="GRAI-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GRAI-170" file="GRAI-170.xml" sinceTDSversion="1.3" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GIAI-96" file="GIAI-96.xml" sinceTDSversion="1.1.24" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GIAI-202" file="GIAI-202.xml" sinceTDSversion="1.3" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GDTI-96" file="GDTI-96.xml" sinceTDSversion="1.4" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GDTI-113" file="GDTI-113.xml" sinceTDSversion="1.4" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GDTI-174" file="GDTI-174.xml" sinceTDSversion="1.9" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GSRN-96" file="GSRN-96.xml" sinceTDSversion="1.4" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="GSRNP-96" file="GSRNP-96.xml" sinceTDSversion="1.9" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="SGCN-96" file="SGCN-96.xml" sinceTDSversion="1.9" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="ADI-var" file="ADI-var.xml" sinceTDSversion="1.6" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="CPI-96" file="CPI-96.xml" sinceTDSversion="1.7" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="CPI-var" file="CPI-var.xml" sinceTDSversion="1.7" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact scheme="USDOD-96" file="USDOD-96.xml" sinceTDSversion="1.1.27" lastUpdated="2024-11-18T16:30:00Z"/>
+	</definitionFiles>
+	<tables>
+		<artefact table="F" file="TDT_TableF.xml" lastUpdated="2024-11-18T16:30:00Z"/>
+		<artefact table="E" file="TDT_TableE.xml" lastUpdated="2023-02-22T12:30:00Z"/>
+		<artefact table="B" file="TDT_TableB.xml" lastUpdated="2023-02-22T12:30:00Z"/>
+		<artefact table="K" file="TDT_TableK.xml" lastUpdated="2023-02-22T12:30:00Z"/>
+	</tables>
+</manifest>

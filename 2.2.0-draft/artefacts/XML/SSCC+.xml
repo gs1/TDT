@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tdt:epcTagDataTranslation version="2.2" date="2024-11-18T16:30:00Z" epcTDSVersion="2.2" xmlns:tdt="urn:epcglobal:tdt:xsd:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:epcglobal:tdt:xsd:2 EpcTagDataTranslation.xsd">
+	<scheme name="SSCC+" optionKey="1">
+		<level type="BINARY" prefixMatch="11111001" requiredFormattingParameters="filter,dataToggle">
+			<option optionKey="1" pattern="^11111001([01])([01]{3})" grammar="'11111001' dataToggle filter encodedAI">
+				<field seq="1" name="dataToggle" decimalMinimum="0" decimalMaximum="1" characterSet="[01]*" bitPadDir="LEFT" bitLength="1"/>
+				<field seq="2" name="filter" decimalMinimum="0" decimalMaximum="7" characterSet="[01]*" bitPadDir="LEFT" bitLength="3"/>
+				<encodedAI ai="00" name="sscc" seq="3"/>
+			</option>
+		</level>
+		<level type="BARE_IDENTIFIER" prefixMatch="sscc=">
+			<option optionKey="1" pattern="^sscc=([0-9]{18})$" grammar="'sscc=' sscc ">
+				<field seq="1" name="sscc" decimalMinimum="0" decimalMaximum="999999999999999999" characterSet="[0-9]*" length="18" padChar="0" padDir="LEFT"/>
+			</option>
+		</level>
+		<level type="GS1_AI_JSON" prefixMatch="{">
+			<option optionKey="1" pattern="^\{\s*\x2200\x22\s*:\s*\x22([0-9]{18})\x22" grammar="'{&quot;00&quot;:&quot;' sscc '&quot;}'" aiSequence="[&quot;00&quot;]" >
+				<field seq="1" name="sscc" decimalMinimum="0" decimalMaximum="999999999999999999" characterSet="[0-9]*" length="18" padChar="0" padDir="LEFT"/>
+			</option>
+		</level>
+		<level type="GS1_DIGITAL_LINK" prefixMatch="http" requiredFormattingParameters="uriStem" gs1DigitalLinkKeyQualifiers="[]" >
+			<option optionKey="1" pattern="\/00\/([0-9]{18})(?:\?|$)" grammar="uriStem '/00/' sscc " aiSequence="[&quot;00&quot;]" >
+				<field seq="1" name="sscc" decimalMinimum="0" decimalMaximum="999999999999999999" characterSet="[0-9]*" length="18" padChar="0" padDir="LEFT"/>
+			</option>
+		</level>
+	</scheme>
+</tdt:epcTagDataTranslation>

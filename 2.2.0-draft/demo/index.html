@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>GS1 TDS / TDT 2.x Encoder</title>
+<script type="text/javascript" src="jszip-utils.js"></script>
+<script type="text/javascript" src="jszip.js"></script>
+<script type="text/javascript" src="TDTtranslator.js"></script>
+<script type="text/javascript" src ="jquery-3.7.1.min.js"></script>
+<style type="text/css">
+body {font-family: "Gotham SSm A", "Gotham SSm B", Verdana, sans-serif; font-size: 16px; background-color: #AAAAAA; padding: 0px; margin: 0px; color: #002c6c}
+.contents {max-width: 80em; margin: auto; background-color: #fff; padding: 10px; }
+label { padding-right: 5px}
+input { background: none; border: 1px solid #AAAAAA; padding: 4px; color: #000000;}
+input[type=button] {background-color: #cd3c0d; border-color: #cd3c0d; color: white; padding: 9px 16px; border-radius: 4px; font-size: 14px; font-weight: bold;}
+input[type=button]:hover:not(:disabled) { background-color: #a82c05; border-color: #a82c05; cursor: pointer; }
+.inputs {display: grid; grid-template-columns: max-content auto; gap: 10px;}
+.right {text-align: right;}
+.error {color: red;}
+code {color:#000000}
+</style>
+</head>
+<body>
+
+	<div class="contents">
+	<h1>GS1 TDS / TDT 2.x Encoder</h1>
+	<p>Accepted inputs are:
+		<ul>
+			<li>GS1 AI String in JSON e.g. <code>{"01":"09521234123453", "21":"32a/b"}</code></li>
+			<li>Digital Link URI e.g. <code>https://id.gs1.org/01/09521234123453/21/32a%2Fb</code></li>
+			<li>Binary representation of encoded TDS data e.g. <code>111101111000100101010010000101000011001010000101000101110011011001000000010100011000000111001000101110010110010111111</code></li>
+			<li>Hex representation of encoded TDS data e.g. <code>F73095212341234538566CB0AFC4</code></li>
+			<li>EPC Tag URI e.g. <code>urn:epc:tag:sgtin-198:0.9521234.012345.32a%2F</code></li>
+			<li>EPC Pure URI e.g. <code>urn:epc:id:sgtin:9521234.012345.32a%2Fb</code></li>
+		</ul>
+		Filter is used in Binary and Hex output.  GCP Length is only used in legacy schemes.  URI stem is used in Digital Link output.
+	</p>
+	<div class="inputs">
+	<div class="right"><label for="inputString">Input</label></div><div><input id="inputString" type="text" style="width: 40em" /></div>
+	<div class="right"><label for="filter">Filter</label></div><div><input id="filter" type="number" value="0" min="0" max="7" /></div>
+	<div class="right"><label for="gcpLength">GCP Length</label></div><div><input id="gcpLength" type="number" value="7" min="6" max="12" /> <span id="gcpMessage"></span></div>
+	<div class="right"><label for="uristem">Digital Link URI stem</label></div><div><input id="uristem" value="https://id.gs1.org" type="text" /></div>
+	<div></div><div><input id="encodebutton" type="button" disabled="disabled" value="Encode"/></div>
+	</div>
+	<div id="output"></div>
+</div>
+
+<script type="text/javascript">
+
+const myTDTencoder = new TDTtranslator();
+const levelNames = { "BINARY": "Binary encoded TDS data", "HEX": "Hex encoded TDS data", "GS1_AI_JSON": "GS1 AI String in JSON", "GS1_DIGITAL_LINK": "GS1 Digital Link URI", "TAG_ENCODING": "EPC Tag URI", "PURE_IDENTITY": "EPC Pure URI", "BARE_IDENTIFIER": "Bare Identifier"};
+const providesGCPLength = [ "BINARY", "TAG_ENCODING", "PURE_IDENTITY" ]
+
+$(document).ready(function() {
+myTDTencoder.initialized.then(() => {
+	myTDTencoder.processData(); // Call other functions after initialization
+	$("#encodebutton").removeAttr("disabled");
+	$("#encodebutton").click(function(event) {
+		let output = $("#output");
+		output.html("");
+		$("#gcpMessage").html("");
+		let input = $("#inputString").val();
+		if (input == "") return;
+
+		try {
+			let detected = myTDTencoder.autodetect(input);
+			if (detected.length == 0) {
+				output.append('<p class="error">Failed to match input to any TDS scheme</p>');
+				return;
+			}
+			let inputLevel = detected[0].level;
+			if (detected[0].detectedGCPLength > 0) {
+				$("#gcpLength").val(detected[0].detectedGCPLength);
+				$("#gcpMessage").html("Using auto-detected GCP length");
+			}
+			let options = { "filter": $("#filter").val(), "uriStem": $("#uristem").val(), "gs1companyprefixlength": $("#gcpLength").val() };
+			output.append('<h2>Detected '+levelNames[inputLevel]+'</h2>');
+			console.debug("Detected: "+JSON.stringify(detected, null, 2));
+			for (let match of detected) {
+				if (match.optionKey.property && (match.optionKey.property == "gs1companyprefixlength")) {
+					if (providesGCPLength.includes(inputLevel)) {
+						options.gs1companyprefixlength = match.optionKey.value;
+						$("#gcpLength").val(match.optionKey.value);
+					}
+					if (match.optionKey.value != options.gs1companyprefixlength) continue;
+				}
+				let extra = match.optionKey.property && (match.optionKey.property != match.optionKey.value) ? ", "+match.optionKey.property+": "+match.optionKey.value : "";
+				output.append('<h3>Potential scheme '+match.scheme+extra+'</h3>');
+				for (let level of match.supportedLevels) {
+					if (level == inputLevel) continue;
+					let translated = myTDTencoder.translate(input, match.scheme, level, options);
+					output.append('<h4>'+levelNames[level]+'</h4>');
+					output.append('<p>'+translated+'</p>');
+					if (level == "BINARY") {
+						let bits = translated.length;
+						let bits_nyble = Math.ceil(bits/4) * 4;
+						let bits_word = Math.ceil(bits/16) * 16;
+						output.append('<p>Bits: '+bits+', padded to nibble boundary: '+bits_nyble+', padded to word boundary: '+bits_word+'</p>');
+						let hextranslated = myTDTencoder.translate(input, match.scheme, "HEX", options);
+						output.append('<h4>'+levelNames['HEX']+'</h4>');
+						output.append('<p>'+hextranslated+'</p>');
+					}
+				}
+			}
+		}
+
+		catch(err) {
+			output.html('<h2>Error</h2><p class="error">'+err+'</p>');
+		}
+
+	});
+}).catch(error => {
+	console.error('Error initializing library:', error);
+});
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tdt:epcTagDataTranslation version="2.2" date="2024-11-18T16:30:00Z" epcTDSVersion="2.2" xmlns:tdt="urn:epcglobal:tdt:xsd:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:epcglobal:tdt:xsd:2 EpcTagDataTranslation.xsd">
+	<scheme name="GRAI+" optionKey="1">
+		<level type="BINARY" prefixMatch="11110001" requiredFormattingParameters="filter,dataToggle">
+			<option optionKey="1" pattern="^11110001([01])([01]{3})" grammar="'11110001' dataToggle filter encodedAI">
+				<field seq="1" name="dataToggle" decimalMinimum="0" decimalMaximum="1" characterSet="[01]*" bitPadDir="LEFT" bitLength="1"/>
+				<field seq="2" name="filter" decimalMinimum="0" decimalMaximum="7" characterSet="[01]*" bitPadDir="LEFT" bitLength="3"/>
+				<encodedAI ai="8003" name="valueOf8003" seq="3"/>
+			</option>
+		</level>
+		<level type="BARE_IDENTIFIER" prefixMatch="grai=">
+			<option optionKey="1" pattern="^grai=(0[0-9]{13}[!%-?A-Z_a-z\x22]{1,16})$" grammar="'grai=' valueOf8003 ">
+				<field seq="1" name="valueOf8003" characterSet="[!%-?A-Z_a-z\x22]*"/>
+			</option>
+		</level>
+		<level type="GS1_AI_JSON" prefixMatch="{">
+			<option optionKey="1" pattern="^\{\s*\x228003\x22\s*:\s*\x22(0[0-9]{13}(?:[!%-?A-Z_a-z]|\\\x22){1,16})\x22" grammar="'{&quot;8003&quot;:&quot;' valueOf8003 '&quot;}'" aiSequence="[&quot;8003&quot;]" >
+				<field seq="1" name="valueOf8003" characterSet="[!%-?A-Z_a-z\x22]*"/>
+			</option>
+		</level>
+		<level type="GS1_DIGITAL_LINK" prefixMatch="http" requiredFormattingParameters="uriStem" gs1DigitalLinkKeyQualifiers="[]" >
+			<option optionKey="1" pattern="\/8003\/(0[0-9]{13}(?:[A-Za-z0-9\x22._-]|%21|%26|%27|%28|%29|%2A|%2B|%2C|%2F|%3A|%3B|%3C|%3D|%3E|%3F|%25){1,16})(?:\?|$)" grammar="uriStem '/8003/' urlEscapedValueOf8003 " aiSequence="[&quot;8003&quot;]" >
+				<field seq="1" name="urlEscapedValueOf8003" characterSet="(?:[A-Za-z0-9\x22._-]|%21|%26|%27|%28|%29|%2A|%2B|%2C|%2F|%3A|%3B|%3C|%3D|%3E|%3F|%25)*"/>
+			</option>
+			<rule type="EXTRACT" inputFormat="STRING" seq="1" newFieldName="valueOf8003" characterSet="[!%-?A-Z_a-z\x22]*" function="URLDECODE(urlEscapedValueOf8003)"/>
+			<rule type="FORMAT" inputFormat="STRING" seq="1" newFieldName="urlEscapedValueOf8003" characterSet="(?:[A-Za-z0-9\x22._-]|%21|%26|%27|%28|%29|%2A|%2B|%2C|%2F|%3A|%3B|%3C|%3D|%3E|%3F|%25)*" function="URLENCODE(valueOf8003)"/>
+		</level>
+	</scheme>
+</tdt:epcTagDataTranslation>
