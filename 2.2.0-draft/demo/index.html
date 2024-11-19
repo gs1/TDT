@@ -27,19 +27,19 @@ code {color:#000000}
 	<p>Accepted inputs are:
 		<ul>
 			<li>GS1 AI String in JSON e.g. <code>{"01":"09521234123453", "21":"32a/b"}</code></li>
-			<li>Digital Link URI e.g. <code>https://id.gs1.org/01/09521234123453/21/32a%2Fb</code></li>
+			<li>GS1 Digital Link URI e.g. <code>https://id.gs1.org/01/09521234123453/21/32a%2Fb</code></li>
 			<li>Binary representation of encoded TDS data e.g. <code>111101111000100101010010000101000011001010000101000101110011011001000000010100011000000111001000101110010110010111111</code></li>
 			<li>Hex representation of encoded TDS data e.g. <code>F73095212341234538566CB0AFC4</code></li>
 			<li>EPC Tag URI e.g. <code>urn:epc:tag:sgtin-198:0.9521234.012345.32a%2F</code></li>
 			<li>EPC Pure URI e.g. <code>urn:epc:id:sgtin:9521234.012345.32a%2Fb</code></li>
 		</ul>
-		Filter is used in Binary and Hex output.  GCP Length is only used in legacy schemes.  URI stem is used in Digital Link output.
+		Filter is used in Binary and Hex output.  GCP Length is only used in legacy schemes.  URI stem is used in GS1 Digital Link output.
 	</p>
 	<div class="inputs">
 	<div class="right"><label for="inputString">Input</label></div><div><input id="inputString" type="text" style="width: 40em" /></div>
 	<div class="right"><label for="filter">Filter</label></div><div><input id="filter" type="number" value="0" min="0" max="7" /></div>
 	<div class="right"><label for="gcpLength">GCP Length</label></div><div><input id="gcpLength" type="number" value="7" min="6" max="12" /> <span id="gcpMessage"></span></div>
-	<div class="right"><label for="uristem">Digital Link URI stem</label></div><div><input id="uristem" value="https://id.gs1.org" type="text" /></div>
+	<div class="right"><label for="uristem">GS1 Digital Link URI stem</label></div><div><input id="uristem" value="https://id.gs1.org" type="text" /></div>
 	<div></div><div><input id="encodebutton" type="button" disabled="disabled" value="Encode"/></div>
 	</div>
 	<div id="output"></div>
