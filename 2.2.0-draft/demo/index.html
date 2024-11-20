@@ -88,6 +88,11 @@ myTDTencoder.initialized.then(() => {
 				let extra = match.optionKey.property && (match.optionKey.property != match.optionKey.value) ? ", "+match.optionKey.property+": "+match.optionKey.value : "";
 				output.append('<h3>Potential scheme '+match.scheme+extra+'</h3>');
 				for (let level of match.supportedLevels) {
+					if ((level == "BINARY") && (inputLevel != "HEX")) {
+						let hextranslated = myTDTencoder.translate(input, match.scheme, "HEX", options);
+						output.append('<h4>'+levelNames['HEX']+'</h4>');
+						output.append('<p>'+hextranslated+'</p>');
+					}
 					if (level == inputLevel) continue;
 					let translated = myTDTencoder.translate(input, match.scheme, level, options);
 					output.append('<h4>'+levelNames[level]+'</h4>');
@@ -97,9 +102,6 @@ myTDTencoder.initialized.then(() => {
 						let bits_nyble = Math.ceil(bits/4) * 4;
 						let bits_word = Math.ceil(bits/16) * 16;
 						output.append('<p>Bits: '+bits+', padded to nibble boundary: '+bits_nyble+', padded to word boundary: '+bits_word+'</p>');
-						let hextranslated = myTDTencoder.translate(input, match.scheme, "HEX", options);
-						output.append('<h4>'+levelNames['HEX']+'</h4>');
-						output.append('<p>'+hextranslated+'</p>');
 					}
 				}
 			}
