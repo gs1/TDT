@@ -1930,7 +1930,7 @@ class TDTtranslator {
                                                 finalOutputArray.push(toBinaryUsingDateYYMMDD(internalMap[f.name]));
                                                 break;
                                             }
-                                            case "GS1_AI_JSON": {
+                                            default: {
                                                 finalOutputArray.push(internalMap[f.name]);
                                                 break;
                                             }
