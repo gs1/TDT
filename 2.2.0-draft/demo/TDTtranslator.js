@@ -1,4 +1,3 @@
-
 const alphabetURNcode40 = " ABCDEFGHIJKLMNOPQRSTUVWXYZ-.:0123456789";
 const alphabetFileSafeURISafeBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 const alphabetUpperCaseHexadecimal = "0123456789ABCDEF";
@@ -9,6 +8,7 @@ const regexURNcode40 = /^[A-Z0-9\.:-]+$/;
 const regexFileSafeURISafeBase64 = /^[A-Za-z0-9_-]+$/;
 const regexUpperCaseHexadecimal = /^[0-9A-F]+$/;
 const regexLowerCaseHexadecimal = /^[0-9a-f]+$/;
+const regexHexadecimal = /^[0-9A-Fa-f]+$/;
 const regexAlphanumeric=/^[\x21-\x23\x25-\x5A\x5A-\x7A]+$/;
 const regexAllNumeric = /^[0-9]+$/;
 const regexEightBit=/^[\x00-\x7F]*$/;
@@ -1535,7 +1535,7 @@ class TDTtranslator {
 
         let rv=[]
         let isHex = false;
-        if (regexUpperCaseHexadecimal.test(inputString) && !regexBinaryString.test(inputString)) {
+        if (regexHexadecimal.test(inputString) && !regexBinaryString.test(inputString)) {
             console.debug("Detected hex input");
             inputString = this.hex2bin(inputString);
             isHex = true;
@@ -1615,7 +1615,7 @@ class TDTtranslator {
         }
 
         // If the input is all hex, switch it to binary
-        if (regexUpperCaseHexadecimal.test(inputString) && !regexBinaryString.test(inputString)) inputString = this.hex2bin(inputString);
+        if (regexHexadecimal.test(inputString) && !regexBinaryString.test(inputString)) inputString = this.hex2bin(inputString);
 
         let optionKey = this.tdtData.scheme[scheme][tdtDataContainer].scheme.optionKey;
 
@@ -2075,7 +2075,7 @@ class TDTtranslator {
     hex2bin(inputHexString) {
         let outputBinaryString = "";
 
-        if (!regexUpperCaseHexadecimal.test(inputHexString)) {
+        if (!regexHexadecimal.test(inputHexString)) {
             throw new Error("Input is not hexadecimal - only 0-9A-F allowed");
         }
 
