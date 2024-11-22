@@ -1798,6 +1798,8 @@ class TDTtranslator {
 
         if (internalMap.hasOwnProperty("plusdata")) {
             options.dataToggle = internalMap.plusdata.length > 0 ? 1 : 0;
+        } else {
+            options.dataToggle = 0;
         }
 
         if (!outputLevelData) {
