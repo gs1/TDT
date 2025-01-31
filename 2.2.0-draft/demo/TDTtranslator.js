@@ -1843,7 +1843,7 @@ class TDTtranslator {
 		console.debug("outputOption = "+JSON.stringify(outputOption, null, 2)) ;
 
         if (outputLevelData.hasOwnProperty("rule")) {
-            let outputComponents = outputOption.grammar.split("");
+            let outputComponents = outputOption.grammar.match(/('.*?'|[^'\s]+)(?=\s|\s*$)/g);
             console.debug("Processing FORMAT rules");
             for (const rule of outputLevelData.rule) {
                 if (rule.type != "FORMAT") continue;
@@ -1887,7 +1887,7 @@ class TDTtranslator {
             console.debug("binaryEncodedAI = "+JSON.stringify(binaryEncodedAI));
 		}
 
-		for (let grammarComponent of outputOption.grammar.split(" ")) {
+		for (let grammarComponent of outputOption.grammar.match(/('.*?'|[^'\s]+)(?=\s|\s*$)/g)) {
 			console.debug("grammarComponent = "+grammarComponent);
 			if (/^'(.+?)'$/.test(grammarComponent)) {
 				console.debug(grammarComponent+" is literal");
