@@ -68,7 +68,7 @@ const matchEncodingIndicator = function(indicator) {
 /*
  * "Rule" processing
  */
-const processRule = function(rule, internalMap, options) {
+const processRule = function(rule, internalMap, options, checkList) {
     console.debug("Processing rule "+JSON.stringify(rule, null, 2));
 
     if (internalMap.hasOwnProperty(rule.newFieldName)) return;
@@ -103,6 +103,10 @@ const processRule = function(rule, internalMap, options) {
 
         console.debug("Looking for "+a);
         if (!internalMap.hasOwnProperty(a)) {
+            if (rule.type == "EXTRACT" && !checkList.includes(a)) {
+                console.debug(a+" not in input - skipping rule");
+                return;
+            }
             if (!options.hasOwnProperty(a)) {
                 throw new Error("Missing argument "+a);
             }
@@ -1636,6 +1640,7 @@ class TDTtranslator {
 			if (inputString.startsWith(level.prefixMatch)) {
 				console.debug("input appears to match "+level.type);
                 let testString = inputString;
+                let expectedSources = [];
 				for (let option of level.option) {
                     if (!option.pattern) continue;
                     if (optionKey && options.hasOwnProperty(optionKey) && (options[optionKey] != option.optionKey)) {
@@ -1728,6 +1733,7 @@ class TDTtranslator {
         					internalMap[field.name]=matchGroups[field.seq];
                         }
                         if (field.seq > lastSeq) lastSeq = field.seq;
+                        expectedSources.push(field.name);
     				}
 					internalMap["optionKey"]=option.optionKey;
                     if (optionKey) internalMap[optionKey]=option.optionKey;
@@ -1785,7 +1791,7 @@ class TDTtranslator {
                         if (rule.type != "EXTRACT") {
                             continue;
                         }
-                        processRule(rule, internalMap, options);
+                        processRule(rule, internalMap, options, expectedSources);
                     }
     			}
             }
