@@ -107,6 +107,10 @@ const processRule = function(rule, internalMap, options, checkList) {
                 console.debug(a+" not in input - skipping rule");
                 return;
             }
+            if (rule.type == "FORMAT" && !checkList.includes(rule.newFieldName)) {
+                console.debug(rule.newFieldName+" not required - skipping rule");
+                return;
+            }
             if (!options.hasOwnProperty(a)) {
                 throw new Error("Missing argument "+a);
             }
@@ -1828,14 +1832,6 @@ class TDTtranslator {
             }
 		}
 
-        if (outputLevelData.hasOwnProperty("rule")) {
-            console.debug("Processing FORMAT rules");
-            for (const rule of outputLevelData.rule) {
-                if (rule.type != "FORMAT") continue;
-                processRule(rule, internalMap, options);
-            }
-        }
-
 		console.debug("internalMap : "+JSON.stringify(internalMap,null,2));
 
         if (!internalMap.hasOwnProperty("optionKey")) {
@@ -1845,6 +1841,15 @@ class TDTtranslator {
 
         let outputOption = outputLevelData.option.filter(byOptionKey(internalMap.optionKey))[0];
 		console.debug("outputOption = "+JSON.stringify(outputOption, null, 2)) ;
+
+        if (outputLevelData.hasOwnProperty("rule")) {
+            let outputComponents = outputOption.grammar.split("");
+            console.debug("Processing FORMAT rules");
+            for (const rule of outputLevelData.rule) {
+                if (rule.type != "FORMAT") continue;
+                processRule(rule, internalMap, options, outputComponents);
+            }
+        }
 
         let binaryEncodedAI=[];
 		if (outputOption.hasOwnProperty("encodedAI")) {
