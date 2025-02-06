@@ -1908,7 +1908,11 @@ class TDTtranslator {
                     }
 
                     case "filter": {
-                        console.debug("Append the filter value of "+options['filter']);
+                        let filter = options["filter"];
+                        if (internalMap.hasOwnProperty("filter")) {
+                            filter = internalMap["filter"]
+                        }
+                        console.debug("Append the filter value of "+filter);
                         if (outputLevel == "BINARY") {
                             let bitLength = 3;
                             for (let field of outputOption.field) {
@@ -1916,9 +1920,9 @@ class TDTtranslator {
                                     bitLength = field.bitLength;
                                 }
                             }
-                            finalOutputArray.push(TDTtranslator.prePad(parseInt(options['filter']).toString(2),"0",bitLength));
+                            finalOutputArray.push(TDTtranslator.prePad(parseInt(filter).toString(2),"0",bitLength));
                         } else {
-                            finalOutputArray.push(options['filter']);
+                            finalOutputArray.push(filter);
                         }
                         continue;
                     }
