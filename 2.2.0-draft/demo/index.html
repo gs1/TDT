@@ -23,7 +23,7 @@ code {color:#000000}
 <body>
 
 	<div class="contents">
-	<h1>GS1 TDS / TDT 2.x beta Encoder</h1>
+	<h1>GS1 TDS / TDT 2.x Encoder</h1>
 	<p>This beta release demo supports testing of TDT draft version 2.2 during public review</p>
 	<p>Accepted inputs are:
 		<ul>
@@ -35,7 +35,7 @@ code {color:#000000}
 			<li>EPC Pure URI e.g. <code>urn:epc:id:sgtin:9521234.012345.32a%2Fb</code></li>
 			<li>Bare Identifier e.g. <code>gtin=09521234123453;serial=32a/b</code></li>
 		</ul>
-		Filter is used if it can't be parsed from the input.  GCP Length is only used in legacy schemes.  URI stem is used in GS1 Digital Link output.
+		Filter manual input is ignored if Filter can be parsed from the input.  GCP Length is only used in legacy schemes.  URI stem is used in GS1 Digital Link output.
 	</p>
 	<div class="inputs">
 	<div class="right"><label for="inputString">Input</label></div><div><input id="inputString" type="text" style="width: 40em" /></div>
