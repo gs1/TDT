@@ -1,5 +1,5 @@
 # TDT
 
-Demo web interface implementation of TDS/TDT 2.2 drafts -- including supporting, machine-redable TDT 2.2 draft artefacts -- to support GSMP public review of these draft (unratified) GS1 standards.
+Demo web interface implementation of [TDS 2.2](https://ref.gs1.org/standards/tds/2.2.0/) and [TDT 2.2](https://ref.gs1.org/standards/tdt/2.2.0/) , using the [TDT 2.2 translation files](https://ref.gs1.org/standards/tdt/artefacts).
 
-[Online demo tool available here](https://gs1.github.io/TDT/2.2.0-draft/demo/index.html)
+[Online demo tool available here](https://gs1.github.io/TDT/demo/)
