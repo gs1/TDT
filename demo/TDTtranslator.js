@@ -756,7 +756,7 @@ const encodingOptionsAlphanumeric=[
 const byAscendingBitCount = function(a,b) {
 	if (a.bitCount < b.bitCount) { return -1; }
 	if (a.bitCount > b.bitCount) { return 1; }
-	return a.indicator < b.indicator ? 1 : -1 ; // Not strictly needed, but gives consistent behaviour to help tests.
+	return a.indicator > b.indicator ? 1 : -1 ; // Not strictly needed, but gives consistent behaviour to help tests.
 }
 
 const toBinaryUsingVariableLengthAlphanumeric = function(inputCharacterString, options) {
