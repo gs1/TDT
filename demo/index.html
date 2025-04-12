@@ -35,12 +35,18 @@ code {color:#000000}
 			<li>EPC Pure URI e.g. <code>urn:epc:id:sgtin:9521234.012345.32a%2Fb</code></li>
 			<li>Bare Identifier e.g. <code>gtin=09521234123453;serial=32a/b</code></li>
 		</ul>
-		Filter manual entry is ignored if Filter can be parsed from the input.  GCP Length is only used in legacy schemes.  URI stem is used in GS1 Digital Link output.
+	</p>
+	<p>
+		Filter is used if it can't be parsed from the input.  GCP Length is only used in legacy schemes.  URI stem is used in GS1 Digital Link output.
+	</p>
+	<p>
+		If "Use input GCP Length" is unchecked, then the GCP length found in GS1 Company Prefix Length Table will be used.
 	</p>
 	<div class="inputs">
 	<div class="right"><label for="inputString">Input</label></div><div><input id="inputString" type="text" style="width: 40em" /></div>
 	<div class="right"><label for="filter">Filter</label></div><div><input id="filter" type="number" value="0" min="0" max="7" /></div>
 	<div class="right"><label for="gcpLength">GCP Length</label></div><div><input id="gcpLength" type="number" value="7" min="6" max="12" /> <span id="gcpMessage"></span></div>
+	<div class="right"><label for="gcpOverride">Use input GCP Length</label></div><div><input type="checkbox" id="gcpOverride" /> (in place of auto-detected GCP length)</div>
 	<div class="right"><label for="uristem">GS1 Digital Link URI stem</label></div><div><input id="uristem" value="https://id.gs1.org" type="text" /></div>
 	<div></div><div><input id="encodebutton" type="button" disabled="disabled" value="Encode"/></div>
 	</div>
@@ -71,7 +77,7 @@ myTDTencoder.initialized.then(() => {
 				return;
 			}
 			let inputLevel = detected[0].level;
-			if (detected[0].detectedGCPLength > 0) {
+			if ((detected[0].detectedGCPLength > 0) && !($("#gcpOverride").is(":checked"))) {
 				$("#gcpLength").val(detected[0].detectedGCPLength);
 				$("#gcpMessage").html("Using auto-detected GCP length");
 			}
