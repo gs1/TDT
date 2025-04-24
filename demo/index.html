@@ -93,6 +93,9 @@ myTDTencoder.initialized.then(() => {
 					if (match.optionKey.value != options.gs1companyprefixlength) continue;
 				}
 				let extra = match.optionKey.property && (match.optionKey.property != match.optionKey.value) ? ", "+match.optionKey.property+": "+match.optionKey.value : "";
+				if (match.optionKey.property && (match.optionKey.property != match.optionKey.value)) {
+					options[match.optionKey.property] = match.optionKey.value;
+				}
 				output.append('<h3>Potential scheme '+match.scheme+extra+'</h3>');
 				for (let level of match.supportedLevels) {
 					if ((level == "BINARY") && (inputLevel != "HEX")) {
