@@ -1366,17 +1366,21 @@ class TDTtranslator {
         return plusData;
     }
 
-    static #toBINARYEncodePlusData(plusdata, tablef) {
+    static #toBINARYEncodePlusData(plusdata, tablef, returnArray) {
         let rv = [];
+        let rvComponents = [];
         for (let data of plusdata) {
             let tableFrow = tablef[data.ai];
             if (tableFrow) {
                 console.debug("TableF row for AI ("+data.ai+"): "+JSON.stringify(tableFrow,null,2));
 
                 // Add encoded AI to ouptput
+                let aiBin = []
                 for (let t = 0; t < data.ai.length; t++) {
-                    rv.push(prePad(parseInt(data.ai.charAt(t)).toString(2), "0", 4))
+                    aiBin.push(prePad(parseInt(data.ai.charAt(t)).toString(2), "0", 4))
                 }
+                rv.push(aiBin.join(""));
+                rvComponents.push("AI " + data.ai + " identifier");
 
                 let plusDataOutput=[];
                 let componentCount=1;
@@ -1399,7 +1403,11 @@ class TDTtranslator {
                 }
 
                 rv.push(plusDataOutput.join(""));
+                rvComponents.push("AI " + data.ai + " data");
             }
+        }
+        if (returnArray) {
+            return [rv, rvComponents];
         }
         return rv.join("");
     }
@@ -1818,6 +1826,7 @@ class TDTtranslator {
         }
 
 		let finalOutputArray=[];
+        let outputArrayEntries=[];
 		console.debug("Requested output level "+outputLevel+" found");
         if (outputLevelData.hasOwnProperty("requiredFormattingParameters")) {
 			console.debug("Required formatting parameters = "+JSON.stringify(outputLevelData.requiredFormattingParameters));
@@ -1852,6 +1861,7 @@ class TDTtranslator {
         }
 
         let binaryEncodedAI=[];
+        let encodedAIs=[];
 		if (outputOption.hasOwnProperty("encodedAI")) {
 			for (let encodedAIcomponent of outputOption.encodedAI) {
                 if (!encodedAIcomponent.hasOwnProperty("ai")) continue;
@@ -1882,6 +1892,7 @@ class TDTtranslator {
 					}
 
 					binaryEncodedAI.push(encodedAIDataOutput.join(""));
+                    encodedAIs.push(encodedAIcomponent.ai);
 				}
 			}
             console.debug("binaryEncodedAI = "+JSON.stringify(binaryEncodedAI));
@@ -1892,6 +1903,7 @@ class TDTtranslator {
 			if (/^'(.+?)'$/.test(grammarComponent)) {
 				console.debug(grammarComponent+" is literal");
 				finalOutputArray.push(grammarComponent.replace(/^'/,"").replace(/'$/,""));
+                outputArrayEntries.push('literal')
 			}
 			if (/^[a-zA-Z][a-zA-Z0-9_]*$/.test(grammarComponent)) {
 				console.debug("Non-literal grammar component : "+grammarComponent);
@@ -1901,6 +1913,7 @@ class TDTtranslator {
                         console.debug("Append the dataToggle value of "+options['dataToggle']);
                         if (/^[01]$/.test(options['dataToggle'])) {
                             finalOutputArray.push(options['dataToggle'].toString());
+                            outputArrayEntries.push('dataToggle');
                         } else {
                             console.error(options['dataToggle']+" must be 0 or 1");
                         }
@@ -1924,13 +1937,17 @@ class TDTtranslator {
                         } else {
                             finalOutputArray.push(filter);
                         }
+                        outputArrayEntries.push('filter');
                         continue;
                     }
 
                     case "encodedAI": {
                         console.debug("Append the concatenation of binaryEncodedAI "+JSON.stringify(binaryEncodedAI));
+                        let aiIndex = 0;
                         for (let el of binaryEncodedAI) {
                             finalOutputArray.push(el);
+                            outputArrayEntries.push('AI ' + encodedAIs[aiIndex] + ' data');
+                            aiIndex++;
                         }
                         continue;
                     }
@@ -1939,6 +1956,7 @@ class TDTtranslator {
                         if (options.hasOwnProperty(grammarComponent)) {
                             console.debug("Match found in options for "+grammarComponent);
                             finalOutputArray.push(options[grammarComponent]);
+                            outputArrayEntries.push(grammarComponent);
                             continue
                         }
 
@@ -2012,6 +2030,7 @@ class TDTtranslator {
                                     } else {
                                         finalOutputArray.push(internalMap[f.name]);
                                     }
+                                    outputArrayEntries.push(f.name);
                                     found = true;
                                     break;
                                 }
@@ -2022,6 +2041,7 @@ class TDTtranslator {
                         if (internalMap.hasOwnProperty(grammarComponent)) {
                             console.debug("Match found in internal map");
                             finalOutputArray.push(internalMap[grammarComponent]);
+                            outputArrayEntries.push(grammarComponent);
                             continue;
                         }
                     }
@@ -2034,7 +2054,9 @@ class TDTtranslator {
             switch(outputLevel) {
                 case "BINARY": {
                     if (outputOption.grammar.includes("dataToggle")) {
-                        finalOutputArray.push(TDTtranslator.#toBINARYEncodePlusData(internalMap.plusdata, this.tdtData.table.F));
+                        let [plusdata, plusdataComps] = TDTtranslator.#toBINARYEncodePlusData(internalMap.plusdata, this.tdtData.table.F, true)
+                        for (let d of plusdata) finalOutputArray.push(d);
+                        for (let d of plusdataComps) outputArrayEntries.push(d);
                     }
                     break;
                 }
@@ -2042,7 +2064,9 @@ class TDTtranslator {
                     // TDT grammar has "} as the last element - so that has to be fixed up
                     finalOutputArray[finalOutputArray.length - 1] = '"';
                     finalOutputArray.push(TDTtranslator.#toJSONEncodePlusData(internalMap.plusdata));
+                    outputArrayEntries.push('AIDC+');
                     finalOutputArray.push("}");
+                    outputArrayEntries.push('literal');
                     break;
                 }
                 case "GS1_DIGITAL_LINK": {
@@ -2052,7 +2076,9 @@ class TDTtranslator {
                     } else {
                         finalOutputArray.push("?");
                     }
+                    outputArrayEntries.push('literal');
                     finalOutputArray.push(TDTtranslator.#toDigitalLinkEncodePlusData(internalMap.plusdata));
+                    outputArrayEntries.push('AIDC+');
                     break;
                 }
             }
@@ -2069,7 +2095,11 @@ class TDTtranslator {
         if (hexOut) returnString = this.bin2hex(returnString);
 
         console.debug("output string = "+returnString);
-		return returnString;
+        if (options.hasOwnProperty('returnArray') && (options['returnArray'])) {
+            return [finalOutputArray, outputArrayEntries];
+        } else {
+		    return returnString;
+        }
     }
 
     schemes() {
