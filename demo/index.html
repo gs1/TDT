@@ -18,6 +18,17 @@ input[type=button]:hover:not(:disabled) { background-color: #a82c05; border-colo
 .right {text-align: right;}
 .error {color: red;}
 code {color:#000000}
+.binary {padding-inline: 2px; margin-inline-end: 4px;}
+.binary0 { background-color: lightgoldenrodyellow;}
+.binary1 { background-color: aqua;}
+.binary2 { background-color: sandybrown;}
+.binary3 { background-color: aquamarine;}
+.binary4 { background-color: lightyellow;}
+.binary5 { background-color: lightsteelblue;}
+.binary6 { background-color: lightgreen;}
+.binary7 { background-color: palegoldenrod;}
+.binary8 { background-color: pink;}
+.binary9 { background-color: azure;}
 </style>
 </head>
 <body>
@@ -104,11 +115,26 @@ myTDTencoder.initialized.then(() => {
 						output.append('<p>'+hextranslated+'</p>');
 					}
 					if (level == inputLevel) continue;
-					let translated = myTDTencoder.translate(input, match.scheme, level, options);
 					output.append('<h4>'+levelNames[level]+'</h4>');
+					let translated = '';
+					let binary = '';
+					if (level == "BINARY") {
+						options["returnArray"] = true;
+						let [outputArray, arrayEntries] = myTDTencoder.translate(input, match.scheme, level, options);
+						options["returnArray"] = false;
+						let i = 0;
+						for (let v of outputArray) {
+							let spanClass = i % 10;
+							translated += '<span class="binary binary' + spanClass + '" title="' + arrayEntries[i] + '">'+v+'</span>';
+							i++;
+						}
+						binary = outputArray.join("");
+					} else {
+						translated = myTDTencoder.translate(input, match.scheme, level, options);
+					}
 					output.append('<p>'+translated+'</p>');
 					if (level == "BINARY") {
-						let bits = translated.length;
+						let bits = binary.length;
 						let bits_nyble = Math.ceil(bits/4) * 4;
 						let bits_word = Math.ceil(bits/16) * 16;
 						output.append('<p>Bits: '+bits+', padded to nibble boundary: '+bits_nyble+', padded to word boundary: '+bits_word+'</p>');
