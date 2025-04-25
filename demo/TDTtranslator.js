@@ -273,7 +273,7 @@ const digitalLinkPostFormat = function(string, keyQualifiers) {
     let found = [];
     const urlRegex = /(https?:\/\/[^/]+\/[0-9]{2,4}\/[^/?]+)\/?([^?]*)\??(.*)/;
     const stemRegex = /([0-9]{2,4})\/([^/]+)[/?]?(.*)/;
-    const optRegex = /([0-9]{2,4})=([^&]+)&?([^&]*)/;
+    const optRegex = /([0-9]{2,4})=([^&]+)&?(.*)/;
 
     let split = urlRegex.exec(string);
     if (split.length < 4) {
