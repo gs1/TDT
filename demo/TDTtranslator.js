@@ -218,7 +218,7 @@ const digitalLinkPreFormat = function(string, aiSequence) {
     aiNum = 0;
     const urlRegex = /(https?:\/\/[^/]+)\/([^?]+\??)(.*)/;
     const stemRegex = /([0-9]{2,4})\/([^/?]+)[/?]?(.*)/;
-    const optRegex = /([0-9]{2,4})=([^&]+)&?([^&]*)/;
+    const optRegex = /([0-9]{2,4})=([^&]+)&?(.*)/;
 
     let split = urlRegex.exec(string);
     if (split.length < 4) {
