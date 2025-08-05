@@ -1,0 +1,598 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<style type="text/css">
+body {font-family: Verdana, Geneva, Arial, Roboto, sans-serif;}
+.error {background-color: #FF0000; color: #FFFFFF;}
+.encIndicator {background-color: #00FF00; color: #000000;}
+.lengthIndicator {background-color: #FFFF00; color: #000000;}
+</style>
+</head>
+
+<body>
+<div id="app1">
+
+<p>Demo tool for new section 14.5.16 introduced in draft GS1 Tag Data Standard 2.3<br>- to show encoding options for efficient binary encoding of custom hostnames in new '++' EPC schemes</p>
+
+
+<table>
+<tr>
+<td>Hostname to encode:</td>
+<td><input class="input" type="text" v-model="hostname"></td>
+</tr>
+<tr>
+<td>Demo values:</td>
+<td><button v-for="val of demoValues" @click="demo(val)">{{val}}</button></td>
+</tr>
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2"><b>Binary encoding result options:</b></td></tr>
+
+	<tr><td>URN Code 40</td>
+		<td><span v-if="typeof urnCode40binary === 'string'">
+			<span class="encIndicator">0</span>
+			<span class="lengthIndicator">{{lengthIndicator(hostname.length)}}</span>{{urnCode40binary}}</span>
+			<span class="error" v-if="typeof urnCode40binary !== 'string'">
+			&nbsp;{{urnCode40binary.Error}}&nbsp;</span>
+		</td>
+	</tr>
+	<tr><td>7-bit ASCII no optimisation</td>
+	<td><span class="encIndicator">1</span><span class="lengthIndicator">{{lengthIndicator(hostname.length)}}</span>{{unoptimised7bitASCII}}</td>
+	</tr>
+	<tr><td>7-bit ASCII with optimisation</td>
+	<td><span class="encIndicator">1</span><span class="lengthIndicator">{{lengthIndicator(optimised7bitASCII.length/7)}}</span>{{optimised7bitASCII}}</td>
+	</tr>
+	
+<tr><td colspan="2">&nbsp;</td></tr>
+<tr><td colspan="2"><b>Bit counts:</b></td></tr>
+<tr><td>URN Code 40</td><td><span v-if="typeof urnCode40binary === 'string'"><b>{{7+urnCode40binary.length}}</b> bits</span><span v-if="typeof urnCode40binary !== 'string'">N/A</span></td></tr>
+<tr><td>7-bit ASCII no optimisation</td><td><b>{{7+unoptimised7bitASCII.length}}</b> bits</td></tr>
+<tr><td>7-bit ASCII with optimisation</td><td><b>{{7+optimised7bitASCII.length}}</b> bits</td></tr>
+	
+
+
+</table>
+</div>
+
+
+<script language="javascript">
+
+const demoValues=["id.example.com","ID.EXAMPLE.COM"];
+
+const alphabetURNcode40 = " ABCDEFGHIJKLMNOPQRSTUVWXYZ-.:0123456789";
+
+
+const regexURNcode40 = /^[A-Z0-9\.:-]+$/;
+const regexSevenBit=/^[\x20-\x7F]*$/;
+
+
+const toBinaryUsingURNcode40 = function(inputCharacterString) {
+    let outputBinaryString = "";
+    if (regexURNcode40.test(inputCharacterString)) {
+        if (inputCharacterString.length % 3 > 0) {
+            inputCharacterString += " ".repeat(3 - (inputCharacterString.length % 3));
+        }
+        for (let t = 0; t < inputCharacterString.length / 3; t++) {
+            const i1 = alphabetURNcode40.indexOf(inputCharacterString.charAt(3 * t));
+            const i2 = alphabetURNcode40.indexOf(inputCharacterString.charAt(3 * t + 1));
+            const i3 = alphabetURNcode40.indexOf(inputCharacterString.charAt(3 * t + 2));
+            const b = prePad(((1600 * i1 + 40 * i2 + i3 + 1) >>> 0).toString(2), "0", 16);
+            outputBinaryString += b;
+        }
+        return outputBinaryString;
+    } else {
+        throw new Error(`Input ${inputCharacterString} does not match permitted character set for URN Code 40`);
+    }
+}
+
+const fromBinaryUsingURNcode40 = function(inputBinaryString) {
+    if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
+        throw new Error("input is not binary - only bit 0 or 1 allowed");
+    }
+
+    let outputCharacterString = "";
+    if (inputBinaryString.length % 16 == 0) {
+        for (let t = 0; t < (inputBinaryString.length / 16); t++) {
+            const substr = inputBinaryString.substr(16 * t, 16);
+            const n = parseInt(substr, 2);
+            const c3 = (n - 1) % 40;
+            const c2 = (((n - 1) - c3) / 40) % 40;
+            const c1 = (n - 1 - c3 - 40 * c2) / 1600;
+            outputCharacterString += alphabetURNcode40.charAt(c1) + alphabetURNcode40.charAt(c2) + alphabetURNcode40.charAt(c3);
+        }
+        outputCharacterString = outputCharacterString.split(" ").join(""); // Remove spaces
+        return outputCharacterString;
+    } else {
+        throw new Error("Input is not an exact multiple of 16 bits");
+    }
+}
+
+const toBinaryUsingSevenBitASCII = function(inputCharacterString) {
+	return toBinaryUsingTruncatedASCII(inputCharacterString,7);
+}
+
+const fromBinaryUsingSevenBitASCII = function(inputBinaryString) {
+	return fromBinaryUsingTruncatedASCII(inputBinaryString,7);
+}
+
+const prePad=function(string, padCharacter, finalLength) {
+    if (string.length < finalLength) {
+        string = padCharacter.repeat(finalLength - string.length) + string;
+    }
+    return string;
+}
+
+const postPad=function(string, padCharacter, finalLength) {
+    if (string.length < finalLength) {
+        string += padCharacter.repeat(finalLength - string.length);
+    }
+    return string;
+}
+
+
+const toBinaryUsingTruncatedASCII = function(inputCharacterString, bitsPerChr) {
+    if (inputCharacterString === "") return "";
+
+    const validBitsPerChr = [5, 6, 7, 8];
+    if (!validBitsPerChr.includes(bitsPerChr)) {
+        throw new Error(`Invalid bits per character: ${bitsPerChr}`);
+    }
+
+    let outputBinaryString = "";
+    for (let i = 0; i < inputCharacterString.length; i++) {
+        const charCode = inputCharacterString.charCodeAt(i);
+        const binaryCharCode = charCode.toString(2).padStart(8, "0").substr(8 - bitsPerChr);
+        outputBinaryString += binaryCharCode;
+    }
+
+    return outputBinaryString;
+}
+
+const fromBinaryUsingTruncatedASCII = function(inputBinaryString, bitsPerChr) {
+    if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
+        throw new Error("Input is not binary - only bit 0 or 1 allowed");
+    }
+
+    if (![5, 6, 7, 8].includes(bitsPerChr)) {
+        throw new Error(`Invalid bits per character: ${bitsPerChr}`);
+    }
+
+    let outputCharacterString = "";
+    for (let i = 0; i < inputBinaryString.length; i += bitsPerChr) {
+        const chunk = inputBinaryString.substr(i, bitsPerChr);
+        let charCode = parseInt(chunk, 2);
+        if ((bitsPerChr == 6 && charCode < 32) || bitsPerChr == 5) {
+            charCode += 64;
+        }
+
+        // If we've walked past useful ASCII, decoding is done
+        // (typically trailing 0000)
+        if (charCode < 32) break;
+
+        outputCharacterString += String.fromCharCode(charCode);
+    }
+
+    return outputCharacterString;
+}
+
+const optimisation7bitTableA = [
+{"binary":"0100000","substring":"id."},
+{"binary":"0100011","substring":"www."},
+{"binary":"1011011","substring":".com"},
+{"binary":"1011100","substring":".org"},
+{"binary":"1011101","substring":".net"},
+{"binary":"1011110","substring":".int"},
+{"binary":"1100000","substring":".edu"},
+{"binary":"1111011","substring":".gov"},
+{"binary":"1111100","substring":".mil"},
+{"binary":"1111101","substring":".biz"},
+{"binary":"1111110","substring":".eco"},
+{"binary":"1111111","substring":".med"}
+];
+
+const optimisation14bitTableB1 = [
+{"binary":"00000000000000","substring":".ac"},
+{"binary":"00000000000001","substring":".ad"},
+{"binary":"00000000000010","substring":".ae"},
+{"binary":"00000000000011","substring":".af"},
+{"binary":"00000000000100","substring":".ag"},
+{"binary":"00000000000101","substring":".ai"},
+{"binary":"00000000000110","substring":".al"},
+{"binary":"00000000000111","substring":".am"},
+{"binary":"00000000001000","substring":".ao"},
+{"binary":"00000000001001","substring":".aq"},
+{"binary":"00000000001010","substring":".ar"},
+{"binary":"00000000001011","substring":".as"},
+{"binary":"00000000001100","substring":".at"},
+{"binary":"00000000001101","substring":".au"},
+{"binary":"00000000001110","substring":".aw"},
+{"binary":"00000000001111","substring":".ax"},
+{"binary":"00000000010000","substring":".az"},
+{"binary":"00000000010001","substring":".ba"},
+{"binary":"00000000010010","substring":".bb"},
+{"binary":"00000000010011","substring":".bd"},
+{"binary":"00000000010100","substring":".be"},
+{"binary":"00000000010101","substring":".bf"},
+{"binary":"00000000010110","substring":".bg"},
+{"binary":"00000000010111","substring":".bh"},
+{"binary":"00000000011000","substring":".bi"},
+{"binary":"00000000011001","substring":".bj"},
+{"binary":"00000000011010","substring":".bm"},
+{"binary":"00000000011011","substring":".bn"},
+{"binary":"00000000011100","substring":".bo"},
+{"binary":"00000000011101","substring":".bq"},
+{"binary":"00000000011110","substring":".br"},
+{"binary":"00000000011111","substring":".bs"},
+{"binary":"00000000100000","substring":".bt"},
+{"binary":"00000000100001","substring":".bw"},
+{"binary":"00000000100010","substring":".by"},
+{"binary":"00000000100011","substring":".bz"},
+{"binary":"00000000100100","substring":".ca"},
+{"binary":"00000000100101","substring":".cc"},
+{"binary":"00000000100110","substring":".cd"},
+{"binary":"00000000100111","substring":".cf"},
+{"binary":"00000000101000","substring":".cg"},
+{"binary":"00000000101001","substring":".ch"},
+{"binary":"00000000101010","substring":".ci"},
+{"binary":"00000000101011","substring":".ck"},
+{"binary":"00000000101100","substring":".cl"},
+{"binary":"00000000101101","substring":".cm"},
+{"binary":"00000000101110","substring":".cn"},
+{"binary":"00000000101111","substring":".co"},
+{"binary":"00000000110000","substring":".cr"},
+{"binary":"00000000110001","substring":".cu"},
+{"binary":"00000000110010","substring":".cv"},
+{"binary":"00000000110011","substring":".cw"},
+{"binary":"00000000110100","substring":".cx"},
+{"binary":"00000000110101","substring":".cy"},
+{"binary":"00000000110110","substring":".cz"},
+{"binary":"00000000110111","substring":".de"},
+{"binary":"00000000111000","substring":".dj"},
+{"binary":"00000000111001","substring":".dk"},
+{"binary":"00000000111010","substring":".dm"},
+{"binary":"00000000111011","substring":".do"},
+{"binary":"00000000111100","substring":".dz"},
+{"binary":"00000000111101","substring":".ec"},
+{"binary":"00000000111110","substring":".ee"},
+{"binary":"00000000111111","substring":".eg"},
+{"binary":"00000001000000","substring":".eh"},
+{"binary":"00000001000001","substring":".er"},
+{"binary":"00000001000010","substring":".es"},
+{"binary":"00000001000011","substring":".et"},
+{"binary":"00000001000100","substring":".eu"},
+{"binary":"00000001000101","substring":".fi"},
+{"binary":"00000001000110","substring":".fj"},
+{"binary":"00000001000111","substring":".fk"},
+{"binary":"00000001001000","substring":".fm"},
+{"binary":"00000001001001","substring":".fo"},
+{"binary":"00000001001010","substring":".fr"},
+{"binary":"00000001001011","substring":".ga"},
+{"binary":"00000001001100","substring":".gd"},
+{"binary":"00000001001101","substring":".ge"},
+{"binary":"00000001001110","substring":".gf"},
+{"binary":"00000001001111","substring":".gg"},
+{"binary":"00000001010000","substring":".gh"},
+{"binary":"00000001010001","substring":".gi"},
+{"binary":"00000001010010","substring":".gl"},
+{"binary":"00000001010011","substring":".gm"},
+{"binary":"00000001010100","substring":".gn"},
+{"binary":"00000001010101","substring":".gp"},
+{"binary":"00000001010110","substring":".gq"},
+{"binary":"00000001010111","substring":".gr"},
+{"binary":"00000001011000","substring":".gs"},
+{"binary":"00000001011001","substring":".gt"},
+{"binary":"00000001011010","substring":".gu"},
+{"binary":"00000001011011","substring":".gw"},
+{"binary":"00000001011100","substring":".gy"},
+{"binary":"00000001011101","substring":".hk"},
+{"binary":"00000001011110","substring":".hm"},
+{"binary":"00000001011111","substring":".hn"},
+{"binary":"00000001100000","substring":".hr"},
+{"binary":"00000001100001","substring":".ht"},
+{"binary":"00000001100010","substring":".hu"},
+{"binary":"00000001100011","substring":".id"},
+{"binary":"00000001100100","substring":".ie"},
+{"binary":"00000001100101","substring":".il"},
+{"binary":"00000001100110","substring":".im"},
+{"binary":"00000001100111","substring":".in"},
+{"binary":"00000001101000","substring":".io"},
+{"binary":"00000001101001","substring":".iq"},
+{"binary":"00000001101010","substring":".ir"},
+{"binary":"00000001101011","substring":".is"},
+{"binary":"00000001101100","substring":".it"},
+{"binary":"00000001101101","substring":".je"},
+{"binary":"00000001101110","substring":".jm"},
+{"binary":"00000001101111","substring":".jo"},
+{"binary":"00000001110000","substring":".jp"},
+{"binary":"00000001110001","substring":".ke"},
+{"binary":"00000001110010","substring":".kg"},
+{"binary":"00000001110011","substring":".kh"},
+{"binary":"00000001110100","substring":".ki"},
+{"binary":"00000001110101","substring":".km"},
+{"binary":"00000001110110","substring":".kn"},
+{"binary":"00000001110111","substring":".kp"},
+{"binary":"00000001111000","substring":".kr"},
+{"binary":"00000001111001","substring":".kw"},
+{"binary":"00000001111010","substring":".ky"},
+{"binary":"00000001111011","substring":".kz"},
+{"binary":"00000001111100","substring":".la"},
+{"binary":"00000001111101","substring":".lb"},
+{"binary":"00000001111110","substring":".lc"},
+{"binary":"00000001111111","substring":".li"}
+];
+
+const optimisation14bitTableB2 = [
+{"binary":"00000010000000","substring":".lk"},
+{"binary":"00000010000001","substring":".lr"},
+{"binary":"00000010000010","substring":".ls"},
+{"binary":"00000010000011","substring":".lt"},
+{"binary":"00000010000100","substring":".lu"},
+{"binary":"00000010000101","substring":".lv"},
+{"binary":"00000010000110","substring":".ly"},
+{"binary":"00000010000111","substring":".ma"},
+{"binary":"00000010001000","substring":".mc"},
+{"binary":"00000010001001","substring":".md"},
+{"binary":"00000010001010","substring":".me"},
+{"binary":"00000010001011","substring":".mg"},
+{"binary":"00000010001100","substring":".mh"},
+{"binary":"00000010001101","substring":".mk"},
+{"binary":"00000010001110","substring":".ml"},
+{"binary":"00000010001111","substring":".mm"},
+{"binary":"00000010010000","substring":".mn"},
+{"binary":"00000010010001","substring":".mo"},
+{"binary":"00000010010010","substring":".mp"},
+{"binary":"00000010010011","substring":".mq"},
+{"binary":"00000010010100","substring":".mr"},
+{"binary":"00000010010101","substring":".ms"},
+{"binary":"00000010010110","substring":".mt"},
+{"binary":"00000010010111","substring":".mu"},
+{"binary":"00000010011000","substring":".mv"},
+{"binary":"00000010011001","substring":".mw"},
+{"binary":"00000010011010","substring":".mx"},
+{"binary":"00000010011011","substring":".my"},
+{"binary":"00000010011100","substring":".mz"},
+{"binary":"00000010011101","substring":".na"},
+{"binary":"00000010011110","substring":".nc"},
+{"binary":"00000010011111","substring":".ne"},
+{"binary":"00000010100000","substring":".nf"},
+{"binary":"00000010100001","substring":".ng"},
+{"binary":"00000010100010","substring":".ni"},
+{"binary":"00000010100011","substring":".nl"},
+{"binary":"00000010100100","substring":".no"},
+{"binary":"00000010100101","substring":".np"},
+{"binary":"00000010100110","substring":".nr"},
+{"binary":"00000010100111","substring":".nu"},
+{"binary":"00000010101000","substring":".nz"},
+{"binary":"00000010101001","substring":".om"},
+{"binary":"00000010101010","substring":".pa"},
+{"binary":"00000010101011","substring":".pe"},
+{"binary":"00000010101100","substring":".pf"},
+{"binary":"00000010101101","substring":".pg"},
+{"binary":"00000010101110","substring":".ph"},
+{"binary":"00000010101111","substring":".pk"},
+{"binary":"00000010110000","substring":".pl"},
+{"binary":"00000010110001","substring":".pm"},
+{"binary":"00000010110010","substring":".pn"},
+{"binary":"00000010110011","substring":".pr"},
+{"binary":"00000010110100","substring":".ps"},
+{"binary":"00000010110101","substring":".pt"},
+{"binary":"00000010110110","substring":".pw"},
+{"binary":"00000010110111","substring":".py"},
+{"binary":"00000010111000","substring":".qa"},
+{"binary":"00000010111001","substring":".re"},
+{"binary":"00000010111010","substring":".ro"},
+{"binary":"00000010111011","substring":".rs"},
+{"binary":"00000010111100","substring":".ru"},
+{"binary":"00000010111101","substring":".rw"},
+{"binary":"00000010111110","substring":".sa"},
+{"binary":"00000010111111","substring":".sb"},
+{"binary":"00000011000000","substring":".sc"},
+{"binary":"00000011000001","substring":".sd"},
+{"binary":"00000011000010","substring":".se"},
+{"binary":"00000011000011","substring":".sg"},
+{"binary":"00000011000100","substring":".sh"},
+{"binary":"00000011000101","substring":".si"},
+{"binary":"00000011000110","substring":".sk"},
+{"binary":"00000011000111","substring":".sl"},
+{"binary":"00000011001000","substring":".sm"},
+{"binary":"00000011001001","substring":".sn"},
+{"binary":"00000011001010","substring":".sr"},
+{"binary":"00000011001011","substring":".ss"},
+{"binary":"00000011001100","substring":".st"},
+{"binary":"00000011001101","substring":".su"},
+{"binary":"00000011001110","substring":".sv"},
+{"binary":"00000011001111","substring":".sx"},
+{"binary":"00000011010000","substring":".sy"},
+{"binary":"00000011010001","substring":".sz"},
+{"binary":"00000011010010","substring":".tc"},
+{"binary":"00000011010011","substring":".td"},
+{"binary":"00000011010100","substring":".tf"},
+{"binary":"00000011010101","substring":".tg"},
+{"binary":"00000011010110","substring":".th"},
+{"binary":"00000011010111","substring":".tj"},
+{"binary":"00000011011000","substring":".tk"},
+{"binary":"00000011011001","substring":".tl"},
+{"binary":"00000011011010","substring":".tm"},
+{"binary":"00000011011011","substring":".tn"},
+{"binary":"00000011011100","substring":".to"},
+{"binary":"00000011011101","substring":".tr"},
+{"binary":"00000011011110","substring":".tt"},
+{"binary":"00000011011111","substring":".tv"},
+{"binary":"00000011100000","substring":".tw"},
+{"binary":"00000011100001","substring":".tz"},
+{"binary":"00000011100010","substring":".ua"},
+{"binary":"00000011100011","substring":".ug"},
+{"binary":"00000011100100","substring":".us"},
+{"binary":"00000011100101","substring":".uy"},
+{"binary":"00000011100110","substring":".uz"},
+{"binary":"00000011100111","substring":".va"},
+{"binary":"00000011101000","substring":".vc"},
+{"binary":"00000011101001","substring":".ve"},
+{"binary":"00000011101010","substring":".vg"},
+{"binary":"00000011101011","substring":".vi"},
+{"binary":"00000011101100","substring":".vn"},
+{"binary":"00000011101101","substring":".vu"},
+{"binary":"00000011101110","substring":".wf"},
+{"binary":"00000011101111","substring":".ws"},
+{"binary":"00000011110000","substring":".ye"},
+{"binary":"00000011110001","substring":".yt"},
+{"binary":"00000011110010","substring":".za"},
+{"binary":"00000011110011","substring":".zm"},
+{"binary":"00000011110100","substring":".zw"}
+];
+
+const optimisation14bitTableB3 = [
+{"binary":"00000100000000","substring":".com.au"},
+{"binary":"00000100000001","substring":".net.au"},
+{"binary":"00000100000010","substring":".org.au"},
+{"binary":"00000100000011","substring":".co.at"},
+{"binary":"00000100000100","substring":".com.bd"},
+{"binary":"00000100000101","substring":".co.bd"},
+{"binary":"00000100000110","substring":".com.br"},
+{"binary":"00000100000111","substring":".net.br"},
+{"binary":"00000100001000","substring":".co.nz"},
+{"binary":"00000100001001","substring":".com.ng"},
+{"binary":"00000100001010","substring":".com.pk"},
+{"binary":"00000100001011","substring":".co.in"},
+{"binary":"00000100001100","substring":".com.in"},
+{"binary":"00000100001101","substring":".co.il"},
+{"binary":"00000100001110","substring":".co.jp"},
+{"binary":"00000100001111","substring":"co.za"},
+{"binary":"00000100010000","substring":".co.kr"},
+{"binary":"00000100010001","substring":".com.es"},
+{"binary":"00000100010010","substring":".com.lk"},
+{"binary":"00000100010011","substring":".co.th"},
+{"binary":"00000100010100","substring":".co.tt"},
+{"binary":"00000100010101","substring":".com.tt"},
+{"binary":"00000100010110","substring":".com.tr"},
+{"binary":"00000100010111","substring":".biz.tr"},
+{"binary":"00000100011000","substring":".com.ua"},
+{"binary":"00000100011001","substring":".co.uk"},
+{"binary":"00000100011010","substring":".co.zm"},
+{"binary":"00000100011011","substring":".com.zm"}
+];
+
+
+Vue.createApp({
+	data() {
+	  return {
+		"hostname": "id.example.com",
+		"optimisation14bitTableB3" : optimisation14bitTableB3,
+		"optimisation14bitTableB2" : optimisation14bitTableB2,
+		"optimisation14bitTableB1" : optimisation14bitTableB1,
+		"optimisation7bitTableA" : optimisation7bitTableA,
+		"demoValues": demoValues
+	  }
+	},
+	"computed" : {
+		"urnCode40binary": function() {
+			try {
+				return toBinaryUsingURNcode40(this.hostname);
+			} catch(err) {
+				return {"Error":err.message};
+			}
+		},
+		
+		"unoptimised7bitASCII" : function() {
+			try {
+				return toBinaryUsingTruncatedASCII(this.hostname,7);
+			} catch(err) {
+				return {"Error":err.message};
+			}
+		},
+
+
+		"optimised7bitASCII": function() {
+		
+			try {
+				let optimisations=[];
+				let tables=[this.optimisation14bitTableB3, this.optimisation7bitTableA, this.optimisation14bitTableB1, this.optimisation14bitTableB2];
+				for (table of tables) {
+					for (el of table) {
+							
+						if (this.hostname.indexOf(el.substring) > -1) {
+							optimisations.push(el)
+						}
+					}
+				}
+				
+				
+				
+				let finalOptimisations=[];
+				let optimisationsRemoved= this.hostname;
+				for (el of optimisations) {
+					let p = optimisationsRemoved.indexOf(el.substring);
+					if (p > -1) {
+						finalOptimisations.push(el);
+						optimisationsRemoved = optimisationsRemoved.replace(el.substring,"");
+					}
+				}
+				console.log("finalOptimisations = "+JSON.stringify(finalOptimisations));
+				console.log("optimisationsRemoved = "+optimisationsRemoved);	
+				
+				let tokens=[];
+				let cursor=0;
+				let sb=[];
+				while (cursor < this.hostname.length) {
+				let foundOptimisation = false;
+				for (o of finalOptimisations) {
+					if (this.hostname.indexOf(o.substring) == cursor) {
+						if (sb.length > 0) {
+							tokens.push(sb.join(""));
+							sb=[];
+						}
+ 						tokens.push(o);
+						cursor+= o.substring.length;
+						foundOptimisation = true;
+					}
+				}
+				if (!foundOptimisation) {
+					sb.push(this.hostname.charAt(cursor));
+					cursor++;
+				}
+				
+				}
+				
+				if (sb.length > 0) {
+					tokens.push(sb.join(""));
+					sb=[];
+				}
+
+				let finalBinaryBuffer = [];
+				
+				for (t of tokens) {
+					if (typeof t === "string") {
+						try {
+							finalBinaryBuffer.push(toBinaryUsingTruncatedASCII(t,7));
+						} catch(err) {
+							console.log("Error: "+err.message);
+						}
+					} else {
+						finalBinaryBuffer.push(t.binary);
+					}
+				}
+
+				return finalBinaryBuffer.join("");
+			
+			} catch(err) {
+				return {"Error":err.message};
+			}		
+		
+		}
+	},
+	"methods": {
+		demo(val) {
+			this.hostname=val;
+		},
+		
+		lengthIndicator(l) {
+			return prePad(l.toString(2),"0",6);
+		}
+	}		
+		
+	
+}).mount("#app1");
+
+</script>
+
+</body>
+</html>
