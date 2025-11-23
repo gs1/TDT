@@ -32,6 +32,11 @@ const regexURNEscapeChar = /^["#%&()/<>?]$/
 
 const tdtDataContainer = 'tdt:epcTagDataTranslation'
 
+/**
+ * Reverses the keys and values of a simple hash map (object).
+ * @param {Object} obj The object to reverse.
+ * @returns {Object} A new object with keys and values swapped.
+ */
 const reverseHash=function(obj) {
 	let reversed={};
 	let keys=Object.keys(obj);
@@ -44,6 +49,13 @@ const reverseHash=function(obj) {
 const fromAItoPrioritisedDateIndicator = {"11":"0000","13":"0001","15":"0010","16":"0011","17":"0100","7006":"0101","7007":"0110"};
 const fromPrioritisedDateIndicatorToAI = reverseHash(fromAItoPrioritisedDateIndicator);
 
+/**
+ * Calculates the GS1 check digit for a given numeric ID value.
+ * Implements the standard GS1 check digit algorithm (Modulus 10, weighted 3 and 1).
+ * @param {string} gs1IDValue The numeric string (excluding the check digit) to calculate the check digit for.
+ * @returns {number} The calculated check digit (0-9).
+ * @throws {Error} If the input is not a numeric string.
+ */
 const calculateGS1CheckDigit = function(gs1IDValue) {
 	if (regexAllNumeric.test(gs1IDValue)) {
 		let counter=0;
@@ -59,6 +71,11 @@ const calculateGS1CheckDigit = function(gs1IDValue) {
 	}
 }
 
+/**
+ * Creates a function to filter an array of encoding options by a specific indicator.
+ * @param {string} indicator The encoding indicator value to match.
+ * @returns {Function} A filter function for use with Array.prototype.filter().
+ */
 const matchEncodingIndicator = function(indicator) {
 	return function(element) {
 		return element.indicator == indicator;
@@ -67,6 +84,16 @@ const matchEncodingIndicator = function(indicator) {
 
 /*
  * "Rule" processing
+ */
+/**
+ * Processes a Tag Data Translation (TDT) rule (e.g., CONCAT, SUBSTR, URLENCODE).
+ * This function extracts fields, performs the specified operation, and stores the result
+ * in the internal map for subsequent steps. It supports rules of type "EXTRACT" and "FORMAT".
+ * @param {Object} rule The rule object defining the function, arguments, and new field name.
+ * @param {Object} internalMap The current map of extracted data fields.
+ * @param {Object} options Additional options, including required formatting parameters.
+ * @param {Array<string>} checkList A list of expected source fields (for EXTRACT) or the output field (for FORMAT).
+ * @throws {Error} If the rule fails parsing or a required argument is missing.
  */
 const processRule = function(rule, internalMap, options, checkList) {
     console.debug("Processing rule "+JSON.stringify(rule, null, 2));
@@ -81,11 +108,11 @@ const processRule = function(rule, internalMap, options, checkList) {
     let args = func[1].split(",");
 
     /*
-     *  Find the arguments for the rule function
+     * Find the arguments for the rule function
      *
-     *  If the argument is numeric, just push that value
-     *  otherwise look for the value relating to that field
-     *  in the internalMap
+     * If the argument is numeric, just push that value
+     * otherwise look for the value relating to that field
+     * in the internalMap
      */
     let argVals = [];
     for (let a of args) {
@@ -122,8 +149,8 @@ const processRule = function(rule, internalMap, options, checkList) {
     console.debug("Rule arguments: "+JSON.stringify(argVals));
 
     /*
-     *  By this point func[0] will be the function name and
-     *  argVals will be an array of values to pass to the function
+     * By this point func[0] will be the function name and
+     * argVals will be an array of values to pass to the function
      */
     switch (func[0]) {
         case "URLENCODE": {
@@ -187,7 +214,14 @@ const processRule = function(rule, internalMap, options, checkList) {
  * Pre and Post processing functions
  */
 
-// Re-arrange JSON strings so AIs listed in aiSequence are first
+/**
+ * Re-arranges a GS1 AI JSON string to match a required AI sequence for regex matching.
+ * AIs listed in `aiSequence` are placed first in order. This is a pre-formatting step
+ * to ensure input validation regexes can correctly parse the data.
+ * @param {string} string The input JSON string containing GS1 Application Identifiers.
+ * @param {Array<string>} aiSequence The required sequence of AIs to prioritize.
+ * @returns {string} The re-arranged, pre-formatted JSON string.
+ */
 const jsonPreFormat = function(string, aiSequence) {
     let parsed = JSON.parse(string);
     let formatted = '{';
@@ -211,8 +245,14 @@ const jsonPreFormat = function(string, aiSequence) {
     return formatted;
 }
 
-// Re-arrange Digital Link URI to match the expected AI sequence for regex matches
-// This does assume that AIs are in the correct component of the URI
+/**
+ * Re-arranges a GS1 Digital Link URI to match a required AI sequence for regex matching.
+ * AIs are reordered between the path components and the query parameters. This is a
+ * pre-formatting step to ensure input validation regexes can correctly parse the data.
+ * @param {string} string The input GS1 Digital Link URI string.
+ * @param {Array<string>} aiSequence The required sequence of AIs to prioritize.
+ * @returns {string} The re-arranged, pre-formatted GS1 Digital Link URI.
+ */
 const digitalLinkPreFormat = function(string, aiSequence) {
     let extra = [];
     aiNum = 0;
@@ -266,9 +306,14 @@ const digitalLinkPreFormat = function(string, aiSequence) {
     return formatted;
 }
 
-// Take a Digital Link URI as created by TDT grammar and re-arrange components
-// so that any key qualifier AIs found in the options section are moved to the
-// correct place.
+/**
+ * Re-arranges a GS1 Digital Link URI after it has been constructed to move any
+ * "key qualifier" AIs found in the query parameters (options section) into
+ * the main URI path component, as required by GS1 Digital Link URI syntax.
+ * @param {string} string The GS1 Digital Link URI generated according to the TDT grammar.
+ * @param {Array<string>} keyQualifiers An ordered list of AI key qualifiers to look for.
+ * @returns {string} The post-formatted GS1 Digital Link URI.
+ */
 const digitalLinkPostFormat = function(string, keyQualifiers) {
     let found = [];
     const urlRegex = /(https?:\/\/[^/]+\/[0-9]{2,4}\/[^/?]+)\/?([^?]*)\??(.*)/;
@@ -282,8 +327,7 @@ const digitalLinkPostFormat = function(string, keyQualifiers) {
 
     let formatted = split[1]; // This will be the stem and the key identifier
 
-    // Split the remainder of the path into AIs - some components from the options
-    // may need to go in amongst this lot
+    // Split the remainder of the path into AIs
     while (split[2].length > 0) {
         let aiPair = stemRegex.exec(split[2]);
         if (aiPair.length < 4) {
@@ -324,9 +368,16 @@ const digitalLinkPostFormat = function(string, keyQualifiers) {
 }
 
 /*
- *  Helper functions for encoders / decoders
+ * Helper functions for encoders / decoders
  */
 
+/**
+ * Prepends a padding character to a string until it reaches the final length.
+ * @param {string} string The input string.
+ * @param {string} padCharacter The character used for padding (e.g., "0").
+ * @param {number} finalLength The desired final length of the string.
+ * @returns {string} The padded string.
+ */
 const prePad=function(string, padCharacter, finalLength) {
     if (string.length < finalLength) {
         string = padCharacter.repeat(finalLength - string.length) + string;
@@ -334,6 +385,13 @@ const prePad=function(string, padCharacter, finalLength) {
     return string;
 }
 
+/**
+ * Appends a padding character to a string until it reaches the final length.
+ * @param {string} string The input string.
+ * @param {string} padCharacter The character used for padding (e.g., "0").
+ * @param {number} finalLength The desired final length of the string.
+ * @returns {string} The padded string.
+ */
 const postPad=function(string, padCharacter, finalLength) {
     if (string.length < finalLength) {
         string += padCharacter.repeat(finalLength - string.length);
@@ -341,6 +399,14 @@ const postPad=function(string, padCharacter, finalLength) {
     return string;
 }
 
+/**
+ * Encodes a string into a binary string using a truncated ASCII representation.
+ * (e.g., 7-bit ASCII or 6-bit ASCII as defined in various standards).
+ * @param {string} inputCharacterString The input string to encode.
+ * @param {number} bitsPerChr The number of bits to use for each character (5, 6, 7, or 8).
+ * @returns {string} The encoded binary string.
+ * @throws {Error} If `bitsPerChr` is invalid.
+ */
 const toBinaryUsingTruncatedASCII = function(inputCharacterString, bitsPerChr) {
     if (inputCharacterString === "") return "";
 
@@ -359,6 +425,13 @@ const toBinaryUsingTruncatedASCII = function(inputCharacterString, bitsPerChr) {
     return outputBinaryString;
 }
 
+/**
+ * Decodes a binary string back into a character string using a truncated ASCII representation.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {number} bitsPerChr The number of bits used per character (5, 6, 7, or 8).
+ * @returns {string} The decoded character string.
+ * @throws {Error} If input is not binary or `bitsPerChr` is invalid.
+ */
 const fromBinaryUsingTruncatedASCII = function(inputBinaryString, bitsPerChr) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -402,6 +475,14 @@ const fromBinaryUsingTruncatedASCII = function(inputBinaryString, bitsPerChr) {
  */
 
  // TDS section 14.5.2
+/**
+ * TDS 14.5.2: Encodes an all-numeric string into a fixed-length binary string.
+ * Uses BigInt for large numbers. The length of the binary string is defined by `options.fixLenBits`.
+ * @param {string} inputCharacterString The numeric string to encode.
+ * @param {Object} options Options object containing `fixLenBits` (required binary length).
+ * @returns {string} The fixed-length binary string.
+ * @throws {Error} If input is not numeric or cannot fit in `fixLenBits`.
+ */
 const toBinaryUsingFixedBitLengthInteger = function(inputCharacterString,options) {
 	if (inputCharacterString === undefined) {
 		throw new Error("input string is undefined");
@@ -420,6 +501,14 @@ const toBinaryUsingFixedBitLengthInteger = function(inputCharacterString,options
 	return prePad(binary, "0", options.fixLenBits);
 };
 
+/**
+ * TDS 14.5.2: Decodes a fixed-length binary string into an all-numeric string.
+ * Uses BigInt for large numbers. Reads exactly `options.fixLenBits`.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object containing `fixLenBits` and `fixLenChrs` (required char length).
+ * @returns {Object} An object with the decoded string (`decoded`) and number of bits used (`used`).
+ * @throws {Error} If input is not binary or is shorter than `fixLenBits`.
+ */
 const fromBinaryUsingFixedBitLengthInteger = function(inputBinaryString,options) {
 	if (inputBinaryString === undefined) {
 		throw new Error("input string is undefined");
@@ -441,6 +530,14 @@ const fromBinaryUsingFixedBitLengthInteger = function(inputBinaryString,options)
 
 
 // TDS section 14.5.3
+/**
+ * TDS 14.5.3: Encodes a date (YYMMDD) for specific AIs into a 20-bit "Prioritised Date" format.
+ * Prepends a 4-bit indicator based on the AI key, followed by the 16-bit date.
+ * @param {string} inputAIkey The GS1 AI key (e.g., "11", "13").
+ * @param {string} inputYYMMDD The date string in YYMMDD format.
+ * @returns {string} The 20-bit prioritised date binary string.
+ * @throws {Error} If the AI key is not a prioritised date AI or the date format is invalid.
+ */
 const toBinaryUsingPrioritisedDate = function(inputAIkey, inputYYMMDD) {
 	if (regexAIkeyPrioritisedDate.test(inputAIkey)) {
 		if (regexDateYYMMDD.test(inputYYMMDD)) {
@@ -453,6 +550,13 @@ const toBinaryUsingPrioritisedDate = function(inputAIkey, inputYYMMDD) {
 	}
 }
 
+/**
+ * TDS 14.5.3: Decodes a 20-bit "Prioritised Date" binary string.
+ * Extracts the 4-bit indicator to determine the AI key and the following 16 bits for the date.
+ * @param {string} inputBinaryString The 20-bit binary string.
+ * @returns {Object} An object with the decoded AI (`AI`), date string (`decoded`), and bits used (`used`).
+ * @throws {Error} If input is not binary or not 20 bits long.
+ */
 const fromBinaryUsingPrioritisedDate = function(inputBinaryString) {
 	if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
 		throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -469,13 +573,19 @@ const fromBinaryUsingPrioritisedDate = function(inputBinaryString) {
 
 	return {
 		"AI": fromPrioritisedDateIndicatorToAI[prioritisedDateIndicator],
-		"decoded": fromBinaryUsingDateYYMMDD(binaryDateValue),
+		"decoded": fromBinaryUsingDateYYMMDD(binaryDateValue).decoded,
         "used": 20
 	};
 }
 
 
 // TDS section 14.5.4
+/**
+ * TDS 14.5.4: Encodes an all-numeric string into a fixed-length binary string, 4 bits per digit.
+ * This is a simple BCD (Binary Coded Decimal) like encoding.
+ * @param {string} inputCharacterString The numeric string to encode.
+ * @returns {string} The binary string.
+ */
 const toBinaryUsingFixedLengthNumeric = function(inputCharacterString) {
     let outputBinaryString = "";
     for (let t = 0; t < inputCharacterString.length; t++) {
@@ -485,6 +595,13 @@ const toBinaryUsingFixedLengthNumeric = function(inputCharacterString) {
     return outputBinaryString;
 }
 
+/**
+ * TDS 14.5.4: Decodes a fixed-length binary string into an all-numeric string, 4 bits per digit.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object containing `fixLenBits` (expected binary length).
+ * @returns {Object} An object with the decoded string (`decoded`) and number of bits used (`used`).
+ * @throws {Error} If the binary string is shorter than `fixLenBits`.
+ */
 const fromBinaryUsingFixedLengthNumeric = function(inputBinaryString, options) {
     let outputCharacterString = "";
     if (inputBinaryString.length < options.fixLenBits) {
@@ -503,6 +620,15 @@ const fromBinaryUsingFixedLengthNumeric = function(inputBinaryString, options) {
 
 
 // TDS section 14.5.5
+/**
+ * TDS 14.5.5: Encodes a string (numeric or alphanumeric) using the "Delimited Numeric" method.
+ * It encodes initial numeric characters using 4 bits per digit. If an alphanumeric character is
+ * encountered, it adds a '1110' delimiter, followed by the rest of the string encoded
+ * using the Variable Length Alphanumeric method (14.5.6). Otherwise, it ends with '1111'.
+ * @param {string} inputCharacterString The string to encode.
+ * @param {Object} options Options object for the Variable Length Alphanumeric encoding if needed.
+ * @returns {string} The encoded binary string with delimiters.
+ */
 const toBinaryUsingDelimitedNumeric = function(inputCharacterString, options) {
     let outputBinaryString = "";
     let t = 0;
@@ -523,6 +649,15 @@ const toBinaryUsingDelimitedNumeric = function(inputCharacterString, options) {
     return outputBinaryString;
 }
 
+/**
+ * TDS 14.5.5: Decodes a binary string encoded with the "Delimited Numeric" method.
+ * Reads 4 bits at a time, looking for numeric values or the delimiters '1110' (alphanumeric follows)
+ * or '1111' (end of data).
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object for the Variable Length Alphanumeric decoding if needed.
+ * @returns {Object} An object with the decoded string (`decoded`) and number of bits used (`used`).
+ * @throws {Error} If the binary string is malformed (e.g., unexpected data after terminator).
+ */
 const fromBinaryUsingDelimitedNumeric = function(inputBinaryString, options) {
     let outputCharacterString = "";
     let used = 0;
@@ -556,10 +691,17 @@ const fromBinaryUsingDelimitedNumeric = function(inputBinaryString, options) {
 }
 
 /*
- *  Individual encoder / decoders used in 14.5.6
+ * Individual encoder / decoders used in 14.5.6
  */
 
 // TDS section 14.5.6.1
+/**
+ * TDS 14.5.6.1: Encodes an all-numeric string to its most efficient variable-length binary representation (Big Integer).
+ * No padding is applied; the length is determined by the number of bits required to represent the number.
+ * @param {string} inputCharacterString The numeric string to encode.
+ * @returns {string} The encoded binary string.
+ * @throws {Error} If input is not numeric.
+ */
 const toBinaryUsingBigInteger = function(inputCharacterString) {
     if (inputCharacterString === undefined) {
         throw new Error("input string is undefined");
@@ -575,6 +717,12 @@ const toBinaryUsingBigInteger = function(inputCharacterString) {
     return prePad(binary, "0", bitLength);
 }
 
+/**
+ * TDS 14.5.6.1: Decodes a variable-length binary string back to its all-numeric string representation (Big Integer).
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded numeric string.
+ * @throws {Error} If input is not binary.
+ */
 const fromBinaryUsingBigInteger = function(inputBinaryString) {
     if (inputBinaryString === undefined) {
         throw new Error("input string is undefined");
@@ -589,6 +737,12 @@ const fromBinaryUsingBigInteger = function(inputBinaryString) {
 
 
 // TDS section 14.5.6.2
+/**
+ * TDS 14.5.6.2: Encodes an upper-case hexadecimal string into a binary string (4 bits per character).
+ * @param {string} inputCharacterString The upper-case hex string to encode.
+ * @returns {string} The encoded binary string.
+ * @throws {Error} If input does not match regex for upper-case hex.
+ */
 const toBinaryUsingUpperCaseHexadecimal = function(inputCharacterString) {
     if (!regexUpperCaseHexadecimal.test(inputCharacterString)) {
         throw new Error(`Input ${inputCharacterString} does not match regex for upper case hexadecimal`);
@@ -603,6 +757,12 @@ const toBinaryUsingUpperCaseHexadecimal = function(inputCharacterString) {
     return outputBinaryString;
 }
 
+/**
+ * TDS 14.5.6.2: Decodes a binary string (multiple of 4 bits) into an upper-case hexadecimal string.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded upper-case hex string.
+ * @throws {Error} If input is not binary or not a multiple of 4 bits.
+ */
 const fromBinaryUsingUpperCaseHexadecimal = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -623,6 +783,12 @@ const fromBinaryUsingUpperCaseHexadecimal = function(inputBinaryString) {
 
 
 // TDS section 14.5.6.3
+/**
+ * TDS 14.5.6.3: Encodes a lower-case hexadecimal string into a binary string (4 bits per character).
+ * @param {string} inputCharacterString The lower-case hex string to encode.
+ * @returns {string} The encoded binary string.
+ * @throws {Error} If input does not match regex for lower-case hex.
+ */
 const toBinaryUsingLowerCaseHexadecimal = function(inputCharacterString) {
     if (!regexLowerCaseHexadecimal.test(inputCharacterString)) {
         throw new Error(`Input ${inputCharacterString} does not match regex for Lower case hexadecimal`);
@@ -637,6 +803,12 @@ const toBinaryUsingLowerCaseHexadecimal = function(inputCharacterString) {
     return outputBinaryString;
 }
 
+/**
+ * TDS 14.5.6.3: Decodes a binary string (multiple of 4 bits) into a lower-case hexadecimal string.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded lower-case hex string.
+ * @throws {Error} If input is not binary or not a multiple of 4 bits.
+ */
 const fromBinaryUsingLowerCaseHexadecimal = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -657,6 +829,12 @@ const fromBinaryUsingLowerCaseHexadecimal = function(inputBinaryString) {
 
 
 // TDS section 14.5.6.4
+/**
+ * TDS 14.5.6.4: Encodes a file-safe URI-safe base 64 string into a binary string (6 bits per character).
+ * @param {string} inputCharacterString The base 64 string to encode.
+ * @returns {string} The encoded binary string.
+ * @throws {Error} If input does not match the base 64 alphabet regex.
+ */
 const toBinaryUsingFileSafeURISafeBase64 = function(inputCharacterString) {
     if (!regexFileSafeURISafeBase64.test(inputCharacterString)) {
         throw new Error(`Input ${inputCharacterString} does not match regex for file-safe URI-safe base 64`);
@@ -671,6 +849,12 @@ const toBinaryUsingFileSafeURISafeBase64 = function(inputCharacterString) {
     return outputBinaryString;
 }
 
+/**
+ * TDS 14.5.6.4: Decodes a binary string (multiple of 6 bits) into a file-safe URI-safe base 64 string.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded base 64 string.
+ * @throws {Error} If input is not binary or not a multiple of 6 bits.
+ */
 const fromBinaryUsingFileSafeURISafeBase64 = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -691,6 +875,13 @@ const fromBinaryUsingFileSafeURISafeBase64 = function(inputBinaryString) {
 
 
 // TDS section 14.5.6.5
+/**
+ * TDS 14.5.6.5: Encodes a URN Code 40 string into a binary string.
+ * Converts three characters to a 16-bit value, applying padding to the input string if necessary.
+ * @param {string} inputCharacterString The URN Code 40 compliant string to encode.
+ * @returns {string} The encoded binary string (multiple of 16 bits).
+ * @throws {Error} If input does not match the URN Code 40 alphabet regex.
+ */
 const toBinaryUsingURNcode40 = function(inputCharacterString) {
     let outputBinaryString = "";
     if (regexURNcode40.test(inputCharacterString)) {
@@ -710,6 +901,13 @@ const toBinaryUsingURNcode40 = function(inputCharacterString) {
     }
 }
 
+/**
+ * TDS 14.5.6.5: Decodes a binary string (multiple of 16 bits) into a URN Code 40 string.
+ * Converts a 16-bit value back to three characters and removes any trailing spaces.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded URN Code 40 string.
+ * @throws {Error} If input is not binary or not a multiple of 16 bits.
+ */
 const fromBinaryUsingURNcode40 = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("input is not binary - only bit 0 or 1 allowed");
@@ -734,10 +932,22 @@ const fromBinaryUsingURNcode40 = function(inputBinaryString) {
 
 
 // TDS section 14.5.6.6
+/**
+ * TDS 14.5.6.6: Encodes a string into a binary string using 7-bit ASCII.
+ * This is a wrapper for `toBinaryUsingTruncatedASCII` with 7 bits per character.
+ * @param {string} inputCharacterString The string to encode.
+ * @returns {string} The encoded binary string.
+ */
 const toBinaryUsingSevenBitASCII = function(inputCharacterString) {
 	return toBinaryUsingTruncatedASCII(inputCharacterString,7);
 }
 
+/**
+ * TDS 14.5.6.6: Decodes a binary string into a character string using 7-bit ASCII.
+ * This is a wrapper for `fromBinaryUsingTruncatedASCII` with 7 bits per character.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {string} The decoded character string.
+ */
 const fromBinaryUsingSevenBitASCII = function(inputBinaryString) {
 	return fromBinaryUsingTruncatedASCII(inputBinaryString,7);
 }
@@ -753,12 +963,27 @@ const encodingOptionsAlphanumeric=[
 	{"regex":regexURNcode40, "indicator": "101","text":"URN Code 40","num":16,"denom": 3,"encoder": toBinaryUsingURNcode40,"decoder": fromBinaryUsingURNcode40}
 ];
 
+/**
+ * Comparison function to sort encoding candidates by ascending bit count.
+ * Used to find the most efficient encoding for Variable Length Alphanumeric (TDS 14.5.6).
+ * @param {Object} a First candidate object.
+ * @param {Object} b Second candidate object.
+ * @returns {number} -1, 0, or 1 for sorting.
+ */
 const byAscendingBitCount = function(a,b) {
 	if (a.bitCount < b.bitCount) { return -1; }
 	if (a.bitCount > b.bitCount) { return 1; }
 	return a.indicator > b.indicator ? 1 : -1 ; // Not strictly needed, but gives consistent behaviour to help tests.
 }
 
+/**
+ * TDS 14.5.6: Encodes an alphanumeric string using the most efficient of the variable-length encodings.
+ * Prepends a 3-bit encoding indicator and a length field (`options.lenIndBits`).
+ * @param {string} inputCharacterString The string to encode.
+ * @param {Object} options Options object containing `lenIndBits` (length of the length indicator).
+ * @returns {string} The encoded binary string (Indicator + Length Field + Data).
+ * @throws {Error} If no viable encoding option is found for the input string.
+ */
 const toBinaryUsingVariableLengthAlphanumeric = function(inputCharacterString, options) {
 	let candidates=[];
 
@@ -790,6 +1015,15 @@ const toBinaryUsingVariableLengthAlphanumeric = function(inputCharacterString, o
 	return mostEfficientEncoding.indicator + prePad(length.toString(2), "0", options.lenIndBits) + mostEfficientEncoding.encoder(inputCharacterString);
 }
 
+/**
+ * TDS 14.5.6: Decodes a binary string encoded with the Variable Length Alphanumeric method.
+ * Reads the 3-bit encoding indicator, the length field, determines the required number of
+ * data bits, and calls the appropriate sub-decoder.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object containing `lenIndBits`.
+ * @returns {Object} An object with the decoded string (`decoded`) and number of bits used (`used`).
+ * @throws {Error} If input is not binary or malformed.
+ */
 const fromBinaryUsingVariableLengthAlphanumeric = function(inputBinaryString, options) {
 	let rv={};
     rv.used = 0;
@@ -828,6 +1062,13 @@ const fromBinaryUsingVariableLengthAlphanumeric = function(inputBinaryString, op
 
 
 // TDS section 14.5.7
+/**
+ * TDS 14.5.7: Encodes a single '0' or '1' character string into a 1-bit binary string.
+ * This is typically used for a data toggle flag.
+ * @param {string} inputCharacterString The string ('0' or '1') to encode.
+ * @returns {string} The 1-bit binary string.
+ * @throws {Error} If input is not '0' or '1'.
+ */
 const toBinaryUsingSingleDataBit = function(inputCharacterString) {
     if (!regexSingleBit.test(inputCharacterString)) {
         throw new Error(`Input ${inputCharacterString} does not match regex for a single bit (0 or 1)`);
@@ -835,6 +1076,12 @@ const toBinaryUsingSingleDataBit = function(inputCharacterString) {
 	return inputCharacterString;
 }
 
+/**
+ * TDS 14.5.7: Decodes a 1-bit binary string to a single character ('0' or '1').
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {Object} An object with the decoded string (`decoded`) and number of bits used (`used`).
+ * @throws {Error} If the first bit is not '0' or '1'.
+ */
 const fromBinaryUsingSingleDataBit = function(inputBinaryString) {
     if (!regexSingleBit.test(inputBinaryString.substr(0,1))) {
         throw new Error(`Input ${inputBinaryString} does not match regex for a single bit (0 or 1)`);
@@ -847,6 +1094,13 @@ const fromBinaryUsingSingleDataBit = function(inputBinaryString) {
 
 
 // TDS section 14.5.8
+/**
+ * TDS 14.5.8: Encodes a YYMMDD date into a 16-bit binary string.
+ * Uses 7 bits for YY, 4 bits for MM, and 5 bits for DD.
+ * @param {string} inputYYMMDD The YYMMDD date string to encode.
+ * @returns {string} The 16-bit binary string.
+ * @throws {Error} If the input date format is invalid.
+ */
 const toBinaryUsingDateYYMMDD = function(inputYYMMDD) {
     if (!regexDateYYMMDD.test(inputYYMMDD)) {
         throw new Error(`Input ${inputYYMMDD} does not match regex for date YYMMDD`);
@@ -859,6 +1113,13 @@ const toBinaryUsingDateYYMMDD = function(inputYYMMDD) {
     return yy + mm + dd;
 }
 
+/**
+ * TDS 14.5.8: Decodes a 16-bit binary string into a YYMMDD date string.
+ * Reads 7 bits for YY, 4 bits for MM, and 5 bits for DD.
+ * @param {string} inputBinaryString The 16-bit binary string to decode.
+ * @returns {Object} An object with the decoded date string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary, not 16 bits long, or contains invalid date values.
+ */
 const fromBinaryUsingDateYYMMDD = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -892,6 +1153,13 @@ const fromBinaryUsingDateYYMMDD = function(inputBinaryString) {
 
 
 // TDS section 14.5.9
+/**
+ * TDS 14.5.9: Encodes a YYMMDDhhmm date/time into a 27-bit binary string.
+ * Uses 7 bits for YY, 4 bits for MM, 5 bits for DD, 5 bits for hh (hour), and 6 bits for nn (minute).
+ * @param {string} inputYYMMDDhhmm The YYMMDDhhmm date/time string to encode.
+ * @returns {string} The 27-bit binary string.
+ * @throws {Error} If the input date/time format is invalid.
+ */
 const toBinaryUsingDateYYMMDDhhmm = function(inputYYMMDDhhmm) {
     if (!regexDateYYMMDDhhmm.test(inputYYMMDDhhmm)) {
         throw new Error(`Input ${inputYYMMDDhhmm} does not match regex for date YYMMDDhhmm`);
@@ -906,6 +1174,13 @@ const toBinaryUsingDateYYMMDDhhmm = function(inputYYMMDDhhmm) {
     return yy + mm + dd + hh + nn;
 }
 
+/**
+ * TDS 14.5.9: Decodes a 27-bit binary string into a YYMMDDhhmm date/time string.
+ * Reads 7 bits for YY, 4 for MM, 5 for DD, 5 for hh, and 6 for nn.
+ * @param {string} inputBinaryString The 27-bit binary string to decode.
+ * @returns {Object} An object with the decoded date/time string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary, not 27 bits long, or contains invalid date/time values.
+ */
 const fromBinaryUsingDateYYMMDDhhmm = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is not binary - only bit 0 or 1 allowed");
@@ -950,6 +1225,13 @@ const fromBinaryUsingDateYYMMDDhhmm = function(inputBinaryString) {
 
 
 // TDS section 14.5.10
+/**
+ * TDS 14.5.10: Encodes either a single YYMMDD date or a YYMMDDYYMMDD date range.
+ * Prepends a 1-bit indicator ('0' for single date, '1' for date range).
+ * @param {string} inputYYMMDDorYYMMDDYYMMDD The single date or date range string.
+ * @returns {string} The variable-length binary string.
+ * @throws {Error} If the input date format is invalid.
+ */
 const toBinaryUsingDateOrDateRange = function(inputYYMMDDorYYMMDDYYMMDD) {
     if (inputYYMMDDorYYMMDDYYMMDD === undefined) {
         throw new Error("input string is undefined");
@@ -972,7 +1254,14 @@ const toBinaryUsingDateOrDateRange = function(inputYYMMDDorYYMMDDYYMMDD) {
     }
 }
 
-
+/**
+ * TDS 14.5.10: Decodes a variable-length binary string into a single date or date range.
+ * Reads the first bit to determine if it's a single date (16 bits) or a range (32 bits),
+ * then decodes the subsequent date components.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {Object} An object with the decoded date/range string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary or is malformed.
+ */
 const fromBinaryUsingDateOrDateRange = function(inputBinaryString) {
     if (inputBinaryString === undefined) {
         throw new Error("input string is undefined");
@@ -1034,6 +1323,13 @@ const fromBinaryUsingDateOrDateRange = function(inputBinaryString) {
 
 
 // TDS section 14.5.11
+/**
+ * TDS 14.5.11: Encodes a variable-precision date/time (YYMMDD, YYMMDDhh, YYMMDDhhmm, or YYMMDDhhmmss).
+ * Prepends a 2-bit indicator: '00' (YYMMDD), '01' (YYMMDDhh), '11' (YYMMDDhhmm), '10' (YYMMDDhhmmss).
+ * @param {string} inputVariablePrecisionDateTimeYYMMDDhh_mmss The date/time string.
+ * @returns {string} The variable-length binary string.
+ * @throws {Error} If the input date/time format is invalid.
+ */
 const toBinaryUsingVariablePrecisionDateTime = function(inputYYMMDDhh_mmss) {
     if (!regexVariablePrecisionDateTimeYYMMDDhh_mmss.test(inputYYMMDDhh_mmss)) {
         throw new Error(`Input ${inputYYMMDDhh_mmss} does not match regex for variable-precision date+time YYMMDD[hh][mm][ss]`);
@@ -1073,7 +1369,13 @@ const toBinaryUsingVariablePrecisionDateTime = function(inputYYMMDDhh_mmss) {
 
     return binaryString + yy + mm + dd + hh + nn + ss;
 }
-
+/**
+ * TDS 14.5.11: Decodes a variable-length binary string into a variable-precision date/time string.
+ * Reads the first 2 bits to determine the precision (YYMMDD, YYMMDDhh, etc.) and the total bit length.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @returns {Object} An object with the decoded date/time string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary or is shorter than the expected length for the indicated precision.
+ */
 const fromBinaryUsingVariablePrecisionDateTime = function(inputBinaryString) {
     if (!inputBinaryString || !regexBinaryString.test(inputBinaryString)) {
         throw new Error("Input is undefined or not binary - only bit 0 or 1 allowed");
@@ -1150,6 +1452,13 @@ const fromBinaryUsingVariablePrecisionDateTime = function(inputBinaryString) {
 
 
 // TDS section 14.5.12
+/**
+ * TDS 14.5.12: Encodes a 2-character country code into a 12-bit binary string.
+ * It uses the 'file-safe URI-safe base 64' encoding (TDS 14.5.6.4), which uses 6 bits per character.
+ * @param {string} inputCountryCode The 2-character country code (e.g., "US").
+ * @returns {string} The 12-bit binary string.
+ * @throws {Error} If the input country code format is invalid.
+ */
 const toBinaryUsingCountryCode = function(inputCountryCode) {
     if (inputCountryCode === undefined) {
         throw new Error("input string is undefined");
@@ -1163,19 +1472,23 @@ const toBinaryUsingCountryCode = function(inputCountryCode) {
     }
 }
 
+/**
+ * TDS 14.5.12: Decodes a 12-bit binary string into a 2-character country code.
+ * It uses the 'file-safe URI-safe base 64' decoding (TDS 14.5.6.4).
+ * @param {string} inputBinaryString The 12-bit binary string to decode.
+ * @returns {Object} An object with the decoded country code string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary or is shorter than 12 bits.
+ */
 const fromBinaryUsingCountryCode = function(inputBinaryString) {
     if (inputBinaryString === undefined) {
         throw new Error("input string is undefined");
     }
-
     if (!regexBinaryString.test(inputBinaryString)) {
         throw new Error(inputBinaryString + " is not binary - only bit 0 or 1 allowed");
     }
-
     if (inputBinaryString.length < 12) {
         throw new Error("input string must be 12 bits for method fromBinaryUsingCountryCode");
     }
-
     return {
         "decoded": fromBinaryUsingFileSafeURISafeBase64(inputBinaryString.substr(0, 12)),
         "used": 12
@@ -1184,10 +1497,25 @@ const fromBinaryUsingCountryCode = function(inputBinaryString) {
 
 
 // TDS section 14.5.13
+/**
+ * TDS 14.5.13: Encodes a variable-length numeric string into a binary string.
+ * Prepends a length indicator (`options.lenIndBits`) to the binary representation of the numeric value (Big Integer).
+ * @param {string} inputCharacterString The numeric string to encode.
+ * @param {Object} options Options object containing `lenIndBits` (length of the length indicator).
+ * @returns {string} The encoded binary string (Length Indicator + Data).
+ */
 const toBinaryUsingVariableLengthNumeric = function(inputCharacterString, options) {
 	return prePad(inputCharacterString.length.toString(2), "0", options.lenIndBits) + toBinaryUsingBigInteger(inputCharacterString);
 }
 
+/**
+ * TDS 14.5.13: Decodes a variable-length numeric binary string.
+ * Reads the length indicator (`options.lenIndBits`), then decodes the subsequent binary data (Big Integer).
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object containing `lenIndBits` and `maxChars`.
+ * @returns {Object} An object with the decoded numeric string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not binary or is malformed.
+ */
 const fromBinaryUsingVariableLengthNumeric = function(inputBinaryString, options) {
     let length = parseInt(inputBinaryString.substr(0, options.lenIndBits), 2);
     const bitLength = Math.ceil(Math.log2(Math.pow(10, length) - 1));
@@ -1197,7 +1525,15 @@ const fromBinaryUsingVariableLengthNumeric = function(inputBinaryString, options
     };
 };
 
+
 // TDS section 14.5.14
+/**
+ * TDS 14.5.14: Encodes an optional minus sign.
+ * '-' encodes to '1' (1 bit), and no minus sign (empty string) encodes to '0' (1 bit).
+ * @param {string} inputCharacterString The string to encode (either '-' or '').
+ * @returns {string} The 1-bit binary string.
+ * @throws {Error} If input is not '-' or ''.
+ */
 const toBinaryUsingOptionalMinus = function(inputCharacterString) {
     if (!regexOptionalMinus.test(inputCharacterString)) {
         throw new Error(`Input ${inputCharacterString} does not match regex for optional minus ('-' or empty string)`);
@@ -1205,6 +1541,13 @@ const toBinaryUsingOptionalMinus = function(inputCharacterString) {
     return (inputCharacterString == "-") ? "1" : "0";
 }
 
+/**
+ * TDS 14.5.14: Decodes a 1-bit binary string to an optional minus sign.
+ * '1' decodes to '-', and '0' decodes to '' (empty string).
+ * @param {string} inputBinaryString The 1-bit binary string.
+ * @returns {Object} An object with the decoded string (`decoded`) and bits used (`used`).
+ * @throws {Error} If input is not '0' or '1'.
+ */
 const fromBinaryUsingOptionalMinus = function(inputBinaryString) {
     if (!regexSingleBit.test(inputBinaryString.charAt(0))) {
         throw new Error(`Input ${inputBinaryString} does not match regex for a single bit (0 or 1)`);
@@ -1216,8 +1559,11 @@ const fromBinaryUsingOptionalMinus = function(inputBinaryString) {
 }
 
 
-
-const tds2encodingMethods={
+/**
+ * A map connecting TDS 2.0 section numbers to their corresponding encoder/decoder functions and regexes.
+ * This table is used by `toBinaryUsingTableF` and `fromBinaryUsingTableF`.
+ */
+ const tds2encodingMethods={
     "14.5.2": { "regex": regexAllNumeric, "encoder": toBinaryUsingFixedBitLengthInteger, "decoder": fromBinaryUsingFixedBitLengthInteger },
     "14.5.3": {}, // Only used for DSGTIN+ date option
     "14.5.4": { "regex": regexAllNumeric, "encoder": toBinaryUsingFixedLengthNumeric, "decoder": fromBinaryUsingFixedLengthNumeric },
@@ -1233,7 +1579,15 @@ const tds2encodingMethods={
     "14.5.14": { "regex": regexOptionalMinus, "encoder": toBinaryUsingOptionalMinus, "decoder": fromBinaryUsingOptionalMinus }
 };
 
-
+/**
+ * General-purpose function to encode a string value to a binary string based on a TDS section reference (Table F).
+ * It validates the input string against the section's regex, checks length constraints, and calls the
+ * specific encoder function for that section.
+ * @param {string} inputCharacterString The string to encode.
+ * @param {Object} options Options object containing the TDS `section` and length/bit constraints.
+ * @returns {Object} An object with the encoded binary string (`binary`).
+ * @throws {Error} If the input format is invalid, length constraints are violated, or the section is unknown.
+ */
 const toBinaryUsingTableF = function(inputCharacterString, options) {
 	const rv={};
 	if ((!isNaN(options.maxChars)) && (inputCharacterString.length > options.maxChars) ) {
@@ -1256,6 +1610,14 @@ const toBinaryUsingTableF = function(inputCharacterString, options) {
 	}
 };
 
+/**
+ * General-purpose function to decode a binary string value based on a TDS section reference (Table F).
+ * It retrieves the correct decoder function for the given TDS section and calls it with the appropriate options.
+ * @param {string} inputBinaryString The binary string to decode.
+ * @param {Object} options Options object containing the TDS `section` and length/bit constraints.
+ * @returns {Object} An object with the decoded string (`characterString`) and bits used (`used`).
+ * @throws {Error} If the binary string is malformed or the section is unknown.
+ */
 const fromBinaryUsingTableF = function(inputBinaryString, options) {
 	const rv={};
 
@@ -2087,7 +2449,7 @@ class TDTtranslator {
         console.debug("finalOutputArray = "+JSON.stringify(finalOutputArray));
         let returnString = finalOutputArray.join("");
 
-        // Digital Link URIs may need post processing to get key qualifiers in place.
+        // GS1 Digital Link URIs may need post processing to get key qualifiers in place.
         if ((outputLevel == "GS1_DIGITAL_LINK") && (outputLevelData.gs1DigitalLinkKeyQualifiers.length > 0)) {
             returnString = digitalLinkPostFormat(returnString, outputLevelData.gs1DigitalLinkKeyQualifiers);
         }
@@ -2148,19 +2510,36 @@ TDTtranslator.toBinaryUsingTableF = toBinaryUsingTableF;
 TDTtranslator.fromBinaryUsingTableF = fromBinaryUsingTableF;
 
 
+/**
+ * Helper function to create a filter function for array elements based on a matching 'file' property.
+ * @param {string} filename The filename to match.
+ * @returns {Function} A filter function.
+ */
 function byFile(filename) {
-		return function (element) {
-			if (element['file'] == filename) { return true; }
-		}
+	return function (element) {
+		if (element['file'] == filename) { return true; }
+	}
 }
 
+/**
+ * Helper function to create a filter function for array elements based on a matching 'optionKey' property.
+ * @param {string} optionkey The option key value to match.
+ * @returns {Function} A filter function.
+ */
 function byOptionKey(optionkey) {
-		return function (element) {
-			if (element['optionKey'] == optionkey) { return true; }
-		}
+	return function (element) {
+		if (element['optionKey'] == optionkey) { return true; }
+	}
 }
 
 
+/**
+ * Utility function to extract the data object from the result of a file fetch based on filename.
+ * Used during TDT data loading.
+ * @param {Array<Object>} data Array of file data objects.
+ * @param {string} key The filename to look for.
+ * @returns {Object} The data payload of the matching file object.
+ */
 function unwrapDataByFilename(data,key) {
 	return data.filter(byFile(key))[0].data;
 }
