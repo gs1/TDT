@@ -1903,6 +1903,61 @@ class TDTtranslator {
         }
     }
 
+/**
+ * Handles specially compressed GS1 Digital Link URIs that use flags 'eh' or 'eh' to precede an EPC binary string
+ * 'eh' indicates that what follows is an EPC binary string using hexadecimal encoding
+ * 'ex' indicates that what follows is an EPC binary string using file-safe URI-safe base 64' encoding
+ * @param {string} inputString The specially compressed GS1 Digital Link URI using 'eh' or 'ex' flags
+ * @param {string} overridingURIstem if specified, a URI stem that takes precedence over any URI stem that might be encoded in an EPC binary string for '++' schemes
+ * @returns {string} The uncompressed GS1 Digital Link URI resulting from translation of the EPC binary string.
+ */
+	handleCompressedDL(inputString, overridingURIstem) {
+        const regexFileSafeURISafeBase64compressedDL = /^(https:\/\/.+?)\/ex([0-9A-Za-z_-]+)$/;
+        const regexHexcompressedDL = /^(https:\/\/.+?)\/eh([0-9a-fA-F]+)$/;
+        if ((regexFileSafeURISafeBase64compressedDL.test(inputString)) || (regexHexcompressedDL.test(inputString)) ) {
+		let uriStem="";
+		overridingURIstem=overridingURIstem.replace(/\/$/,"");
+				
+				if (regexFileSafeURISafeBase64compressedDL.test(inputString)) {
+					let uriMatches = inputString.match(regexFileSafeURISafeBase64compressedDL);
+					if ((uriMatches) && (uriMatches.hasOwnProperty('length')) && (uriMatches.length == 3)) {
+						inputString=toBinaryUsingFileSafeURISafeBase64(uriMatches[2]);
+						uriStem=uriMatches[1];
+					}
+				}
+		
+				if (regexHexcompressedDL.test(inputString)) {
+					let uriMatches = inputString.match(regexHexcompressedDL);
+					if ((uriMatches) && (uriMatches.hasOwnProperty('length')) && (uriMatches.length == 3)) {
+						inputString = this.hex2bin(uriMatches[2]);
+						uriStem=uriMatches[1];
+					}
+				}
+
+
+				let detected = myTDTencoder.autodetect(inputString);
+				if (detected.length > 0) {
+					let input = detected[0].inputString;
+					let uriStem = detected[0].uriStem;
+					let options = { "filter": 0, "uriStem": uristem, "gs1companyprefixlength": -1 };
+					let translated=null;
+					for (let match of detected) {
+						translated = myTDTencoder.translate(inputString, match.scheme, "GS1_DIGITAL_LINK", options);
+					}
+					return (overridingURIstem || uriStem)+translated;
+				} else {
+					return "No match found";
+				}
+		
+			
+		} else {
+			// anything that doesn't match the special compressed GS1 Digital Link URIs using the 'eh' or 'ex' flags is passed through unaltered.
+			return inputString;
+		}
+	}
+	
+
+	
     // Attempt to detect what schemes are represented by a given input string
     autodetect(inputString) {
         if (!this.tdtData) {
