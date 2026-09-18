@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GS1 Tag Data Translation 2.3 - Hostname Codec Dashboard</title>
+    <script src="vue.global.js"></script>
+    <script src="jszip-utils.js"></script>
+    <script src="jszip.js"></script>
+    <script src="TDTtranslator.js"></script>
+    <style type="text/css">
+        :root {
+            --primary-color: #002c6c;
+            --primary-light: #eef4ff;
+            --secondary-color: #f4f4f4;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --border-color: #dddddd;
+            --error-bg: #f8d7da;
+            --error-text: #721c24;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+            --indicator-enc: #00ff00;
+            --indicator-len: #ffff00;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            padding: 30px; 
+            line-height: 1.5; 
+            background-color: #f8f9fa; 
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+        }
+
+        /* Header Setup */
+        .app-header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        h2 { color: var(--primary-color); margin: 0 0 8px 0; font-size: 24px; font-weight: 700; }
+        .subtitle { color: var(--text-muted); margin: 0; font-size: 14px; }
+
+        /* Global Status Banner Notifications */
+        .status-box { 
+            padding: 12px 16px; 
+            border-radius: 6px; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-loading { background-color: var(--warning-bg); color: var(--warning-text); border: 1px solid #ffeeba; }
+        .status-ready { background-color: var(--success-bg); color: var(--success-text); border: 1px solid #c3e6cb; }
+        .status-error { background-color: var(--error-bg); color: var(--error-text); border: 1px solid #f5c6cb; }
+
+        /* Section Layout Panels */
+        .panel {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        h3 { color: var(--primary-color); margin: 0 0 15px 0; font-size: 18px; border-bottom: 1px solid var(--secondary-color); padding-bottom: 8px; }
+
+        /* Form Controls */
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-weight: bold; margin-bottom: 6px; color: #444; font-size: 13px; }
+        
+        .input-wrapper { position: relative; width: 100%; }
+        .input-text { 
+            width: 100%; 
+            padding: 10px 35px 10px 10px; 
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+            font-size: 14px;
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            transition: border-color 0.15s ease-in-out;
+        }
+        .input-text:focus { border-color: var(--primary-color); outline: none; }
+        
+        .btn-clear { 
+            position: absolute; 
+            right: 10px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: none; 
+            border: none; 
+            font-size: 18px; 
+            color: #bbb; 
+            cursor: pointer; 
+            padding: 0; 
+            line-height: 1; 
+        }
+        .btn-clear:hover { color: #aa0000; }
+
+        /* Button Infrastructure */
+        .demo-pill-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .btn-action { 
+            padding: 6px 12px; 
+            cursor: pointer; 
+            background: #f1f3f5; 
+            border: 1px solid #dee2e6; 
+            border-radius: 4px; 
+            font-size: 12px; 
+            color: #495057;
+            transition: all 0.2s;
+        }
+        .btn-action:hover { background: #e9ecef; color: #212529; border-color: #ced4da; }
+        .btn-copy { background: var(--primary-color); color: #ffffff; border-color: var(--primary-color); font-weight: 500; }
+        .btn-copy:hover { background: #001f4d; border-color: #001f4d; color: #ffffff; }
+        
+        /* Structured Output Grids */
+        .result-row { display: flex; padding: 12px 0; border-bottom: 1px solid #f1f3f5; align-items: center; }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { width: 25%; font-weight: 600; font-size: 13px; color: #555; }
+        .result-value { width: 75%; position: relative; }
+
+        /* Error Text Boxes */
+        .error-container { 
+            background-color: var(--error-bg); 
+            color: var(--error-text); 
+            padding: 10px 14px; 
+            font-weight: 600; 
+            border-radius: 4px; 
+            font-size: 13px; 
+            display: inline-block;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Binary Bitstream Visualizer Typography */
+        .binary-output { 
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; 
+            word-break: break-all; 
+            background: #212529; 
+            color: #f8f9fa;
+            padding: 12px; 
+            border-radius: 4px; 
+            display: block; 
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .encIndicator { background-color: var(--indicator-enc); color: #000000; padding: 1px 4px; font-weight: 700; border-radius: 2px; margin-right: 1px; }
+        .lengthIndicator { background-color: var(--indicator-len); color: #000000; padding: 1px 4px; font-weight: 700; border-radius: 2px; margin-right: 1px; }
+        
+        .legend-container { display: flex; gap: 15px; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+        .flex-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .feedback-text { color: #2e7d32; font-size: 12px; font-style: italic; font-weight: bold; animation: fadeIn 0.3s; }
+        .decoded-box { font-size: 16px; font-family: "SFMono-Regular", Consolas, monospace; font-weight: 700; color: var(--primary-color); background: var(--primary-light); padding: 8px 14px; border-radius: 4px; display: inline-block; border: 1px solid #cce0ff; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+
+<body>
+<div id="app1" class="container">
+
+    <div class="app-header">
+        <h2>GS1 TDS 2.3 Custom Hostname Codec Tool</h2>
+        <div class="subtitle">Companion testing suite for section 14.5.16 ("++" EPC Architecture Models)</div>
+    </div>
+
+    <div v-if="appStatus === 'loading'" class="status-box status-loading">
+        ⏳ Fetching machine-readable standard distribution package <code>2026-05-24_TDT_2-3_artefacts.zip</code>...
+    </div>
+    <div v-if="appStatus === 'error'" class="status-box status-error">
+        ❌ Initialization Error: {{ initErrorMessage }}
+    </div>
+    <div v-if="appStatus === 'ready'" class="status-box status-ready">
+        ✓ System Online: Verification tables loaded and parsed into global translation arrays.
+    </div>
+
+    <div v-if="appStatus === 'ready'">
+        
+        <div class="panel">
+            <h3>1. Hostname to Binary Encoder</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Custom Hostname / Domain Target Namespace</label>
+                <div class="input-wrapper">
+                    <input class="input-text" type="text" v-model="hostname" placeholder="e.g., id.example.com">
+                    <button class="btn-clear" v-if="hostname" @click="hostname = ''" title="Clear Field">&times;</button>
+                </div>
+                <div class="demo-pill-container">
+                    <button class="btn-action" v-for="val of demoHostnames" @click="loadHostnameDemo(val)">{{val}}</button>
+                </div>
+            </div>
+
+            <div v-if="encodingResult && !encodingResult.Error">
+                <div class="result-row">
+                    <div class="result-label">Generated Bitstream</div>
+                    <div class="result-value">
+                        <span class="binary-output">
+                            <span class="encIndicator" title="Encoding Indicator Bit (0=URN, 1=ASCII)">{{ encodingResult.indicator }}</span><span class="lengthIndicator" title="6-bit Length Indicator">{{ encodingResult.lengthBin }}</span>{{ encodingResult.payload }}
+                        </span>
+                        <div class="legend-container">
+                            <div class="legend-item"><div class="legend-dot" style="background:var(--indicator-enc)"></div> Indicator Bit</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:var(--indicator-len)"></div> 6-bit Length Field</div>
+                            <div class="legend-item">Remainder: Compressed Compaction Payload</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-row">
+                    <div class="result-label">Metrics & Strategy</div>
+                    <div class="result-value flex-footer">
+                        <div style="font-size: 13px;">
+                            Compaction Rule Chosen: <strong style="color:var(--primary-color)">{{ encodingResult.strategy }}</strong> <span style="color:#888;margin:0 6px;">|</span> Footprint Footprint Size: <strong>{{ encodingResult.totalBits }}</strong> bits
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="feedback-text" v-if="activeFeedback === 'bitstream' || activeFeedback === 'payload'">✓ Copied</span>
+                            <button class="btn-action" @click="copyText(encodingResult.payload, 'payload')">Copy Payload Only</button>
+                            <button class="btn-action btn-copy" @click="copyText(encodingResult.indicator + encodingResult.lengthBin + encodingResult.payload, 'bitstream')">Copy Full Bitstream</button>
+                            <button class="btn-action" style="background-color: #fff4db; border-color:#ffeeba;" @click="copyToDecoder" title="Send output bitstream directly to decoding utility block below">Pipe to Decoder &darr;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div v-if="encodingResult && encodingResult.Error" class="result-row">
+                <div class="result-label">Validation Fault</div>
+                <div class="result-value">
+                    <div class="error-container">{{ encodingResult.Error }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>2. Binary Stream to Hostname Decoder</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Binary Epctag Bit Stream Sequence</label>
+                <div class="input-wrapper">
+                    <input class="input-text" type="text" v-model="inputBitstream" placeholder="Paste structural 0/1 bit sequence mapping payload directly...">
+                    <button class="btn-clear" v-if="inputBitstream" @click="inputBitstream = ''" title="Clear Field">&times;</button>
+                </div>
+                <div class="demo-pill-container">
+                    <button class="btn-action" v-for="item of demoBitstreams" @click="loadBitstreamDemo(item.bits)" :title="item.label">
+                        {{ item.label }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="inputBitstream.trim()">
+                <div v-if="decodingResult && !decodingResult.Error" class="result-row">
+                    <div class="result-label">Decoded Hostname</div>
+                    <div class="result-value flex-footer">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span class="decoded-box">{{ decodingResult.hostname }}</span>
+                            <button class="btn-action btn-copy" style="margin: 0;" @click="copyText(decodingResult.hostname, 'decoded')">Copy Hostname</button>
+                            <span class="feedback-text" v-if="activeFeedback === 'decoded'">✓ Copied</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-muted); text-align: right;">
+                            Header Flag: <strong>{{ decodingResult.indicator }}</strong> ({{ decodingResult.strategy }}) <span style="margin:0 4px;">|</span> Metric Frame Counter: <strong>{{ decodingResult.lengthVal }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="decodingResult && decodingResult.Error" class="result-row">
+                    <div class="result-label">Extraction Error</div>
+                    <div class="result-value">
+                        <div class="error-container">{{ decodingResult.Error }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-else style="color: #999; font-style: italic; font-size: 13px; text-align: center; padding: 15px 0;">
+                Awaiting active bitstream parameter maps to initialize downstream translation engine...
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script language="javascript">
+
+// Fixed Reference Data Sets
+const demoHostnames = [
+    "id.example.com",
+    "id.abcde.com",
+    "ID.EXAMPLE.COM",
+    "www.host.co.uk",
+    "invalid_chars_here_!@#"
+];
+const demoBitstreams = [
+    {
+        label: "id.abcde.com (56 bits, 7-bit Optimized)",
+        bits: "10001110100000110000111000101100011110010011001011011011"
+    },
+    {
+        label: "ID.EXAMPLE.COM (URN40)",
+        bits: "000111000111000111111010010001100000010010100111100110100100011101001000101111111001001"
+    },
+    {
+        label: "id.example.com (7-bit Optimized)",
+        bits: "1001001010000011001011111000110000111011011110000110110011001011011011"
+    },
+    {
+        label: "www.host.co.uk (7-bit Optimized)",
+        bits: "10001110100011110100011011111110011111010000000100011001"
+    }
+];
+
+const regexBinaryString = /^[01]+$/;
+const regexPermittedHostname = /^[!%-?A-Z_a-z\x22]+$/;
+
+function hostname2binary(hostname) {
+    if (!hostname) return { "Error": "Empty Hostname provided" };
+    if (!regexPermittedHostname.test(hostname)) {
+        return { "Error": "Validation Error: Hostname contains characters forbidden by standard GS1 TDT schemas." };
+    }
+
+    try {
+        const fullBitString = TDTtranslator.internalHostname2Binary(hostname);
+        const encIndicator = fullBitString.charAt(0);
+        const lengthBin = fullBitString.substr(1, 6);
+        const lengthIndicatorVal = parseInt(lengthBin, 2);
+        const payloadBits = fullBitString.substring(7);
+
+        return {
+            indicator: encIndicator,
+            lengthIndicatorVal: lengthIndicatorVal,
+            lengthBin: lengthBin,
+            payload: payloadBits,
+            totalBits: fullBitString.length,
+            strategy: encIndicator === "0" ? "URN Code 40" : "Optimized 7-bit ASCII"
+        };
+    } catch (e) {
+        return { "Error": e.message };
+    }
+}
+
+function binary2hostname(fullBitString) {
+    if (!fullBitString || !regexBinaryString.test(fullBitString)) {
+        return { "Error": "Invalid Payload: Must consist solely of 0 and 1 bits." };
+    }
+    if (fullBitString.length < 7) {
+        return { "Error": "Framing Error: Structural layout constraints too short to unpack." };
+    }
+
+    try {
+        const hostname = TDTtranslator.internalBinary2Hostname(fullBitString);
+        const encIndicator = fullBitString.charAt(0);
+        const lengthIndicatorVal = parseInt(fullBitString.substr(1, 6), 2);
+
+        return {
+            hostname: hostname,
+            indicator: encIndicator,
+            strategy: encIndicator === "0" ? "URN Code 40" : "Optimized 7-bit ASCII",
+            lengthVal: lengthIndicatorVal
+        };
+    } catch (e) {
+        return { "Error": e.message };
+    }
+}
+
+Vue.createApp({
+    data() {
+        return {
+            appStatus: "loading", 
+            initErrorMessage: "",
+            hostname: "id.abcde.com",
+            inputBitstream: "10001110100000110000111000101100011110010011001011011011",
+            demoHostnames: demoHostnames,
+            demoBitstreams: demoBitstreams,
+            activeFeedback: ""
+        }
+    },
+    computed: {
+        encodingResult() {
+            if (this.appStatus !== 'ready') return null;
+            return hostname2binary(this.hostname);
+        },
+        decodingResult() {
+            if (this.appStatus !== 'ready' || !this.inputBitstream.trim()) return null;
+            return binary2hostname(this.inputBitstream.trim());
+        }
+    },
+    mounted() {
+        this.loadArtifacts();
+    },
+    methods: {
+        async loadArtifacts() {
+            try {
+                const translator = new TDTtranslator();
+                await translator.initialized;
+                translator.processData();
+                this.appStatus = "ready";
+            } catch (err) {
+                this.appStatus = "error";
+                this.initErrorMessage = err.message;
+                console.error("Critical TDT Init Fault: ", err);
+            }
+        },
+        loadHostnameDemo(val) {
+            this.hostname = val;
+            this.activeFeedback = "";
+        },
+        loadBitstreamDemo(bits) {
+            this.inputBitstream = bits;
+            this.activeFeedback = "";
+        },
+        copyToDecoder() {
+            if (this.encodingResult && !this.encodingResult.Error) {
+                this.inputBitstream = this.encodingResult.indicator + this.encodingResult.lengthBin + this.encodingResult.payload;
+            }
+        },
+        copyText(text, contextId) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                this.activeFeedback = contextId;
+                setTimeout(() => {
+                    if (this.activeFeedback === contextId) this.activeFeedback = "";
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy system access exception: ', err);
+            });
+        }
+    }
+}).mount("#app1");
+
+</script>
+</body>
+</html>

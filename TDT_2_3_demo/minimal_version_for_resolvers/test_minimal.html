@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TDT 2.3 Minimal Resolver Test Runner</title>
+    <script type="text/javascript" src="jszip-utils.js"></script>
+    <script type="text/javascript" src="jszip.js"></script>
+    <script type="text/javascript" src="TDTtranslator.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #121212; color: #e0e0e0; }
+        .pass { color: #4caf50; font-weight: bold; }
+        .fail { color: #f44336; font-weight: bold; }
+        .test-case { margin-bottom: 15px; padding: 10px; border-radius: 4px; background: #1e1e1e; }
+        code { background: #2e2e2e; padding: 2px 6px; border-radius: 3px; font-family: monospace; font-size: 0.95em; color: #ffab40; }
+    </style>
+</head>
+<body>
+    <h1>TDT 2.3 Minimal Resolver Test Results</h1>
+    <div id="results">Running tests...</div>
+
+    <script>
+        const translator = new TDTtranslator();
+        translator.initialized.then(() => {
+            translator.processData();
+            
+            const testCases = [
+                {
+                    input: "https://example.com/eh30164596f40c0e5cbe991a83",
+                    expectedScheme: "sgtin",
+                    expectedLevel: "COMPRESSED_GS1_DIGITAL_LINK",
+                    expectedTranslation: "https://example.com/01/09528765123457/21/123456789123"
+                },
+                {
+                    input: "https://example.com/exMBZFlvQMDly-mRqD",
+                    expectedScheme: "sgtin",
+                    expectedLevel: "COMPRESSED_GS1_DIGITAL_LINK",
+                    expectedTranslation: "https://example.com/01/09528765123457/21/123456789123"
+                },
+                {
+                    input: "11111101000000000001001000110100010101100111100010010000000100101000101001101111100111010110100110100000001110001110100000110000111000101100011110010011001011011011",
+                    expectedScheme: "SGTIN++",
+                    expectedLevel: "BINARY",
+                    expectedTranslation: "https://id.abcde.com/01/01234567890128/21/987XYZ"
+                }
+            ];
+
+            let html = "";
+            let allPassed = true;
+
+            testCases.forEach((tc, index) => {
+                try {
+                    // Test autodetect
+                    const detected = translator.autodetect(tc.input);
+                    const matched = detected && detected.length > 0;
+                    const scheme = matched ? detected[0].scheme : null;
+                    const level = matched ? detected[0].level : null;
+
+                    const autodetectPassed = scheme && (scheme.toLowerCase() === tc.expectedScheme.toLowerCase() || scheme.toLowerCase().startsWith(tc.expectedScheme.toLowerCase())) && level === tc.expectedLevel;
+
+                    // Test translate to GS1_DIGITAL_LINK
+                    let translated = "";
+                    let translationPassed = false;
+                    if (matched) {
+                        translated = translator.translate(tc.input, scheme, "GS1_DIGITAL_LINK");
+                        translationPassed = translated === tc.expectedTranslation;
+                    }
+
+                    const passed = autodetectPassed && translationPassed;
+                    if (!passed) allPassed = false;
+
+                    html += `<div class="test-case">
+                        <h3>Test Case ${index + 1}: ${tc.input}</h3>
+                        <p>Autodetect: <span class="${autodetectPassed ? 'pass' : 'fail'}">${autodetectPassed ? 'PASS' : 'FAIL'}</span> (Scheme: ${scheme}, Level: ${level})</p>
+                        <p>Translate: <span class="${translationPassed ? 'pass' : 'fail'}">${translationPassed ? 'PASS' : 'FAIL'}</span></p>
+                        <p>Expected: <code>${tc.expectedTranslation}</code></p>
+                        <p>Actual: <code>${translated}</code></p>
+                    </div>`;
+                } catch (e) {
+                    allPassed = false;
+                    html += `<div class="test-case" style="border: 1px solid red;">
+                        <h3>Test Case ${index + 1}: ${tc.input}</h3>
+                        <p class="fail">ERROR: ${e.message}</p>
+                        <pre>${e.stack}</pre>
+                    </div>`;
+                }
+            });
+
+            const summaryClass = allPassed ? 'pass' : 'fail';
+            const summaryText = allPassed ? 'ALL TESTS PASSED' : 'SOME TESTS FAILED';
+            html = `<h2 class="${summaryClass}">${summaryText}</h2>` + html;
+            document.getElementById("results").innerHTML = html;
+        }).catch(err => {
+            document.getElementById("results").innerHTML = `<h2 class="fail">Initialization Error</h2><p>${err.message}</p>`;
+        });
+    </script>
+</body>
+</html>

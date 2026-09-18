@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+	<tableID>B4</tableID>
+	<date>2025-10-29T16:30:00Z</date>
+	<description>Table B4</description>
+	<columns>
+		<column id="a" name="14-bit optimised encoding sequence"></column>
+		<column id="b" name="Generic top-level domain"></column>
+	</columns>
+	<rows>
+		<row a="00000110000000" b=".tech"></row>
+	</rows>
+</table>

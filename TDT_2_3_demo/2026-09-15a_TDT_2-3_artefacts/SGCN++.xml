@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tdt:epcTagDataTranslation version="2.3" date="2024-11-23T19:45:00Z" epcTDSVersion="2.3" xmlns:tdt="urn:epcglobal:tdt:xsd:2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:epcglobal:tdt:xsd:2 EpcTagDataTranslation.xsd">
+	<scheme name="SGCN++" optionKey="1">
+		<level type="BINARY" prefixMatch="11101100" requiredFormattingParameters="filter,dataToggle">
+			<option optionKey="1" pattern="^11101100([01])([01]{3})" grammar="'11101100' dataToggle filter encodedAI binaryHostname">
+				<field seq="1" name="dataToggle" decimalMinimum="0" decimalMaximum="1" characterSet="[01]*" bitPadDir="LEFT" bitLength="1"/>
+				<field seq="2" name="filter" decimalMinimum="0" decimalMaximum="7" characterSet="[01]*" bitPadDir="LEFT" bitLength="3"/>
+				<encodedAI ai="255" name="gcn" seq="3"/>
+			</option>
+			<rule type="EXTRACT" inputFormat="STRING" seq="1" newFieldName="hostname" characterSet=".+" function="BINARY2HOSTNAME(binaryHostname)"/>
+			<rule type="FORMAT" inputFormat="STRING" seq="1" newFieldName="binaryHostname" characterSet=".+" function="HOSTNAME2BINARY(hostname)"/>
+		</level>
+		<level type="BARE_IDENTIFIER" prefixMatch="gcn=">
+			<option optionKey="1" pattern="^gcn=([0-9]{14,25})$" grammar="'gcn=' gcn ">
+				<field seq="1" name="gcn" characterSet="[0-9]*"/>
+			</option>
+		</level>
+		<level type="GS1_AI_JSON" prefixMatch="{">
+			<option optionKey="1" pattern="^\{\s*\x22255\x22\s*:\s*\x22([0-9]{14,25})\x22" grammar="'{&quot;255&quot;:&quot;' gcn '&quot;}'" aiSequence="[&quot;255&quot;]">
+				<field seq="1" name="gcn" characterSet="[0-9]*"/>
+			</option>
+		</level>
+		<level type="GS1_DIGITAL_LINK" prefixMatch="http" requiredFormattingParameters="hostname" gs1DigitalLinkKeyQualifiers="[]">
+			<option optionKey="1" pattern="^https://(.+?)/255/([0-9]{14,25})(?:\?|$)" grammar="'https://' hostname '/255/' gcn " aiSequence="[&quot;255&quot;]">
+				<field seq="1" name="hostname" characterSet=".+"/>
+				<field seq="2" name="gcn" characterSet="[0-9]*"/>
+			</option>
+		</level>
+	</scheme>
+</tdt:epcTagDataTranslation>

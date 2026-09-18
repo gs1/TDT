@@ -1,0 +1,154 @@
+{
+    "tdt:epcTagDataTranslation": {
+        "version": "2.3",
+        "date": "2024-11-23T19:45:00Z",
+        "epcTDSVersion": "2.3",
+        "scheme": {
+            "name": "GSRN++",
+            "optionKey": "1",
+            "level": [
+                {
+                    "type": "BINARY",
+                    "prefixMatch": "11100111",
+                    "requiredFormattingParameters": "filter,dataToggle",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^11100111([01])([01]{3})",
+                            "grammar": "'11100111' dataToggle filter encodedAI binaryHostname",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "1",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 1,
+                                    "name": "dataToggle"
+                                },
+                                {
+                                    "seq": 2,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "7",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 3,
+                                    "name": "filter"
+                                }
+                            ],
+                            "encodedAI": [
+                                {
+                                    "ai": "8018",
+                                    "name": "gsrn",
+                                    "seq": 3
+                                }
+                            ]
+                        }
+                    ],
+                    "rule": [
+                        {
+                            "type": "EXTRACT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "hostname",
+                            "characterSet": ".+",
+                            "function": "BINARY2HOSTNAME(binaryHostname)"
+                        },
+                        {
+                            "type": "FORMAT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "binaryHostname",
+                            "characterSet": ".+",
+                            "function": "HOSTNAME2BINARY(hostname)"
+                        }
+                    ]
+                },
+                {
+                    "type": "BARE_IDENTIFIER",
+                    "prefixMatch": "gsrn=",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^gsrn=([0-9]{18})$",
+                            "grammar": "'gsrn=' gsrn ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "gsrn"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_AI_JSON",
+                    "prefixMatch": "{",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^\\{\\s*\"8018\"\\s*:\\s*\"([0-9]{18})\"",
+                            "grammar": "'{\"8018\":\"' gsrn '\"}'",
+                            "aiSequence": [
+                                "8018"
+                            ],
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "gsrn"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_DIGITAL_LINK",
+                    "prefixMatch": "http",
+                    "requiredFormattingParameters": "hostname",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^https://(.+?)\/8018\/([0-9]{18})(?:\\?|$)",
+                            "grammar": "'https://' hostname '/8018/' gsrn ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "characterSet": ".+",
+                                    "name": "hostname"
+                                },
+                                {
+                                    "seq": 2,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "gsrn"
+                                }
+                            ],
+                            "aiSequence": [
+                                "8018"
+                            ]
+                        }
+                    ],
+                    "gs1DigitalLinkKeyQualifiers": [
+                        "8019"
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,137 @@
+{
+    "tdt:epcTagDataTranslation": {
+        "version": "2.3",
+        "date": "2024-11-23T19:45:00Z",
+        "epcTDSVersion": "2.3",
+        "scheme": {
+            "name": "SGCN++",
+            "optionKey": "1",
+            "level": [
+                {
+                    "type": "BINARY",
+                    "prefixMatch": "11101100",
+                    "requiredFormattingParameters": "filter,dataToggle",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^11101100([01])([01]{3})",
+                            "grammar": "'11101100' dataToggle filter encodedAI binaryHostname",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "1",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 1,
+                                    "name": "dataToggle"
+                                },
+                                {
+                                    "seq": 2,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "7",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 3,
+                                    "name": "filter"
+                                }
+                            ],
+                            "encodedAI": [
+                                {
+                                    "ai": "255",
+                                    "name": "gcn",
+                                    "seq": 3
+                                }
+                            ]
+                        }
+                    ],
+                    "rule": [
+                        {
+                            "type": "EXTRACT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "hostname",
+                            "characterSet": ".+",
+                            "function": "BINARY2HOSTNAME(binaryHostname)"
+                        },
+                        {
+                            "type": "FORMAT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "binaryHostname",
+                            "characterSet": ".+",
+                            "function": "HOSTNAME2BINARY(hostname)"
+                        }
+                    ]
+                },
+                {
+                    "type": "BARE_IDENTIFIER",
+                    "prefixMatch": "gcn=",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^gcn=([0-9]{14,25})$",
+                            "grammar": "'gcn=' gcn ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "characterSet": "[0-9]*",
+                                    "name": "gcn"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_AI_JSON",
+                    "prefixMatch": "{",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^\\{\\s*\"255\"\\s*:\\s*\"([0-9]{14,25})\"",
+                            "grammar": "'{\"255\":\"' gcn '\"}'",
+                            "aiSequence": [
+                                "255"
+                            ],
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "characterSet": "[0-9]*",
+                                    "name": "gcn"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_DIGITAL_LINK",
+                    "prefixMatch": "http",
+                    "requiredFormattingParameters": "hostname",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^https://(.+?)\/255\/([0-9]{14,25})(?:\\?|$)",
+                            "grammar": "'https://' hostname '/255/' gcn ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "characterSet": ".+",
+                                    "name": "hostname"
+                                },
+                                {
+                                    "seq": 2,
+                                    "characterSet": "[0-9]*",
+                                    "name": "gcn"
+                                }
+                            ],
+                            "aiSequence": [
+                                "255"
+                            ]
+                        }
+                    ],
+                    "gs1DigitalLinkKeyQualifiers": []
+                }
+            ]
+        }
+    }
+}

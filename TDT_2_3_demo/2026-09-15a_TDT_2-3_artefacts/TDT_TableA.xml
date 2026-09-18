@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+	<tableID>A</tableID>
+	<date>2025-10-29T16:30:00Z</date>
+	<description>Table A</description>
+	<columns>
+		<column id="a" name="7-bit optimised encoding sequence"></column>
+		<column id="b" name="UTF-8 / ASCII character"></column>
+		<column id="c" name="Subdomain or TLD"></column>
+		<column id="d" name="Please see 14-bit table"></column>
+	</columns>
+	<rows>
+		<row a="0000000" d="B1"></row>	
+		<row a="0000001" d="B2"></row>	
+		<row a="0000010" d="B3"></row>	
+		<row a="0000011" d="B4"></row>	
+		<row a="0011110" c="qr."></row>	
+		<row a="0011111" c="www."></row>	
+		<row a="0100000" c="id."></row>	
+		<row a="0100001" b="!"></row>	
+		<row a="0100010" b='"'></row>	
+		<row a="0100011" b="#"></row>	
+		<row a="0100101" b="%"></row>	
+		<row a="0100110" b="&amp;"></row>	
+		<row a="0100111" b="'"></row>	
+		<row a="0101000" b="("></row>	
+		<row a="0101001" b=")"></row>	
+		<row a="0101010" b="*"></row>	
+		<row a="0101011" b="+"></row>	
+		<row a="0101100" b=","></row>	
+		<row a="0101101" b="-"></row>	
+		<row a="0101110" b="."></row>	
+		<row a="0101111" b="/"></row>	
+		<row a="0110000" b="0"></row>	
+		<row a="0110001" b="1"></row>	
+		<row a="0110010" b="2"></row>	
+		<row a="0110011" b="3"></row>	
+		<row a="0110100" b="4"></row>	
+		<row a="0110101" b="5"></row>	
+		<row a="0110110" b="6"></row>	
+		<row a="0110111" b="7"></row>	
+		<row a="0111000" b="8"></row>	
+		<row a="0111001" b="9"></row>	
+		<row a="0111010" b=":"></row>	
+		<row a="0111011" b=";"></row>	
+		<row a="0111100" b="&lt;"></row>	
+		<row a="0111101" b="="></row>	
+		<row a="0111110" b="&gt;"></row>	
+		<row a="0111111" b="?"></row>	
+		<row a="1000001" b="A"></row>	
+		<row a="1000010" b="B"></row>	
+		<row a="1000011" b="C"></row>	
+		<row a="1000100" b="D"></row>	
+		<row a="1000101" b="E"></row>	
+		<row a="1000110" b="F"></row>	
+		<row a="1000111" b="G"></row>	
+		<row a="1001000" b="H"></row>	
+		<row a="1001001" b="I"></row>	
+		<row a="1001010" b="J"></row>	
+		<row a="1001011" b="K"></row>	
+		<row a="1001100" b="L"></row>	
+		<row a="1001101" b="M"></row>	
+		<row a="1001110" b="N"></row>	
+		<row a="1001111" b="O"></row>	
+		<row a="1010000" b="P"></row>	
+		<row a="1010001" b="Q"></row>	
+		<row a="1010010" b="R"></row>	
+		<row a="1010011" b="S"></row>	
+		<row a="1010100" b="T"></row>	
+		<row a="1010101" b="U"></row>	
+		<row a="1010110" b="V"></row>	
+		<row a="1010111" b="W"></row>	
+		<row a="1011000" b="X"></row>	
+		<row a="1011001" b="Y"></row>	
+		<row a="1011010" b="Z"></row>	
+		<row a="1011011" c=".com"></row>	
+		<row a="1011100" c=".org"></row>	
+		<row a="1011101" c=".net"></row>	
+		<row a="1011110" c=".int"></row>	
+		<row a="1011111" b="_"></row>	
+		<row a="1100000" c=".edu"></row>	
+		<row a="1100001" b="a"></row>	
+		<row a="1100010" b="b"></row>	
+		<row a="1100011" b="c"></row>	
+		<row a="1100100" b="d"></row>	
+		<row a="1100101" b="e"></row>	
+		<row a="1100110" b="f"></row>	
+		<row a="1100111" b="g"></row>	
+		<row a="1101000" b="h"></row>	
+		<row a="1101001" b="i"></row>	
+		<row a="1101010" b="j"></row>	
+		<row a="1101011" b="k"></row>	
+		<row a="1101100" b="l"></row>	
+		<row a="1101101" b="m"></row>	
+		<row a="1101110" b="n"></row>	
+		<row a="1101111" b="o"></row>	
+		<row a="1110000" b="p"></row>	
+		<row a="1110001" b="q"></row>	
+		<row a="1110010" b="r"></row>	
+		<row a="1110011" b="s"></row>	
+		<row a="1110100" b="t"></row>	
+		<row a="1110101" b="u"></row>	
+		<row a="1110110" b="v"></row>	
+		<row a="1110111" b="w"></row>	
+		<row a="1111000" b="x"></row>	
+		<row a="1111001" b="y"></row>	
+		<row a="1111010" b="z"></row>	
+		<row a="1111011" c=".gov"></row>	
+		<row a="1111100" c=".mil"></row>	
+		<row a="1111101" c=".biz"></row>	
+		<row a="1111110" c=".eco"></row>	
+		<row a="1111111" c=".med"></row>	
+	</rows>
+</table>

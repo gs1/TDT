@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>GS1 TDS / TDT 2.x Encoder (Vue.js v3)</title>
+<!-- https://unpkg.com/vue@3/dist/vue.global.js -->
+<script type="text/javascript" src="vue.global.js"></script>
+<script type="text/javascript" src="jszip-utils.js"></script>
+<script type="text/javascript" src="jszip.js"></script>
+<script type="text/javascript" src="TDTtranslator.js"></script>
+<link type="text/css" rel="stylesheet" href="style.css"></link>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#002f6c">
+</head>
+<body>
+
+<div id="app" class="container" v-cloak>
+	<h1>GS1 TDS / TDT 2.x Encoder</h1>
+	<p class="intro-text">
+		This interactive utility handles encoding and translation validation operations based on 
+		<a href="https://ref.gs1.org/standards/tds/">TDS</a> / <a href="https://ref.gs1.org/standards/tdt/">TDT</a> v2.3 syntax structures.
+		<a href="developer_guide.html" style="margin-left: 12px; font-weight: 600;">Developer Guide &amp; Architecture &rarr;</a>
+	</p>
+
+	<div class="syntax-container">
+		<div class="syntax-title">Accepted Structural Input Syntaxes:</div>
+		<div class="syntax-grid">
+			<div class="syntax-label">GS1 AI JSON</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.json">{{ demoValues.json }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('json')">Try Demo</button></div>
+
+			<div class="syntax-label">Digital Link</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.digitalLink">{{ demoValues.digitalLink }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('digitalLink')">Try Demo</button></div>
+
+			<div class="syntax-label">Custom Domain DL</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.customDomain">{{ demoValues.customDomain }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('customDomain')">Try Demo</button></div>
+
+			<div class="syntax-label">Binary String</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.binary">{{ demoValues.binary }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('binary')">Try Demo</button></div>
+
+			<div class="syntax-label">Hexadecimal</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.hex">{{ demoValues.hex }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('hex')">Try Demo</button></div>
+
+			<div class="syntax-label">EPC Tag URN</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.tagUrn">{{ demoValues.tagUrn }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('tagUrn')">Try Demo</button></div>
+
+			<div class="syntax-label">EPC Pure URN</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.pureUrn">{{ demoValues.pureUrn }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('pureUrn')">Try Demo</button></div>
+
+			<div class="syntax-label">Bare Key Value</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.bareKv">{{ demoValues.bareKv }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('bareKv')">Try Demo</button></div>
+		</div>
+	</div>
+
+	<div v-if="!isInitialized">
+		<p style="text-align: center; color: var(--text-secondary); padding: 30px 0;">
+			<strong>Initializing translation tables from schema archive...</strong>
+		</p>
+	</div>
+
+	<div v-else class="dashboard-stack">
+		
+		<div class="control-panel">
+			<div class="form-group">
+				<label for="inputString">Input String</label>
+				<div class="input-string-container">
+					<input id="inputString" v-model.trim="inputString" type="text" autocomplete="off" placeholder="Paste JSON, Digital Link, Hex, or EPC URN here..." />
+					<button v-if="inputString" class="btn-clear-input" @click="inputString = ''" title="Clear Field">&times;</button>
+				</div>
+			</div>
+			
+			<div class="parameter-row">
+				<div class="form-group">
+					<label for="filter">Filter Value (Fallback)</label>
+					<input id="filter" v-model.number="filter" type="number" min="0" max="7" />
+				</div>
+				
+				<div class="form-group">
+					<label for="gcpLength">GS1 Company Prefix (GCP) Length</label>
+					<div class="gcp-row-wrapper">
+						<input id="gcpLength" v-model.number="gcpLength" type="number" min="6" max="12" style="width: 100%;" />
+						<span v-if="gcpMessage" class="gcp-message-badge" :title="gcpMessage">Auto</span>
+					</div>
+					<div class="form-group row">
+						<input type="checkbox" id="gcpOverride" v-model="gcpOverride" />
+						<label for="gcpOverride">Force manually defined GCP override</label>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="uristem">GS1 Digital Link URI Stem Base</label>
+					<input id="uristem" v-model.trim="uriStem" type="text" />
+				</div>
+			</div>
+		</div>
+
+		<div class="output-panel">
+			<div v-if="!inputString" class="output-placeholder">
+				<p>Provide a valid structural string parameter inside the workspace input field to calculate runtime translations.</p>
+			</div>
+			
+			<div v-else class="output-engine">
+				<div v-if="globalError" class="error">
+					{{ globalError }}
+				</div>
+
+				<div v-else>
+					<h2>Detected {{ levelNames[inputLevel] }}</h2>
+					
+					<details 
+						v-for="scheme in structuredSchemes" 
+						:key="scheme.id" 
+						class="scheme-accordion"
+						:open="structuredSchemes.length === 1"
+					>
+						<summary class="scheme-summary" :class="scheme.isLossless ? 'lossless' : 'lossy'">
+							<div class="summary-left">
+								<span v-if="!scheme.isLossless" class="warning-icon" title="Lossy Conversion Variant detected">&#9888; (Lossy)</span>
+								<span>Potential Scheme: {{ scheme.id }}{{ scheme.extraText }}</span>
+							</div>
+							<div class="summary-right" v-if="scheme.bitCount > 0">
+								({{ scheme.bitCount }} bits)
+							</div>
+						</summary>
+						
+						<div class="accordion-body">
+							<div v-for="level in scheme.levels" :key="level.type" class="output-level-block">
+								<h4>{{ levelNames[level.type] }}</h4>
+								
+								<div class="output-content-row">
+									<div v-if="level.type === 'BINARY'" class="output-value-text" v-html="level.htmlContent"></div>
+									<p v-else class="output-value-text">{{ level.textContent }}</p>
+									
+									<div class="output-actions">
+										<button 
+											class="btn-action" 
+											:class="{ 'copied': activeCopiedKey === scheme.id + '_' + level.type }"
+											@click="copyToClipboard(level.rawValue, scheme.id + '_' + level.type)"
+										>
+											{{ activeCopiedKey === scheme.id + '_' + level.type ? '✓ Copied' : 'Copy' }}
+										</button>
+										<button class="btn-action" @click="useAsNewInput(level.rawValue)">
+											Use as input ↗
+										</button>
+									</div>
+								</div>
+								
+								<div v-if="level.type === 'BINARY' && level.meta" class="output-level-block" style="border:none; padding:0; margin-top:4px;">
+									<p class="bit-metadata">{{ level.meta }}</p>
+								</div>
+							</div>
+						</div>
+					</details>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript" src="createApp.js"></script>
+
+</body>
+</html>

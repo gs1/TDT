@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>GS1 TDS / TDT 2.x Encoder (Vue.js v3)</title>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script type="text/javascript" src="jszip-utils.js"></script>
+<script type="text/javascript" src="jszip.js"></script>
+<script type="text/javascript" src="TDTtranslator.js"></script>
+<style type="text/css">
+/* Reset and Core Variables */
+:root {
+	--bg-main: #f3f4f6;
+	--card-bg: #ffffff;
+	--text-primary: #002c6c;
+	--text-secondary: #4b5563;
+	--text-muted: #6b7280;
+	--accent-orange: #cd3c0d;
+	--border-color: #e5e7eb;
+	--input-focus: #3b82f6;
+	--error-color: #dc2626;
+	--success-green: #16a34a;
+	
+	/* Binary breakdown palette */
+	--bin-0: #fef08a;
+	--bin-1: #99f6e4;
+	--bin-2: #fed7aa;
+	--bin-3: #a7f3d0;
+	--bin-4: #fef9c3;
+	--bin-5: #cbd5e1;
+	--bin-6: #bbf7d0;
+	--bin-7: #fef08a;
+	--bin-8: #fbcfe8;
+	--bin-9: #e0f2fe;
+}
+
+body {
+	font-family: "Gotham SSm A", "Gotham SSm B", system-ui, -apple-system, Verdana, sans-serif; 
+	font-size: 16px; 
+	background-color: var(--bg-main); 
+	padding: 12px 16px; 
+	margin: 0; 
+	color: var(--text-primary);
+	line-height: 1.5;
+}
+
+.container {
+	max-width: 84em; 
+	margin: 0 auto; 
+	background-color: var(--card-bg); 
+	padding: 24px; 
+	border-radius: 12px;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+h1 {
+	font-size: 1.65rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 6px;
+	border-bottom: 2px solid var(--border-color);
+	padding-bottom: 8px;
+}
+
+.intro-text {
+	color: var(--text-secondary);
+	margin-bottom: 16px;
+	font-size: 0.9rem;
+}
+
+.intro-text a {
+	color: var(--accent-orange);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.intro-text a:hover {
+	text-decoration: underline;
+}
+
+/* Aligned Syntax Table Container */
+.syntax-container {
+	background-color: #f8fafc;
+	border-left: 4px solid var(--text-primary);
+	padding: 12px 16px;
+	border-radius: 0 8px 8px 0;
+	margin-bottom: 20px;
+}
+
+.syntax-title {
+	margin: 0 0 8px 0;
+	font-weight: 700;
+	font-size: 0.9rem;
+	color: var(--text-primary);
+}
+
+.syntax-grid {
+	display: grid;
+	grid-template-columns: max-content 1fr max-content;
+	gap: 6px 16px;
+	align-items: center;
+}
+
+.syntax-label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+
+.syntax-code-wrapper {
+	min-width: 0;
+}
+
+.syntax-grid code {
+	display: block;
+	background-color: #e2e8f0;
+	padding: 4px 8px;
+	border-radius: 4px;
+	color: #0f172a;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.8rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.btn-demo {
+	background-color: #ffffff;
+	border: 1px solid #cbd5e1;
+	color: var(--text-secondary);
+	padding: 3px 10px;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	white-space: nowrap;
+}
+
+.btn-demo:hover {
+	background-color: #f1f5f9;
+	border-color: #94a3b8;
+	color: var(--text-primary);
+}
+
+/* Linearized Dashboard Stack Layout */
+.dashboard-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+/* Full-Width Control Panel */
+.control-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	background-color: #ffffff;
+	border: 1px solid var(--border-color);
+	padding: 20px;
+	border-radius: 8px;
+}
+
+/* Multi-Column Parameter Row split */
+.parameter-row {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+@media (min-width: 768px) {
+	.parameter-row {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	position: relative;
+}
+
+.form-group.row {
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	margin-top: 4px;
+	user-select: none;
+}
+
+.form-group.row input[type="checkbox"] {
+	width: 14px;
+	height: 14px;
+	cursor: pointer;
+	margin: 0;
+}
+
+label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+
+/* Input string field with clear cross icon alignment */
+.input-string-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.input-string-container input {
+	width: 100%;
+	padding-right: 32px;
+}
+
+.btn-clear-input {
+	position: absolute;
+	right: 10px;
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	font-size: 1.15rem;
+	font-weight: 700;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+}
+
+.btn-clear-input:hover {
+	color: var(--accent-orange);
+}
+
+input[type="text"],
+input[type="number"] {
+	background: #ffffff;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	padding: 8px 12px;
+	color: #111827;
+	font-size: 0.9rem;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	outline: none;
+	box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+	border-color: var(--input-focus);
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.gcp-row-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.gcp-message-badge {
+	font-size: 0.75rem;
+	font-style: italic;
+	color: #2563eb;
+	background-color: #eff6ff;
+	padding: 2px 8px;
+	border-radius: 20px;
+	border: 1px solid #bfdbfe;
+}
+
+/* Dynamic Full-Width Output Panel */
+.output-panel {
+	background-color: #f9fafb;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	padding: 20px;
+	min-height: 160px;
+}
+
+.output-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--text-muted);
+	font-style: italic;
+	text-align: center;
+	padding: 30px 0;
+}
+
+.output-engine h2 {
+	font-size: 1.2rem;
+	margin-top: 0;
+	margin-bottom: 14px;
+	color: #1e3a8a;
+	padding-bottom: 6px;
+	border-bottom: 2px solid #dbeafe;
+}
+
+/* Accordion Details Layout Elements */
+details.scheme-accordion {
+	background: #ffffff;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	margin-bottom: 12px;
+	overflow: hidden;
+	transition: box-shadow 0.15s;
+}
+
+details.scheme-accordion[open] {
+	box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+summary.scheme-summary {
+	padding: 10px 14px;
+	font-weight: 700;
+	font-size: 0.95rem;
+	cursor: pointer;
+	user-select: none;
+	outline: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* Hide native list marker triangles across browser implementations */
+summary.scheme-summary::-webkit-details-marker {
+	display: none;
+}
+summary.scheme-summary {
+	list-style: none;
+}
+
+/* Custom Rotatable Accordion Indicator Triangles using standard CSS transforms */
+summary.scheme-summary::before {
+	content: "\25B6"; /* Right-pointing geometric triangle token link indicator */
+	display: inline-block;
+	margin-right: 8px;
+	font-size: 0.75rem;
+	transition: transform 0.2s ease;
+	transform: rotate(0deg);
+}
+
+details.scheme-accordion[open] summary.scheme-summary::before {
+	transform: rotate(90deg);
+}
+
+/* Lossless vs lossy scheme summary classes layout styles */
+summary.scheme-summary.lossless {
+	background: #99FF99;
+	color: #005f00;
+}
+
+summary.scheme-summary.lossless:hover {
+	background: #80ff80;
+}
+
+summary.scheme-summary.lossy {
+	background: #FFCC99;
+	color: #804000;
+}
+
+summary.scheme-summary.lossy:hover {
+	background: #ffbf80;
+}
+
+.summary-left {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.summary-right {
+	font-family: ui-monospace, Monaco, Consolas, monospace;
+	font-size: 0.85rem;
+	font-weight: 600;
+	opacity: 0.85;
+}
+
+.warning-icon {
+	color: #cc0000;
+	font-weight: bold;
+	font-size: 1.1rem;
+	margin-right: 2px;
+}
+
+.accordion-body {
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.output-level-block {
+	border-left: 3px solid #cbd5e1;
+	padding-left: 12px;
+	margin-bottom: 6px;
+}
+
+.output-level-block h4 {
+	font-size: 0.8rem;
+	color: var(--text-secondary);
+	margin-top: 0;
+	margin-bottom: 4px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* Aligned Content + Action Buttons Row */
+.output-content-row {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	background: #f8fafc;
+	border: 1px solid var(--border-color);
+	padding: 8px 12px;
+	border-radius: 6px;
+}
+
+@media (min-width: 640px) {
+	.output-content-row {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+	}
+}
+
+.output-value-text {
+	margin: 0;
+	font-family: ui-monospace, Monaco, Consolas, monospace;
+	font-size: 0.85rem;
+	color: #111827;
+	word-break: break-all;
+}
+
+.output-actions {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.btn-action {
+	padding: 4px 8px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid #cbd5e1;
+	background: #ffffff;
+	color: var(--text-secondary);
+	transition: all 0.15s;
+}
+
+.btn-action:hover {
+	background: #f1f5f9;
+	color: var(--text-primary);
+}
+
+.btn-action.copied {
+	background: var(--success-green);
+	color: #ffffff;
+	border-color: var(--success-green);
+}
+
+.output-engine p.bit-metadata {
+	font-family: inherit;
+	background: none;
+	border: none;
+	padding: 0;
+	color: var(--text-muted);
+	font-size: 0.8rem;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+/* Binary Stream Coloring Engine */
+.binary {
+	padding: 2px 4px;
+	margin-right: 1px;
+	border-radius: 2px;
+	font-weight: 500;
+}
+.binary0 { background-color: var(--bin-0); }
+.binary1 { background-color: var(--bin-1); }
+.binary2 { background-color: var(--bin-2); }
+.binary3 { background-color: var(--bin-3); }
+.binary4 { background-color: var(--bin-4); }
+.binary5 { background-color: var(--bin-5); }
+.binary6 { background-color: var(--bin-6); }
+.binary7 { background-color: var(--bin-7); }
+.binary8 { background-color: var(--bin-8); }
+.binary9 { background-color: var(--bin-9); }
+
+.error {
+	color: var(--error-color);
+	background-color: #fef2f2;
+	border: 1px solid #fca5a5;
+	padding: 10px 14px;
+	border-radius: 6px;
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+[v-cloak] { display: none; }
+</style>
+</head>
+<body>
+
+<div id="app" class="container" v-cloak>
+	<h1>GS1 TDS / TDT 2.x Encoder</h1>
+	<p class="intro-text">
+		This interactive utility handles encoding and translation validation operations based on 
+		<a href="https://ref.gs1.org/standards/tds/">TDS</a> / <a href="https://ref.gs1.org/standards/tdt/">TDT</a> v2.3 syntax structures.
+	</p>
+
+	<div class="syntax-container">
+		<div class="syntax-title">Accepted Structural Input Syntaxes:</div>
+		<div class="syntax-grid">
+			<div class="syntax-label">GS1 AI JSON</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.json">{{ demoValues.json }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('json')">Try Demo</button></div>
+
+			<div class="syntax-label">Digital Link</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.digitalLink">{{ demoValues.digitalLink }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('digitalLink')">Try Demo</button></div>
+
+			<div class="syntax-label">Binary String</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.binary">{{ demoValues.binary }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('binary')">Try Demo</button></div>
+
+			<div class="syntax-label">Hexadecimal</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.hex">{{ demoValues.hex }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('hex')">Try Demo</button></div>
+
+			<div class="syntax-label">EPC Tag URN</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.tagUrn">{{ demoValues.tagUrn }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('tagUrn')">Try Demo</button></div>
+
+			<div class="syntax-label">EPC Pure URN</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.pureUrn">{{ demoValues.pureUrn }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('pureUrn')">Try Demo</button></div>
+
+			<div class="syntax-label">Bare Key Value</div>
+			<div class="syntax-code-wrapper"><code :title="demoValues.bareKv">{{ demoValues.bareKv }}</code></div>
+			<div><button class="btn-demo" @click="loadDemo('bareKv')">Try Demo</button></div>
+		</div>
+	</div>
+
+	<div v-if="!isInitialized">
+		<p style="text-align: center; color: var(--text-secondary); padding: 30px 0;">
+			<strong>Initializing translation tables from schema archive...</strong>
+		</p>
+	</div>
+
+	<div v-else class="dashboard-stack">
+		
+		<div class="control-panel">
+			<div class="form-group">
+				<label for="inputString">Input String</label>
+				<div class="input-string-container">
+					<input id="inputString" v-model.trim="inputString" type="text" autocomplete="off" placeholder="Paste JSON, Digital Link, Hex, or EPC URN here..." />
+					<button v-if="inputString" class="btn-clear-input" @click="inputString = ''" title="Clear Field">&times;</button>
+				</div>
+			</div>
+			
+			<div class="parameter-row">
+				<div class="form-group">
+					<label for="filter">Filter Value (Fallback)</label>
+					<input id="filter" v-model.number="filter" type="number" min="0" max="7" />
+				</div>
+				
+				<div class="form-group">
+					<label for="gcpLength">GS1 Company Prefix (GCP) Length</label>
+					<div class="gcp-row-wrapper">
+						<input id="gcpLength" v-model.number="gcpLength" type="number" min="6" max="12" style="width: 100%;" />
+						<span v-if="gcpMessage" class="gcp-message-badge" :title="gcpMessage">Auto</span>
+					</div>
+					<div class="form-group row">
+						<input type="checkbox" id="gcpOverride" v-model="gcpOverride" />
+						<label for="gcpOverride">Force manually defined GCP override</label>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="uristem">GS1 Digital Link URI Stem Base</label>
+					<input id="uristem" v-model.trim="uriStem" type="text" />
+				</div>
+			</div>
+		</div>
+
+		<div class="output-panel">
+			<div v-if="!inputString" class="output-placeholder">
+				<p>Provide a valid structural string parameter inside the workspace input field to calculate runtime translations.</p>
+			</div>
+			
+			<div v-else class="output-engine">
+				<div v-if="globalError" class="error">
+					{{ globalError }}
+				</div>
+
+				<div v-else>
+					<h2>Detected {{ levelNames[inputLevel] }}</h2>
+					
+					<details 
+						v-for="scheme in structuredSchemes" 
+						:key="scheme.id" 
+						class="scheme-accordion"
+						:open="structuredSchemes.length === 1"
+					>
+						<summary class="scheme-summary" :class="scheme.isLossless ? 'lossless' : 'lossy'">
+							<div class="summary-left">
+								<span v-if="!scheme.isLossless" class="warning-icon" title="Lossy Conversion Variant detected">&#9888; (Lossy)</span>
+								<span>Potential Scheme: {{ scheme.id }}{{ scheme.extraText }}</span>
+							</div>
+							<div class="summary-right" v-if="scheme.bitCount > 0">
+								({{ scheme.bitCount }} bits)
+							</div>
+						</summary>
+						
+						<div class="accordion-body">
+							<div v-for="level in scheme.levels" :key="level.type" class="output-level-block">
+								<h4>{{ levelNames[level.type] }}</h4>
+								
+								<div class="output-content-row">
+									<div v-if="level.type === 'BINARY'" class="output-value-text" v-html="level.htmlContent"></div>
+									<p v-else class="output-value-text">{{ level.textContent }}</p>
+									
+									<div class="output-actions">
+										<button 
+											class="btn-action" 
+											:class="{ 'copied': activeCopiedKey === scheme.id + '_' + level.type }"
+											@click="copyToClipboard(level.rawValue, scheme.id + '_' + level.type)"
+										>
+											{{ activeCopiedKey === scheme.id + '_' + level.type ? '✓ Copied' : 'Copy' }}
+										</button>
+										<button class="btn-action" @click="useAsNewInput(level.rawValue)">
+											Use as input ↗
+										</button>
+									</div>
+								</div>
+								
+								<div v-if="level.type === 'BINARY' && level.meta" class="output-level-block" style="border:none; padding:0; margin-top:4px;">
+									<p class="bit-metadata">{{ level.meta }}</p>
+								</div>
+							</div>
+						</div>
+					</details>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+const { createApp, markRaw } = Vue;
+
+createApp({
+	data() {
+		return {
+			myTDTencoder: null,
+			isInitialized: false,
+			inputString: '',
+			filter: 0,
+			gcpLength: 7,
+			gcpOverride: false,
+			uriStem: 'https://id.gs1.org',
+			gcpMessage: '',
+			activeCopiedKey: '',
+			demoValues: {
+				json: '{"01":"09521234123453", "21":"32a/b"}',
+				digitalLink: 'https://id.gs1.org/01/09521234123453/21/32a%2Fb',
+				binary: '111101111000100101010010000101000011001010000101000101110011011001000000010100011000000111001000101110010110010111111',
+				hex: 'F73095212341234538566CB0AFC4',
+				tagUrn: 'urn:epc:tag:sgtin-198:0.9521234.012345.32a%2F',
+				pureUrn: 'urn:epc:id:sgtin:9521234.012345.32a%2Fb',
+				bareKv: 'gtin=09521234123453;serial=32a/b'
+			},
+			levelNames: { 
+				"BINARY": "Binary encoded TDS data", 
+				"HEX": "Hex encoded TDS data", 
+				"GS1_AI_JSON": "GS1 AI String in JSON", 
+				"GS1_DIGITAL_LINK": "GS1 Digital Link URI", 
+				"TAG_ENCODING": "EPC Tag URI", 
+				"PURE_IDENTITY": "EPC Pure URI", 
+				"BARE_IDENTIFIER": "Bare Identifier", 
+				"TEI": "Text Element Identifier"
+			},
+			providesGCPLength: ["BINARY", "TAG_ENCODING", "PURE_IDENTITY"],
+			// Master reference mapping dictionary for dateType integers to friendly titles
+			dateTypeMap: {
+				"0": "prioritised date: Production Date / GS1 AI (11)",
+				"1": "prioritised date: Packaging Date / GS1 AI (13)",
+				"2": "prioritised date: Best Before Date / GS1 AI (15)",
+				"3": "prioritised date: Sell By Date / GS1 AI (16)",
+				"4": "prioritised date: Expiration Date / GS1 AI (17)",
+				"5": "prioritised date: First Freeze Date / GS1 AI (7006)",
+				"6": "prioritised date: Harvest Date Range / GS1 AI (7007)"
+			}
+		}
+	},
+	mounted() {
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('input')) {
+			this.inputString = decodeURIComponent(urlParams.get('input'));
+		}
+
+		const translatorInstance = new TDTtranslator();
+		this.myTDTencoder = markRaw(translatorInstance);
+		
+		this.myTDTencoder.initialized.then(() => {
+			this.myTDTencoder.processData();
+			this.isInitialized = true;
+		}).catch(error => {
+			console.error('Error initializing library:', error);
+		});
+	},
+	computed: {
+		detectedData() {
+			if (!this.isInitialized || !this.inputString) return null;
+			try {
+				let detected = this.myTDTencoder.autodetect(this.inputString);
+				if (!detected || detected.length === 0) return { error: 'Failed to match input to any TDS scheme' };
+				return { detected, level: detected[0].level };
+			} catch(e) {
+				return { error: e.toString() };
+			}
+		},
+		globalError() {
+			return this.detectedData && this.detectedData.error ? this.detectedData.error : null;
+		},
+		inputLevel() {
+			return this.detectedData && this.detectedData.level ? this.detectedData.level : '';
+		},
+		structuredSchemes() {
+			if (!this.detectedData || this.detectedData.error) return [];
+			
+			const detectedList = this.detectedData.detected;
+			const encoder = this.myTDTencoder;
+			const structures = [];
+
+			if ((detectedList[0].detectedGCPLength > 0) && !this.gcpOverride) {
+				this.updateGcpState(detectedList[0].detectedGCPLength, "Using auto-detected GCP length");
+			} else if (!this.gcpOverride) {
+				this.updateGcpMessage('');
+			}
+
+			// Lossless evaluation lookup helper function for GS1 Digital Link URIs with custom domain stems
+			let checkLosslessStatus = (inputStr, currentLevel, schemeId) => {
+				if (currentLevel !== 'GS1_DIGITAL_LINK') return true;
+				try {
+					let urlObj = new URL(inputStr);
+					if (urlObj.hostname !== 'id.gs1.org') {
+						return schemeId.includes('++') || schemeId.toLowerCase().includes('plusplus');
+					}
+				} catch (e) {
+					if (inputStr.toLowerCase().startsWith('http')) {
+						let stripped = inputStr.replace(/^https?:\/\//i, '').split('/')[0];
+						if (stripped && stripped !== 'id.gs1.org') {
+							return schemeId.includes('++') || schemeId.toLowerCase().includes('plusplus');
+						}
+					}
+				}
+				return true;
+			};
+
+			for (let match of detectedList) {
+				let extra = "";
+				if (match.optionKey.property) {
+					if (match.optionKey.property === "dateType" && this.dateTypeMap[match.optionKey.value]) {
+						extra = ", " + this.dateTypeMap[match.optionKey.value];
+					} else if (match.optionKey.property != match.optionKey.value) {
+						extra = ", " + match.optionKey.property + ": " + match.optionKey.value;
+					}
+				}
+
+				let schemeItem = {
+					id: match.scheme,
+					extraText: extra,
+					levels: [],
+					bitCount: 0,
+					isLossless: checkLosslessStatus(this.inputString, this.inputLevel, match.scheme)
+				};
+
+				for (let level of match.supportedLevels) {
+					// WHACK-A-MOLE CORRECTION: Force option parameter structures initialization inside 
+					// the child layout loop, preventing state leaks across alternative outputs calculations.
+					let options = { 
+						"filter": this.filter, 
+						"uriStem": this.uriStem, 
+						"gs1companyprefixlength": this.gcpLength 
+					};
+
+					if (match.optionKey.property && (match.optionKey.property == "gs1companyprefixlength")) {
+						if (this.providesGCPLength.includes(this.inputLevel)) {
+							options.gs1companyprefixlength = match.optionKey.value;
+						}
+					}
+
+					if (match.optionKey.property && (match.optionKey.property !== match.optionKey.value) && (match.optionKey.property !== "gs1companyprefixlength")) {
+						options[match.optionKey.property] = match.optionKey.value;
+					}
+
+					try {
+						if ((level == "BINARY") && (this.inputLevel != "HEX")) {
+							let hextranslated = encoder.translate(this.inputString, match.scheme, "HEX", options);
+							schemeItem.levels.push({
+								type: 'HEX',
+								textContent: hextranslated,
+								rawValue: hextranslated
+							});
+						}
+
+						if (level == this.inputLevel) {
+							if (level === 'BINARY') {
+								schemeItem.bitCount = this.inputString.length;
+							}
+							continue;
+						}
+						
+						let translated = '';
+						let binary = '';
+						let htmlContent = '';
+						let meta = '';
+
+						if (level == "BINARY") {
+							options["returnArray"] = true;
+							let [outputArray, arrayEntries] = encoder.translate(this.inputString, match.scheme, level, options);
+							options["returnArray"] = false;
+							
+							let i = 0;
+							for (let v of outputArray) {
+								let spanClass = i % 10;
+								htmlContent += `<span class="binary binary${spanClass}" title="${arrayEntries[i]}">${v}</span>`;
+								i++;
+							}
+							binary = outputArray.join("");
+							translated = binary;
+
+							let bits = binary.length;
+							schemeItem.bitCount = bits;
+							let bits_nyble = Math.ceil(bits / 4) * 4;
+							let bits_word = Math.ceil(bits / 16) * 16;
+							meta = `Bits: ${bits}, padded to nibble boundary: ${bits_nyble}, padded to word boundary: ${bits_word}`;
+						} else {
+							translated = encoder.translate(this.inputString, match.scheme, level, options);
+						}
+
+						schemeItem.levels.push({
+							type: level,
+							textContent: level !== 'BINARY' ? translated : '',
+							htmlContent: htmlContent,
+							rawValue: translated,
+							meta: meta
+						});
+					} catch (translationError) {
+						console.debug(`Skipping non-matching permutation candidate ${match.scheme} at level ${level}:`, translationError);
+					}
+				}
+
+				if (this.inputLevel === 'HEX' && schemeItem.bitCount === 0) {
+					let foundBinaryObj = schemeItem.levels.find(l => l.type === 'BINARY');
+					if (foundBinaryObj && foundBinaryObj.rawValue) {
+						schemeItem.bitCount = foundBinaryObj.rawValue.length;
+					}
+				}
+				
+				if (schemeItem.levels.length > 0) {
+					structures.push(schemeItem);
+				}
+			}
+			return structures;
+		}
+	},
+	methods: {
+		loadDemo(key) {
+			this.inputString = this.demoValues[key];
+		},
+		updateGcpState(length, message) {
+			this.gcpLength = length;
+			this.gcpMessage = message;
+		},
+		updateGcpMessage(message) {
+			this.gcpMessage = message;
+		},
+		copyToClipboard(text, key) {
+			if (!text) return;
+			navigator.clipboard.writeText(text).then(() => {
+				this.activeCopiedKey = key;
+				setTimeout(() => {
+					if (this.activeCopiedKey === key) this.activeCopiedKey = '';
+				}, 1500);
+			}).catch(err => {
+				console.error('Failed to copy text: ', err);
+			});
+		},
+		useAsNewInput(value) {
+			if (!value) return;
+			const baseUrl = window.location.origin + window.location.pathname;
+			const targetUrl = `${baseUrl}?input=${encodeURIComponent(value)}`;
+			window.open(targetUrl, '_blank');
+		}
+	}
+}).mount('#app');
+</script>
+
+</body>
+</html>

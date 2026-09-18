@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+	<tableID>B2</tableID>
+	<date>2025-10-29T16:30:00Z</date>
+	<description>Table B2</description>
+	<columns>
+		<column id="a" name="14-bit optimised encoding sequence"></column>
+		<column id="b" name="Regional or country-specific top-level domain"></column>
+	</columns>
+	<rows>
+		<row a="00000010000000" b=".lk"></row>
+		<row a="00000010000001" b=".lr"></row>
+		<row a="00000010000010" b=".ls"></row>
+		<row a="00000010000011" b=".lt"></row>
+		<row a="00000010000100" b=".lu"></row>
+		<row a="00000010000101" b=".lv"></row>
+		<row a="00000010000110" b=".ly"></row>
+		<row a="00000010000111" b=".ma"></row>
+		<row a="00000010001000" b=".mc"></row>
+		<row a="00000010001001" b=".md"></row>
+		<row a="00000010001010" b=".me"></row>
+		<row a="00000010001011" b=".mg"></row>
+		<row a="00000010001100" b=".mh"></row>
+		<row a="00000010001101" b=".mk"></row>
+		<row a="00000010001110" b=".ml"></row>
+		<row a="00000010001111" b=".mm"></row>
+		<row a="00000010010000" b=".mn"></row>
+		<row a="00000010010001" b=".mo"></row>
+		<row a="00000010010010" b=".mp"></row>
+		<row a="00000010010011" b=".mq"></row>
+		<row a="00000010010100" b=".mr"></row>
+		<row a="00000010010101" b=".ms"></row>
+		<row a="00000010010110" b=".mt"></row>
+		<row a="00000010010111" b=".mu"></row>
+		<row a="00000010011000" b=".mv"></row>
+		<row a="00000010011001" b=".mw"></row>
+		<row a="00000010011010" b=".mx"></row>
+		<row a="00000010011011" b=".my"></row>
+		<row a="00000010011100" b=".mz"></row>
+		<row a="00000010011101" b=".na"></row>
+		<row a="00000010011110" b=".nc"></row>
+		<row a="00000010011111" b=".ne"></row>
+		<row a="00000010100000" b=".nf"></row>
+		<row a="00000010100001" b=".ng"></row>
+		<row a="00000010100010" b=".ni"></row>
+		<row a="00000010100011" b=".nl"></row>
+		<row a="00000010100100" b=".no"></row>
+		<row a="00000010100101" b=".np"></row>
+		<row a="00000010100110" b=".nr"></row>
+		<row a="00000010100111" b=".nu"></row>
+		<row a="00000010101000" b=".nz"></row>
+		<row a="00000010101001" b=".om"></row>
+		<row a="00000010101010" b=".pa"></row>
+		<row a="00000010101011" b=".pe"></row>
+		<row a="00000010101100" b=".pf"></row>
+		<row a="00000010101101" b=".pg"></row>
+		<row a="00000010101110" b=".ph"></row>
+		<row a="00000010101111" b=".pk"></row>
+		<row a="00000010110000" b=".pl"></row>
+		<row a="00000010110001" b=".pm"></row>
+		<row a="00000010110010" b=".pn"></row>
+		<row a="00000010110011" b=".pr"></row>
+		<row a="00000010110100" b=".ps"></row>
+		<row a="00000010110101" b=".pt"></row>
+		<row a="00000010110110" b=".pw"></row>
+		<row a="00000010110111" b=".py"></row>
+		<row a="00000010111000" b=".qa"></row>
+		<row a="00000010111001" b=".re"></row>
+		<row a="00000010111010" b=".ro"></row>
+		<row a="00000010111011" b=".rs"></row>
+		<row a="00000010111100" b=".ru"></row>
+		<row a="00000010111101" b=".rw"></row>
+		<row a="00000010111110" b=".sa"></row>
+		<row a="00000010111111" b=".sb"></row>
+		<row a="00000011000000" b=".sc"></row>
+		<row a="00000011000001" b=".sd"></row>
+		<row a="00000011000010" b=".se"></row>
+		<row a="00000011000011" b=".sg"></row>
+		<row a="00000011000100" b=".sh"></row>
+		<row a="00000011000101" b=".si"></row>
+		<row a="00000011000110" b=".sk"></row>
+		<row a="00000011000111" b=".sl"></row>
+		<row a="00000011001000" b=".sm"></row>
+		<row a="00000011001001" b=".sn"></row>
+		<row a="00000011001010" b=".sr"></row>
+		<row a="00000011001011" b=".ss"></row>
+		<row a="00000011001100" b=".st"></row>
+		<row a="00000011001101" b=".su"></row>
+		<row a="00000011001110" b=".sv"></row>
+		<row a="00000011001111" b=".sx"></row>
+		<row a="00000011010000" b=".sy"></row>
+		<row a="00000011010001" b=".sz"></row>
+		<row a="00000011010010" b=".tc"></row>
+		<row a="00000011010011" b=".td"></row>
+		<row a="00000011010100" b=".tf"></row>
+		<row a="00000011010101" b=".tg"></row>
+		<row a="00000011010110" b=".th"></row>
+		<row a="00000011010111" b=".tj"></row>
+		<row a="00000011011000" b=".tk"></row>
+		<row a="00000011011001" b=".tl"></row>
+		<row a="00000011011010" b=".tm"></row>
+		<row a="00000011011011" b=".tn"></row>
+		<row a="00000011011100" b=".to"></row>
+		<row a="00000011011101" b=".tr"></row>
+		<row a="00000011011110" b=".tt"></row>
+		<row a="00000011011111" b=".tv"></row>
+		<row a="00000011100000" b=".tw"></row>
+		<row a="00000011100001" b=".tz"></row>
+		<row a="00000011100010" b=".ua"></row>
+		<row a="00000011100011" b=".ug"></row>
+		<row a="00000011100100" b=".us"></row>
+		<row a="00000011100101" b=".uy"></row>
+		<row a="00000011100110" b=".uz"></row>
+		<row a="00000011100111" b=".va"></row>
+		<row a="00000011101000" b=".vc"></row>
+		<row a="00000011101001" b=".ve"></row>
+		<row a="00000011101010" b=".vg"></row>
+		<row a="00000011101011" b=".vi"></row>
+		<row a="00000011101100" b=".vn"></row>
+		<row a="00000011101101" b=".vu"></row>
+		<row a="00000011101110" b=".wf"></row>
+		<row a="00000011101111" b=".ws"></row>
+		<row a="00000011110000" b=".ye"></row>
+		<row a="00000011110001" b=".yt"></row>
+		<row a="00000011110010" b=".za"></row>
+		<row a="00000011110011" b=".zm"></row>
+		<row a="00000011110100" b=".zw"></row>
+		<row a="00000011110101" b="Reserved for future use"></row>
+		<row a="00000011110110" b="Reserved for future use"></row>
+		<row a="00000011110111" b="Reserved for future use"></row>
+		<row a="00000011111000" b="Reserved for future use"></row>
+		<row a="00000011111001" b="Reserved for future use"></row>
+		<row a="00000011111010" b="Reserved for future use"></row>
+		<row a="00000011111011" b="Reserved for future use"></row>
+		<row a="00000011111100" b="Reserved for future use"></row>
+		<row a="00000011111101" b="Reserved for future use"></row>
+		<row a="00000011111110" b="Reserved for future use"></row>
+		<row a="00000011111111" b="Reserved for future use"></row>
+	</rows>
+</table>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf8" />
+<title>GS1 Digital Link Resolver (Minimal Version)</title>
+<script type="text/javascript" src="vue.global.js"></script>
+<script type="text/javascript" src="jszip-utils.js"></script>
+<script type="text/javascript" src="jszip.js"></script>
+<script type="text/javascript" src="TDTtranslator.js"></script>
+<link type="text/css" rel="stylesheet" href="style.css"></link>
+<meta name="theme-color" content="#121212">
+</head>
+<body>
+
+<div id="app" class="resolver-container" v-cloak>
+    <div class="card">
+        <h1>GS1 Digital Link Resolver</h1>
+        <p class="subtitle">Extracts and decompresses EPC binary representations inside GS1 Digital Link URIs</p>
+
+        <div v-if="!isInitialized" class="loader-container">
+            <div class="spinner"></div>
+            <p>Initializing translation engines...</p>
+        </div>
+
+        <div v-else class="form-container">
+            <div class="form-group">
+                <label for="inputUri">Compressed GS1 Digital Link URI</label>
+                <div class="input-wrapper">
+                    <input 
+                        id="inputUri" 
+                        v-model.trim="inputString" 
+                        type="text" 
+                        autocomplete="off" 
+                        placeholder="Paste https://example.com/eh3016... or /exMBZ..." 
+                    />
+                    <button v-if="inputString" class="btn-clear" @click="inputString = ''">&times;</button>
+                </div>
+            </div>
+
+            <div class="demo-buttons">
+                <span>Try Example:</span>
+                <button class="btn-demo" @click="loadDemo('eh')">Hex (eh)</button>
+                <button class="btn-demo" @click="loadDemo('ex')">Base64 (ex)</button>
+            </div>
+
+            <div v-if="inputString" class="output-wrapper">
+                <div v-if="error" class="error-badge">
+                    <span class="badge-title">Error:</span> {{ error }}
+                </div>
+                <div v-else-if="result" class="success-badge">
+                    <div class="result-header">
+                        <span class="badge-title">Decompressed Digital Link URI</span>
+                        <button 
+                            class="btn-copy" 
+                            :class="{ 'copied': copied }"
+                            @click="copyResult"
+                        >
+                            {{ copied ? '✓ Copied' : 'Copy' }}
+                        </button>
+                    </div>
+                    <div class="result-value">{{ result }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="createApp.js"></script>
+
+</body>
+</html>

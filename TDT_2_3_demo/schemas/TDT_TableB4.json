@@ -1,0 +1,12 @@
+{
+	"tableID":"B4",
+	"date": "2025-10-29T16:30:00Z",
+	"description":"Table B4",
+	"columns": [
+		{"id":"a", "name":"14-bit optimised encoding sequence"},
+		{"id":"b", "name":"Generic top-level domain"}
+	],
+	"rows": [
+		{"a":"00000110000000", "b":".tech"}
+	]
+}

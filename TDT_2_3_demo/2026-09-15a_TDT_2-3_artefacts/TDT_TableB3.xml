@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+	<tableID>B3</tableID>
+	<date>2025-10-29T16:30:00Z</date>
+	<description>Table B3</description>
+	<columns>
+		<column id="a" name="14-bit optimised encoding sequence"></column>
+		<column id="b" name="Compound top-level domain"></column>
+	</columns>
+	<rows>
+		<row a="00000100000000" b=".com.au"></row>
+		<row a="00000100000001" b=".net.au"></row>
+		<row a="00000100000010" b=".org.au"></row>
+		<row a="00000100000011" b=".co.at"></row>
+		<row a="00000100000100" b=".com.bd"></row>
+		<row a="00000100000101" b=".co.bd"></row>
+		<row a="00000100000110" b=".com.br"></row>
+		<row a="00000100000111" b=".net.br"></row>
+		<row a="00000100001000" b=".co.nz"></row>
+		<row a="00000100001001" b=".com.ng"></row>
+		<row a="00000100001010" b=".com.pk"></row>
+		<row a="00000100001011" b=".co.in"></row>
+		<row a="00000100001100" b=".com.in"></row>
+		<row a="00000100001101" b=".co.il"></row>
+		<row a="00000100001110" b=".co.jp"></row>
+		<row a="00000100001111" b=".co.za"></row>
+		<row a="00000100010000" b=".co.kr"></row>
+		<row a="00000100010001" b=".com.es"></row>
+		<row a="00000100010010" b=".com.lk"></row>
+		<row a="00000100010011" b=".co.th"></row>
+		<row a="00000100010100" b=".co.tt"></row>
+		<row a="00000100010101" b=".com.tt"></row>
+		<row a="00000100010110" b=".com.tr"></row>
+		<row a="00000100010111" b=".biz.tr"></row>
+		<row a="00000100011000" b=".com.ua"></row>
+		<row a="00000100011001" b=".co.uk"></row>
+		<row a="00000100011010" b=".co.zm"></row>
+		<row a="00000100011011" b=".com.zm"></row>
+		<row a="00000100011100" b=".com.cn"></row>
+		<row a="00000100011101" b=".org.cn"></row>
+		<row a="00000100011110" b=".net.cn"></row>
+		<row a="00000100011111" b=".gov.cn"></row>
+	</rows>
+</table>

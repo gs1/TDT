@@ -1,0 +1,152 @@
+{
+    "tdt:epcTagDataTranslation": {
+        "version": "2.3",
+        "date": "2024-11-23T19:45:00Z",
+        "epcTDSVersion": "2.3",
+        "scheme": {
+            "name": "SSCC++",
+            "optionKey": "1",
+            "level": [
+                {
+                    "type": "BINARY",
+                    "prefixMatch": "11101111",
+                    "requiredFormattingParameters": "filter,dataToggle",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^11101111([01])([01]{3})",
+                            "grammar": "'11101111' dataToggle filter encodedAI binaryHostname",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "1",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 1,
+                                    "name": "dataToggle"
+                                },
+                                {
+                                    "seq": 2,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "7",
+                                    "characterSet": "[01]*",
+                                    "bitPadDir": "LEFT",
+                                    "bitLength": 3,
+                                    "name": "filter"
+                                }
+                            ],
+                            "encodedAI": [
+                                {
+                                    "ai": "00",
+                                    "name": "sscc",
+                                    "seq": 3
+                                }
+                            ]
+                        }
+                    ],
+                    "rule": [
+                        {
+                            "type": "EXTRACT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "hostname",
+                            "characterSet": ".+",
+                            "function": "BINARY2HOSTNAME(binaryHostname)"
+                        },
+                        {
+                            "type": "FORMAT",
+                            "inputFormat": "STRING",
+                            "seq": 1,
+                            "newFieldName": "binaryHostname",
+                            "characterSet": ".+",
+                            "function": "HOSTNAME2BINARY(hostname)"
+                        }
+                    ]
+                },
+                {
+                    "type": "BARE_IDENTIFIER",
+                    "prefixMatch": "sscc=",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^sscc=([0-9]{18})$",
+                            "grammar": "'sscc=' sscc ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "sscc"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_AI_JSON",
+                    "prefixMatch": "{",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^\\{\\s*\"00\"\\s*:\\s*\"([0-9]{18})\"",
+                            "grammar": "'{\"00\":\"' sscc '\"}'",
+                            "aiSequence": [
+                                "00"
+                            ],
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "sscc"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "GS1_DIGITAL_LINK",
+                    "prefixMatch": "http",
+                    "requiredFormattingParameters": "hostname",
+                    "option": [
+                        {
+                            "optionKey": "1",
+                            "pattern": "^https://(.+?)\/00\/([0-9]{18})(?:\\?|$)",
+                            "grammar": "'https://' hostname '/00/' sscc ",
+                            "field": [
+                                {
+                                    "seq": 1,
+                                    "characterSet": ".+",
+                                    "name": "hostname"
+                                },
+                                {
+                                    "seq": 2,
+                                    "decimalMinimum": "0",
+                                    "decimalMaximum": "999999999999999999",
+                                    "characterSet": "[0-9]*",
+                                    "length": 18,
+                                    "padChar": "0",
+                                    "padDir": "LEFT",
+                                    "name": "sscc"
+                                }
+                            ],
+                            "aiSequence": [
+                                "00"
+                            ]
+                        }
+                    ],
+                    "gs1DigitalLinkKeyQualifiers": []
+                }
+            ]
+        }
+    }
+}
