@@ -246,7 +246,8 @@ createApp({
 							// Transforms the bit values into a scannable, color-coded structure
 							htmlContent = outputArray.map((bitValue, index) => {
 								const styleClassIndex = index % 10;
-								return `<span class="binary binary${styleClassIndex}" title="${arrayEntries[index]}">${bitValue}</span>`;
+								const entryName = (index === 0 && (arrayEntries[index] === 'literal' || bitValue.length === 8)) ? 'EPC Header' : arrayEntries[index];
+								return `<span class="binary binary${styleClassIndex}" title="${entryName}">${bitValue}</span>`;
 							}).join("");
 
 							translated = outputArray.join("");

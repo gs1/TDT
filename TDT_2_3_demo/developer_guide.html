@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Developer handover and architecture guide for the GS1 TDS / TDT 2.3 Translator — a zero-build PWA for bidirectional EPC identifier translation across Binary, Hex, Digital Link, Tag URN, and Pure Identity formats.">
   <title>GS1 TDS / TDT 2.3 Translator — Developer Handover & Architecture Guide</title>
   
   <!-- Web App Manifest -->
@@ -18,7 +19,9 @@
   <script src="vue.global.js"></script>
   <script>
     if (typeof Vue === 'undefined') {
-      document.write('<script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"><\/script>');
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js';
+      document.head.appendChild(s);
     }
   </script>
 
@@ -58,6 +61,10 @@
       --bit-chunk-2: #dcfce7;
       --bit-chunk-3: #f3e8ff;
       --bit-chunk-4: #fee2e2;
+    }
+
+    [v-cloak] {
+      display: none !important;
     }
 
     * {
@@ -1368,12 +1375,22 @@
         width: 100% !important;
         max-width: 100% !important;
       }
+      .recipe-tabs {
+        display: none !important;
+      }
+      .recipe-tabs ~ .code-block-container {
+        display: block !important;
+        margin-bottom: 1.5rem !important;
+      }
       .data-table-wrapper {
+        max-height: none !important;
         overflow: visible !important;
       }
       pre, pre code {
         background: #000000 !important;
         color: #ffffff !important;
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -1771,9 +1788,191 @@
       margin-top: 2px;
     }
 
+    /* Sidebar Sub-Section Quick-Jump Hierarchy */
+    .nav-sub-list {
+      margin: 4px 0 8px 14px;
+      padding: 0;
+      list-style: none;
+      border-left: 1px solid #1e293b;
+    }
+    .nav-sub-item {
+      display: block;
+      font-size: 11px;
+      color: #94a3b8;
+      padding: 3px 0 3px 12px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+      line-height: 1.4;
+    }
+    .nav-sub-item:hover {
+      color: #38bdf8;
+      border-left-color: #38bdf8;
+    }
+
+    /* EPC Scheme Catalog Search & Action */
+    .scheme-search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .scheme-search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      max-width: 420px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      padding: 4px 10px;
+    }
+    .scheme-search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f8fafc;
+      font-size: 12px;
+      width: 100%;
+    }
+    .scheme-search-input::placeholder {
+      color: #64748b;
+    }
+    .scheme-search-count {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .btn-load-pg {
+      background: #0369a1;
+      color: #ffffff;
+      border: 1px solid #0284c7;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .btn-load-pg:hover {
+      background: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    /* Small Copy Buttons */
+    .btn-copy-sm {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-copy-sm:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+    .btn-copy-sm.copied {
+      background: #065f46;
+      color: #a7f3d0;
+      border-color: #059669;
+    }
+
+    /* Regex Sandbox & Luhn Calculator Cards */
+    .sandbox-card {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: var(--gs1-radius-md);
+      padding: 16px;
+      margin: 16px 0;
+      color: #f8fafc;
+    }
+    .badge-match {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .badge-mismatch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .preset-chip {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-chip:hover {
+      background: #334155;
+      color: #ffffff;
+      border-color: #38bdf8;
+    }
+    .step-trace-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 10px;
+      font-family: 'Fira Code', monospace;
+    }
+    .step-trace-table th {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #1e293b;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .step-trace-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    .step-trace-table tr:hover td {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
   </style>
 </head>
 <body>
+
+<noscript>
+  <div style="padding: 2rem; text-align: center; background: #002c6c; color: #ffffff; font-family: system-ui, sans-serif;">
+    <h2 style="margin-bottom: 0.5rem;">JavaScript Required</h2>
+    <p>This GS1 TDS / TDT 2.3 Developer Guide requires JavaScript for interactive inspection, test runners, and live translation tools.</p>
+  </div>
+</noscript>
 
 <div id="app" v-cloak>
 
@@ -1788,9 +1987,9 @@
       </div>
     </div>
 
-    <div class="sidebar-search">
+    <div class="sidebar-search" role="search" aria-label="Documentation search">
       <div class="search-input-wrapper">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon" aria-hidden="true">🔍</span>
         <input 
           id="global-search"
           ref="searchInput"
@@ -1801,15 +2000,17 @@
           placeholder="Filter methods, specs, rules..." 
           class="search-input"
           autocomplete="off"
+          role="searchbox"
+          aria-label="Search documentation"
         >
-        <span v-if="!searchQuery" class="search-kbd-hint">/</span>
-        <button v-if="searchQuery" class="search-clear-btn" @click="searchQuery = ''" title="Clear search">&times;</button>
+        <span v-if="!searchQuery" class="search-kbd-hint" aria-hidden="true">/</span>
+        <button v-if="searchQuery" class="search-clear-btn" @click="searchQuery = ''" title="Clear search" aria-label="Clear search">&times;</button>
       </div>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" role="navigation" aria-label="Table of contents">
       <!-- Search Results Pane -->
-      <div v-if="searchQuery.trim()" class="search-results-pane">
+      <div v-if="searchQuery.trim()" class="search-results-pane" role="region" aria-label="Search results" aria-live="polite">
         <div class="search-results-summary">
           <span>Found {{ searchResults.length }} {{ searchResults.length === 1 ? 'match' : 'matches' }}</span>
           <button class="btn-clear-search-link" @click="searchQuery = ''">Reset</button>
@@ -1852,6 +2053,13 @@
         >
           <span>2. Tech Stack &amp; BOM</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('table-viewer')">Table Artifacts</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('headless-batch')">CLI Batch Translation</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('web-embedding')">Web Embedding</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('web-workers-batch')">Web Workers</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('integration-recipes')">Integration Recipes</a></li>
+        </ul>
         <a 
           class="nav-item" 
           :class="{ active: currentSection === 'contracts' }" 
@@ -1860,6 +2068,10 @@
           <span>3. Inputs, Outputs &amp; Contracts</span>
           <span class="badge">8 Levels</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('test-vectors')">Normative Test Suite</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('scheme-directory')">47 EPC Schemes Catalog</a></li>
+        </ul>
 
         <div class="nav-group-title" style="margin-top: 14px;">Architecture &amp; Flow</div>
         <a 
@@ -1869,6 +2081,12 @@
         >
           <span>4. System Architecture &amp; Lifecycle</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('transformation-pipeline')">Data Pipeline</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('core-regex')">Core Regex Validation</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('regex-sandbox')">Interactive Regex Sandbox</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('schema-loading')">Schema Initialization</a></li>
+        </ul>
         <a 
           class="nav-item" 
           :class="{ active: currentSection === 'hostname-codec' }" 
@@ -1877,6 +2095,10 @@
           <span>5. Hostname Compaction (§14.5.16)</span>
           <span class="badge">56-bit</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('56-bit-walkthrough')">56-Bit Walkthrough</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('subfield-deconstructor')">Sub-Field Deconstructor</a></li>
+        </ul>
 
         <div class="nav-group-title" style="margin-top: 14px;">API Reference</div>
         <a 
@@ -1894,6 +2116,10 @@
         >
           <span>7. UI Components &amp; State</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('live-playground')">Live Codec Playground</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('dom-mapping-table')">DOM Directives</a></li>
+        </ul>
         <a 
           class="nav-item" 
           :class="{ active: currentSection === 'succession' }" 
@@ -1901,6 +2127,12 @@
         >
           <span>8. Extension &amp; Succession Guide</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" @click.stop="scrollTo('table-f-calculator')">Table F Compaction Calculator</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('table-f-matrix')">Compaction Algorithm Matrix</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('check-digit-calculator')">Luhn Modulo-10 Calculator</a></li>
+          <li><a class="nav-sub-item" @click.stop="scrollTo('troubleshooting-matrix')">Troubleshooting Matrix</a></li>
+        </ul>
       </div>
     </nav>
 
@@ -2282,6 +2514,7 @@
               v-model="searchTableQuery" 
               placeholder="Filter by token, substring, or AI (e.g. 'id.', '01', 'uk')..." 
               style="flex: 1; min-width: 200px;"
+              autocomplete="off"
             />
           </div>
 
@@ -2302,6 +2535,11 @@
                     <code>{{ row[col] }}</code>
                   </td>
                 </tr>
+                <tr v-if="filteredTableRecords.length > 50">
+                  <td :colspan="tableColumns.length" style="text-align: center; color: #f59e0b; font-size: 12px; padding: 8px;">
+                    Showing first 50 of {{ filteredTableRecords.length }} matching records. Use the filter input above to narrow results.
+                  </td>
+                </tr>
                 <tr v-if="filteredTableRecords.length === 0">
                   <td :colspan="tableColumns.length" style="text-align: center; color: #cbd5e1;">
                     No records match "{{ searchTableQuery }}".
@@ -2317,8 +2555,10 @@
           Drop-in code patterns for integrating <code>TDTtranslator.js</code> across different runtime environments:
         </p>
 
-        <div class="recipe-tabs">
+        <div class="recipe-tabs" role="tablist" aria-label="Runtime integration recipes">
           <button 
+            role="tab"
+            :aria-selected="activeRecipeTab === 'browser'"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'browser' }" 
             @click="activeRecipeTab = 'browser'"
@@ -2326,6 +2566,8 @@
             Vanilla Browser Script Tag
           </button>
           <button 
+            role="tab"
+            :aria-selected="activeRecipeTab === 'worker'"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'worker' }" 
             @click="activeRecipeTab = 'worker'"
@@ -2333,6 +2575,8 @@
             Web Worker Background Thread
           </button>
           <button 
+            role="tab"
+            :aria-selected="activeRecipeTab === 'node'"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'node' }" 
             @click="activeRecipeTab = 'node'"
@@ -2342,7 +2586,7 @@
         </div>
 
         <!-- Recipe 1: Browser -->
-        <div v-show="activeRecipeTab === 'browser'" class="code-block-container">
+        <div v-show="activeRecipeTab === 'browser'" class="code-block-container" role="tabpanel" aria-label="Vanilla Browser Script Tag">
           <div class="code-block-header">
             <span>INDEX.HTML / APP.JS</span>
             <button class="btn-copy-code" @click="copyOutput(recipeCodeBrowser, 'rc1')">
@@ -2353,7 +2597,7 @@
         </div>
 
         <!-- Recipe 2: Web Worker -->
-        <div v-show="activeRecipeTab === 'worker'" class="code-block-container">
+        <div v-show="activeRecipeTab === 'worker'" class="code-block-container" role="tabpanel" aria-label="Web Worker Background Thread">
           <div class="code-block-header">
             <span>WORKER.JS (BACKGROUND THREAD)</span>
             <button class="btn-copy-code" @click="copyOutput(recipeCodeWorker, 'rc2')">
@@ -2364,7 +2608,7 @@
         </div>
 
         <!-- Recipe 3: Node.js -->
-        <div v-show="activeRecipeTab === 'node'" class="code-block-container">
+        <div v-show="activeRecipeTab === 'node'" class="code-block-container" role="tabpanel" aria-label="Headless Node.js Microservice">
           <div class="code-block-header">
             <span>CLI.JS (NODE.JS FS RUNTIME)</span>
             <button class="btn-copy-code" @click="copyOutput(recipeCodeNode, 'rc3')">
@@ -2667,6 +2911,14 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             {{ copiedFixtures ? '✓ Fixtures Copied' : '📋 Copy JSON Fixtures Array' }}
           </button>
           <button 
+            class="btn-copy-fixtures" 
+            :class="{ copied: copiedCliRunner }" 
+            @click="copyCliRunnerScript"
+            style="margin-bottom: 0;"
+          >
+            {{ copiedCliRunner ? '✓ CLI Script Copied' : '💻 Copy Standalone CLI Test Script' }}
+          </button>
+          <button 
             class="btn-run-vectors" 
             @click="runAllTestVectors"
             :disabled="isRunningVectors"
@@ -2698,8 +2950,8 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 <td><code style="word-break: break-all;">{{ v.input }}</code></td>
                 <td><code>{{ v.expectedOutputs.HEX }}</code></td>
                 <td>
-                  <span v-if="vectorResults[v.scheme]" :class="vectorResults[v.scheme].passed ? 'status-badge-pass' : 'status-badge-fail'">
-                    {{ vectorResults[v.scheme].passed ? ('✓ Passed (' + vectorResults[v.scheme].ms + 'ms)') : '✗ Failed' }}
+                  <span v-if="vectorResults[v.name || v.scheme]" :class="vectorResults[v.name || v.scheme].passed ? 'status-badge-pass' : 'status-badge-fail'">
+                    {{ vectorResults[v.name || v.scheme].passed ? ('✓ Passed (' + vectorResults[v.name || v.scheme].ms + 'ms)') : '✗ Failed' }}
                   </span>
                   <span v-else style="color: #94a3b8; font-size: 11px;">Not run</span>
                 </td>
@@ -2715,13 +2967,43 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
 
         <h3 id="scheme-directory">EPC Scheme Directory &amp; Bit Capacity Matrix</h3>
         <p>
-          Reference catalog of all 24 GS1 Electronic Product Code (EPC) schemes supported by the translation engine:
+          Reference catalog of all 47 GS1 Electronic Product Code (EPC) schemes supported by the translation engine:
         </p>
 
-        <div class="method-category-pills" style="margin-bottom: 12px;">
+        <div style="background: rgba(14, 165, 233, 0.08); border-left: 3px solid #0ea5e9; padding: 10px 14px; margin-bottom: 14px; border-radius: 0 4px 4px 0; font-size: 12px; color: #cbd5e1; line-height: 1.5;">
+          <strong>Architecture Note on EPC URN Support:</strong> EPC URN structures (<code>TAG_ENCODING</code> / <code>PURE_IDENTITY</code>) are exclusively supported on legacy TDS 1.x schemes (e.g. <code>SGTIN-96</code>, <code>SSCC-96</code>). All modern schemes introduced since TDS 2.0 onwards (<code>+</code> and <code>++</code>) drop support for EPC URN formats entirely, standardising on GS1 Digital Link URIs (<code>https://...</code>), Binary, Hex, and GS1 AI Key-Value structures. Tag URI Prefix and Pure Identity URI fields are therefore empty for all <code>+</code> and <code>++</code> schemes.
+        </div>
+
+        <div class="scheme-search-bar">
+          <div class="scheme-search-box">
+            <span aria-hidden="true" style="color: #94a3b8; font-size: 13px;">🔍</span>
+            <input 
+              type="text" 
+              v-model="schemeSearchQuery" 
+              placeholder="Search 47 schemes by name, AI, bits, hex..." 
+              class="scheme-search-input"
+              autocomplete="off"
+              aria-label="Search EPC schemes"
+            />
+            <button 
+              v-if="schemeSearchQuery" 
+              @click="schemeSearchQuery = ''" 
+              style="background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; padding: 0 4px;"
+              title="Clear search"
+              aria-label="Clear scheme search"
+            >&times;</button>
+          </div>
+          <span class="scheme-search-count">
+            Showing {{ filteredSchemesList.length }} of {{ schemesDataset.length }} schemes
+          </span>
+        </div>
+
+        <div class="method-category-pills" role="tablist" aria-label="EPC Scheme Families" style="margin-bottom: 12px;">
           <button 
             v-for="cat in schemeFamilies" 
             :key="cat" 
+            role="tab"
+            :aria-selected="activeSchemeFamily === cat"
             class="method-cat-pill" 
             :class="{ active: activeSchemeFamily === cat }"
             @click="activeSchemeFamily = cat"
@@ -2740,6 +3022,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 <th>Header Bits (Binary / Hex)</th>
                 <th>Tag URI Prefix</th>
                 <th>Pure Identity URI</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -2748,8 +3031,17 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 <td><span class="method-badge badge-instance">{{ sch.family }}</span></td>
                 <td><code>{{ sch.primaryAI }}</code></td>
                 <td><code>{{ sch.headerBits }} ({{ sch.headerHex }})</code></td>
-                <td><code style="font-size: 11px;">{{ sch.tagPrefix }}</code></td>
-                <td><code style="font-size: 11px;">{{ sch.purePrefix }}</code></td>
+                <td><code v-if="sch.tagPrefix" style="font-size: 11px;">{{ sch.tagPrefix }}</code><span v-else style="color: #64748b; font-size: 11px;">—</span></td>
+                <td><code v-if="sch.purePrefix" style="font-size: 11px;">{{ sch.purePrefix }}</code><span v-else style="color: #64748b; font-size: 11px;">—</span></td>
+                <td>
+                  <button 
+                    class="btn-load-pg" 
+                    @click="loadSchemeIntoPlayground(sch)" 
+                    :title="'Load ' + sch.name + ' sample into Playground'"
+                  >
+                    Try ↗
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -2795,6 +3087,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         </div>
 
         <h3 id="regex-reference">Regex Constants &amp; Character Set Deconstruction</h3>
+        <span id="core-regex"></span>
         <p>
           The translation engine relies on static regular expressions defined on the <code>TDTtranslator</code> class to validate data inputs and route tokens through syntax parsers:
         </p>
@@ -2827,7 +3120,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 <td><code>regexAlphanumeric</code></td>
                 <td><code>^[\x21-\x23\x25-\x5A\x5A-\x7A]+$</code></td>
                 <td>
-                  <strong>Table F Variable-Length Alphanumeric (§14.5.6):</strong> Validates printable 7-bit ASCII characters for general text AIs (e.g. serial numbers, batch/lot), excluding space (0x20) and control codes.
+                  <strong>Table F Variable-Length Alphanumeric (§14.5.6):</strong> Defined verbatim on <code>TDTtranslator.regexAlphanumeric</code>. Validates printable 7-bit ASCII characters for general text AIs (e.g. serial numbers, batch/lot), spanning ASCII 0x21–0x23 (<code>!-#</code>), 0x25–0x5A (<code>%-Z</code>), and 0x5A–0x7A (<code>Z-z</code>), strictly excluding space (0x20) and control characters.
                 </td>
               </tr>
               <tr>
@@ -2853,6 +3146,74 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <h3 id="regex-sandbox">Interactive Regex Pattern Sandbox</h3>
+        <p>
+          Test arbitrary character strings against core GS1 TDS 2.3 validation and grammar regular expressions in real time. Inspect match status, capture groups, and invalid character positions:
+        </p>
+
+        <div class="sandbox-card">
+          <div class="calc-grid">
+            <div class="calc-group" style="flex: 1;">
+              <label for="regex-select">Target Regular Expression</label>
+              <select id="regex-select" v-model="regexSandboxKey" @change="onRegexPatternChange">
+                <option value="regexPermittedHostname">regexPermittedHostname (TDS §14.5.16 Domain Scope)</option>
+                <option value="regexURNcode40">regexURNcode40 (§14.5.16 Strategy 0 Alphabet)</option>
+                <option value="regexAlphanumeric">regexAlphanumeric (§14.5.6 Table F 7-Bit ASCII)</option>
+                <option value="regexAllNumeric">regexAllNumeric (§14.5.2 &amp; §14.5.4 Fixed Digits)</option>
+                <option value="regexDateYYMMDD">regexDateYYMMDD (§14.5.8 Packed Date)</option>
+                <option value="regexRule">regexRule (Grammar Function Parser)</option>
+              </select>
+            </div>
+            <div class="calc-group" style="flex: 2;">
+              <label for="regex-input">Test String</label>
+              <input 
+                id="regex-input" 
+                type="text" 
+                v-model="sandboxTestString" 
+                placeholder="Enter string to evaluate against pattern..." 
+                autocomplete="off" 
+              />
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">PRESETS:</span>
+            <button 
+              v-for="p in currentRegexPresets" 
+              :key="p.label" 
+              class="preset-chip" 
+              @click="loadRegexPreset(p.val)"
+            >
+              {{ p.label }}
+            </button>
+          </div>
+
+          <div v-if="regexSandboxResult">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span :class="regexSandboxResult.matches ? 'badge-match' : 'badge-mismatch'">
+                  {{ regexSandboxResult.matches ? '✓ Matches Pattern' : '✗ Pattern Mismatch' }}
+                </span>
+                <code style="font-size: 12px; color: #38bdf8;">{{ regexSandboxResult.patternSource }}</code>
+              </div>
+            </div>
+
+            <!-- Violation Details -->
+            <div v-if="!regexSandboxResult.matches && regexSandboxResult.violationReport" style="background: rgba(239, 68, 68, 0.08); border-left: 3px solid #ef4444; padding: 10px 14px; border-radius: 0 4px 4px 0; font-size: 12px; color: #fca5a5; line-height: 1.5; margin-top: 10px;">
+              <strong>Character Constraint Violation:</strong> {{ regexSandboxResult.violationReport }}
+            </div>
+
+            <!-- Capture Groups for regexRule -->
+            <div v-if="regexSandboxResult.matches && regexSandboxResult.groups" style="background: #000000; border: 1px solid #1e293b; padding: 10px 14px; border-radius: 4px; margin-top: 10px;">
+              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">CAPTURED GRAMMAR GROUPS:</div>
+              <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'Fira Code', monospace; font-size: 12px;">
+                <div><span style="color: #94a3b8;">Group 1 (Function Name):</span> <strong style="color: #38bdf8;">{{ regexSandboxResult.groups.func }}</strong></div>
+                <div><span style="color: #94a3b8;">Group 2 (Arguments):</span> <strong style="color: #a7f3d0;">{{ regexSandboxResult.groups.args }}</strong></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <h3 id="schema-loading">Schema Initialization &amp; Unzipped Directory Loading</h3>
@@ -2999,6 +3360,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 type="text" 
                 v-model.trim="playgroundUriStem" 
                 placeholder="https://id.gs1.org" 
+                autocomplete="off"
                 @keyup.enter="runPlaygroundTranslation"
                 @blur="runPlaygroundTranslation"
               />
@@ -3011,9 +3373,10 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               class="playground-input" 
               v-model="playgroundInput" 
               placeholder="Enter GS1 Digital Link, EPC URI, or custom domain..."
+              autocomplete="off"
               @keyup.enter="runPlaygroundTranslation"
             />
-            <button class="playground-exec-btn" @click="runPlaygroundTranslation">
+            <button class="playground-exec-btn" @click="runPlaygroundTranslation" aria-label="Translate and inspect identifier">
               Translate &amp; Inspect
             </button>
           </div>
@@ -3068,10 +3431,12 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <div class="playground-bit-display" v-if="playgroundResult.chunks && playgroundResult.chunks.length">
               <div class="playground-bit-label">
                 <span>Bitstream Inspection ({{ playgroundResult.totalBits }} bits)</span>
-                <div class="bit-display-modes">
+                <div class="bit-display-modes" role="radiogroup" aria-label="Bit display grouping">
                   <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">Grouping:</span>
                   <button 
                     type="button"
+                    role="radio"
+                    :aria-checked="playgroundBitGrouping === 'chunks'"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'chunks' }" 
                     @click="playgroundBitGrouping = 'chunks'"
@@ -3080,6 +3445,8 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                   </button>
                   <button 
                     type="button"
+                    role="radio"
+                    :aria-checked="playgroundBitGrouping === 'nibbles'"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'nibbles' }" 
                     @click="playgroundBitGrouping = 'nibbles'"
@@ -3088,6 +3455,8 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                   </button>
                   <button 
                     type="button"
+                    role="radio"
+                    :aria-checked="playgroundBitGrouping === 'octets'"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'octets' }" 
                     @click="playgroundBitGrouping = 'octets'"
@@ -3113,7 +3482,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </div>
 
               <!-- Interactive Sub-Field Deconstruction Pane -->
-              <div class="chunk-deconstructor-pane" v-if="selectedChunk && playgroundBitGrouping === 'chunks'">
+              <div id="subfield-deconstructor" class="chunk-deconstructor-pane" v-if="selectedChunk && playgroundBitGrouping === 'chunks'">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                   <strong style="color: #38bdf8;">
                     Sub-Field Deconstruction: <code>{{ selectedChunk.name }}</code> ({{ selectedChunk.len }} bits)
@@ -3237,6 +3606,36 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                       </div>
                     </td>
                   </tr>
+                  <tr v-if="playgroundResult.outputs.GS1_AI_JSON">
+                    <td><code>GS1_AI_JSON</code></td>
+                    <td>
+                      <div class="output-val-cell">
+                        <code style="word-break: break-all;">{{ playgroundResult.outputs.GS1_AI_JSON }}</code>
+                        <button 
+                          class="btn-copy-output" 
+                          :class="{ copied: copiedOutputKey === 'GS1_AI_JSON' }" 
+                          @click="copyOutput(playgroundResult.outputs.GS1_AI_JSON, 'GS1_AI_JSON')"
+                        >
+                          {{ copiedOutputKey === 'GS1_AI_JSON' ? '✓ Copied' : 'Copy' }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="playgroundResult.outputs.BARE_IDENTIFIER">
+                    <td><code>BARE_IDENTIFIER</code></td>
+                    <td>
+                      <div class="output-val-cell">
+                        <code style="word-break: break-all;">{{ playgroundResult.outputs.BARE_IDENTIFIER }}</code>
+                        <button 
+                          class="btn-copy-output" 
+                          :class="{ copied: copiedOutputKey === 'BARE_IDENTIFIER' }" 
+                          @click="copyOutput(playgroundResult.outputs.BARE_IDENTIFIER, 'BARE_IDENTIFIER')"
+                        >
+                          {{ copiedOutputKey === 'BARE_IDENTIFIER' ? '✓ Copied' : 'Copy' }}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -3275,7 +3674,16 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         </div>
 
         <div v-for="method in filteredMethods" :key="method.name" :id="'fn-' + method.name" class="method-card">
-          <div class="method-header collapsible" @click="toggleMethod(method.name)">
+          <div 
+            class="method-header collapsible" 
+            @click="toggleMethod(method.name)"
+            @keydown.enter="toggleMethod(method.name)"
+            @keydown.space.prevent="toggleMethod(method.name)"
+            tabindex="0"
+            role="button"
+            :aria-expanded="isMethodExpanded(method.name)"
+            :aria-label="'Toggle method ' + method.name"
+          >
             <span class="method-signature">
               <span class="method-collapse-icon" :class="{ collapsed: !isMethodExpanded(method.name) }">&#9660;</span>
               {{ method.signature }}
@@ -3537,11 +3945,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             </div>
             <div class="calc-group">
               <label for="calc-ai">AI Code</label>
-              <input id="calc-ai" type="text" v-model="calcAI" @input="calculateTableFCompaction" placeholder="01, 10, 17, 21..." />
+              <input id="calc-ai" type="text" v-model="calcAI" @input="calculateTableFCompaction" placeholder="01, 10, 17, 21..." autocomplete="off" />
             </div>
             <div class="calc-group">
               <label for="calc-val">Raw Data Value</label>
-              <input id="calc-val" type="text" v-model="calcVal" @input="calculateTableFCompaction" placeholder="e.g. 09521234123453" />
+              <input id="calc-val" type="text" v-model="calcVal" @input="calculateTableFCompaction" placeholder="e.g. 09521234123453" autocomplete="off" />
             </div>
           </div>
 
@@ -3566,9 +3974,34 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             </div>
 
             <div style="margin-top: 10px;">
-              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 4px;">COMPACTED BITSTREAM:</div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">COMPACTED BITSTREAM:</span>
+                <button 
+                  class="btn-copy-sm" 
+                  @click="copyOutput(calcResult.binary, 'tableFBits')"
+                  :class="{ copied: copiedOutputKey === 'tableFBits' }"
+                >
+                  {{ copiedOutputKey === 'tableFBits' ? '✓ Copied' : '📋 Copy Bits' }}
+                </button>
+              </div>
               <div style="background: #000000; padding: 10px 12px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 13px; color: #38bdf8; word-break: break-all;">
                 {{ calcResult.binary }}
+              </div>
+            </div>
+
+            <div style="margin-top: 10px;" v-if="calcResultHex">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">HEXADECIMAL EQUIVALENT (Zero-Padded):</span>
+                <button 
+                  class="btn-copy-sm" 
+                  @click="copyOutput(calcResultHex, 'tableFHex')"
+                  :class="{ copied: copiedOutputKey === 'tableFHex' }"
+                >
+                  {{ copiedOutputKey === 'tableFHex' ? '✓ Copied' : '📋 Copy Hex' }}
+                </button>
+              </div>
+              <div style="background: #000000; padding: 10px 12px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 13px; color: #a7f3d0; word-break: break-all;">
+                {{ calcResultHex }}
               </div>
             </div>
 
@@ -3646,6 +4079,156 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <h3 id="check-digit-calculator">Interactive Luhn Modulo-10 Check Digit Calculator</h3>
+        <p>
+          GS1 identification keys (GTIN-8, GTIN-12, GTIN-13, GTIN-14, and SSCC-18) employ the standard Modulo-10 check digit algorithm defined in GS1 General Specifications Section 7.9. Calculate check digits for raw data payloads or validate existing full identifiers:
+        </p>
+
+        <div class="sandbox-card">
+          <!-- Calculation Mode Selector -->
+          <div class="method-category-pills" role="tablist" aria-label="Check Digit Mode" style="margin-bottom: 14px;">
+            <button 
+              role="tab"
+              :aria-selected="calcLuhnMode === 'payload'"
+              class="method-cat-pill" 
+              :class="{ active: calcLuhnMode === 'payload' }"
+              @click="setLuhnMode('payload')"
+            >
+              Calculate Check Digit (Input is Payload)
+            </button>
+            <button 
+              role="tab"
+              :aria-selected="calcLuhnMode === 'full'"
+              class="method-cat-pill" 
+              :class="{ active: calcLuhnMode === 'full' }"
+              @click="setLuhnMode('full')"
+            >
+              Validate Full Identifier (Trailing Digit is Check Digit)
+            </button>
+          </div>
+
+          <div class="calc-grid">
+            <div class="calc-group" style="flex: 2;">
+              <label for="luhn-input">
+                {{ calcLuhnMode === 'payload' ? 'GS1 Data Payload (Numeric Digits without Check Digit)' : 'Full GS1 Identifier with Check Digit (Numeric Digits)' }}
+              </label>
+              <input 
+                id="luhn-input" 
+                type="text" 
+                v-model="calcLuhnInput" 
+                :placeholder="calcLuhnMode === 'payload' ? 'Enter payload digits, e.g. 0952123412345 or 501234567890' : 'Enter full identifier, e.g. 09521234123453 or 5012345678900'" 
+                autocomplete="off" 
+              />
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px;">
+            <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">STANDARD PRESETS:</span>
+            <button class="preset-chip" @click="loadLuhnPreset('gtin14')">{{ calcLuhnMode === 'payload' ? 'GTIN-14 (13 Digits)' : 'GTIN-14 (14 Digits)' }}</button>
+            <button class="preset-chip" @click="loadLuhnPreset('gtin13')">{{ calcLuhnMode === 'payload' ? 'GTIN-13 (12 Digits)' : 'GTIN-13 (13 Digits)' }}</button>
+            <button class="preset-chip" @click="loadLuhnPreset('sscc18')">{{ calcLuhnMode === 'payload' ? 'SSCC-18 (17 Digits)' : 'SSCC-18 (18 Digits)' }}</button>
+            <button class="preset-chip" @click="loadLuhnPreset('gtin12')">{{ calcLuhnMode === 'payload' ? 'GTIN-12 (11 Digits)' : 'GTIN-12 (12 Digits)' }}</button>
+            <button class="preset-chip" @click="loadLuhnPreset('gtin8')">{{ calcLuhnMode === 'payload' ? 'GTIN-8 (7 Digits)' : 'GTIN-8 (8 Digits)' }}</button>
+          </div>
+
+          <div v-if="luhnCalculationResult">
+            <div class="calc-stat-grid">
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Calculated Check Digit</div>
+                <div class="calc-stat-val" style="color: #38bdf8; font-size: 20px;">
+                  {{ luhnCalculationResult.checkDigit }}
+                </div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Payload Digits</div>
+                <div class="calc-stat-val">{{ luhnCalculationResult.payloadLength }} digits</div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Weighted Sum</div>
+                <div class="calc-stat-val" style="color: var(--gs1-orange);">{{ luhnCalculationResult.totalSum }}</div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Standard Formula</div>
+                <div class="calc-stat-val" style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+                  (10 - ({{ luhnCalculationResult.totalSum }} % 10)) % 10 = {{ luhnCalculationResult.checkDigit }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Complete / Evaluated Identifier -->
+            <div style="margin-top: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">
+                  {{ luhnCalculationResult.isValidationMode ? 'EVALUATED IDENTIFIER (TRAILING CHECK DIGIT HIGHLIGHTED):' : 'COMPLETED IDENTIFIER (WITH CALCULATED CHECK DIGIT):' }}
+                </span>
+                <button 
+                  class="btn-copy-sm" 
+                  @click="copyOutput(luhnCalculationResult.fullIdentifier, 'luhnFull')"
+                  :class="{ copied: copiedOutputKey === 'luhnFull' }"
+                >
+                  {{ copiedOutputKey === 'luhnFull' ? '✓ Copied' : '📋 Copy Full Key' }}
+                </button>
+              </div>
+              <div style="background: #000000; padding: 10px 12px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 14px; color: #f8fafc; letter-spacing: 0.05em; word-break: break-all;">
+                <span>{{ luhnCalculationResult.payload }}</span><strong :style="{ color: luhnCalculationResult.isValidationMode && !luhnCalculationResult.checkDigitMatches ? '#f87171' : '#38bdf8', background: luhnCalculationResult.isValidationMode && !luhnCalculationResult.checkDigitMatches ? 'rgba(239, 68, 68, 0.2)' : 'rgba(56, 189, 248, 0.15)' }" style="padding: 2px 6px; border-radius: 3px; margin-left: 2px;">{{ luhnCalculationResult.isValidationMode ? luhnCalculationResult.enteredTrailingDigit : luhnCalculationResult.checkDigit }}</strong>
+              </div>
+            </div>
+
+            <!-- Validation status badge if user is in validation mode -->
+            <div v-if="luhnCalculationResult.isValidationMode" style="margin-top: 10px;">
+              <div v-if="luhnCalculationResult.checkDigitMatches" class="badge-match">
+                ✓ Valid Check Digit: Trailing digit '{{ luhnCalculationResult.enteredTrailingDigit }}' matches calculated check digit
+              </div>
+              <div v-else class="badge-mismatch">
+                ✗ Check Digit Mismatch: Trailing digit is '{{ luhnCalculationResult.enteredTrailingDigit }}', but calculated check digit is '{{ luhnCalculationResult.checkDigit }}'
+              </div>
+            </div>
+
+            <!-- Step-by-Step Arithmetic Trace -->
+            <div style="margin-top: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">GS1 MODULO-10 ARITHMETIC BREAKDOWN (RIGHT-TO-LEFT WEIGHTING):</span>
+                <button 
+                  class="btn-copy-sm" 
+                  @click="showLuhnTrace = !showLuhnTrace"
+                  style="font-size: 10px; padding: 1px 6px;"
+                >
+                  {{ showLuhnTrace ? '▲ Collapse Trace' : '▼ Expand Step-by-Step Trace' }}
+                </button>
+              </div>
+
+              <div v-if="showLuhnTrace" class="data-table-wrapper" style="max-height: 240px; overflow-y: auto;">
+                <table class="step-trace-table">
+                  <thead>
+                    <tr>
+                      <th>Position (R→L)</th>
+                      <th>Digit</th>
+                      <th>Weight</th>
+                      <th>Calculation</th>
+                      <th>Product</th>
+                      <th>Running Sum</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="step in luhnCalculationResult.steps" :key="step.posR2L">
+                      <td><code>{{ step.posR2L }}</code></td>
+                      <td><strong>{{ step.digit }}</strong></td>
+                      <td><span style="color: #38bdf8;">{{ step.weight }}x</span></td>
+                      <td>{{ step.digit }} &times; {{ step.weight }}</td>
+                      <td><code>{{ step.product }}</code></td>
+                      <td><strong style="color: #a7f3d0;">{{ step.runningSum }}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="calcLuhnInput.trim()" class="callout warning" style="margin: 10px 0 0 0;">
+            Please enter a numeric digit sequence (0-9) to compute the GS1 check digit.
+          </div>
         </div>
 
         <h3 id="troubleshooting-matrix">Common Pitfalls, Error Diagnostics &amp; Troubleshooting</h3>
@@ -3787,6 +4370,7 @@ node test_minimal_suite.js
     :style="showBackToTop ? 'opacity: 1; pointer-events: auto;' : 'opacity: 0; pointer-events: none;'"
     @click="scrollToTop" 
     title="Back to top"
+    aria-label="Back to top"
   >
     &uarr;
   </button>
@@ -4160,9 +4744,18 @@ const METHOD_INDEX = [
     snippet: `static get tds2encodingMethods() {
     return {
         "14.5.2": { regex: TDTtranslator.regexAllNumeric, encoder: TDTtranslator.toBinaryUsingFixedBitLengthInteger, decoder: TDTtranslator.fromBinaryUsingFixedBitLengthInteger },
+        "14.5.3": {}, // Reserved section parameter placeholder
         "14.5.4": { regex: TDTtranslator.regexAllNumeric, encoder: TDTtranslator.toBinaryUsingFixedLengthNumeric, decoder: TDTtranslator.fromBinaryUsingFixedLengthNumeric },
+        "14.5.5": { regex: TDTtranslator.regexAlphanumeric, encoder: TDTtranslator.toBinaryUsingDelimitedNumeric, decoder: TDTtranslator.fromBinaryUsingDelimitedNumeric },
         "14.5.6": { regex: TDTtranslator.regexAlphanumeric, encoder: TDTtranslator.toBinaryUsingVariableLengthAlphanumeric, decoder: TDTtranslator.fromBinaryUsingVariableLengthAlphanumeric },
-        "14.5.8": { regex: TDTtranslator.regexDateYYMMDD, encoder: TDTtranslator.toBinaryUsingDateYYMMDD, decoder: TDTtranslator.fromBinaryUsingDateYYMMDD }
+        "14.5.7": { regex: TDTtranslator.regexSingleBit, encoder: TDTtranslator.toBinaryUsingSingleDataBit, decoder: TDTtranslator.fromBinaryUsingSingleDataBit },
+        "14.5.8": { regex: TDTtranslator.regexDateYYMMDD, encoder: TDTtranslator.toBinaryUsingDateYYMMDD, decoder: TDTtranslator.fromBinaryUsingDateYYMMDD },
+        "14.5.9": { regex: TDTtranslator.regexDateYYMMDDhhmm, encoder: TDTtranslator.toBinaryUsingDateYYMMDDhhmm, decoder: TDTtranslator.fromBinaryUsingDateYYMMDDhhmm },
+        "14.5.10": { regex: TDTtranslator.regexDateYYMMDDorYYMMDDYYMMDD, encoder: TDTtranslator.toBinaryUsingDateOrDateRange, decoder: TDTtranslator.fromBinaryUsingDateOrDateRange },
+        "14.5.11": { regex: TDTtranslator.regexVariablePrecisionDateTimeYYMMDDhh_mmss, encoder: TDTtranslator.toBinaryUsingVariablePrecisionDateTime, decoder: TDTtranslator.fromBinaryUsingVariablePrecisionDateTime },
+        "14.5.12": { regex: TDTtranslator.regexCountryCode, encoder: TDTtranslator.toBinaryUsingCountryCode, decoder: TDTtranslator.fromBinaryUsingCountryCode },
+        "14.5.13": { regex: TDTtranslator.regexAllNumeric, encoder: TDTtranslator.toBinaryUsingVariableLengthNumeric, decoder: TDTtranslator.fromBinaryUsingVariableLengthNumeric },
+        "14.5.14": { regex: TDTtranslator.regexOptionalMinus, encoder: TDTtranslator.toBinaryUsingOptionalMinus, decoder: TDTtranslator.fromBinaryUsingOptionalMinus }
     };
 }`
   }
@@ -4241,30 +4834,53 @@ const TEST_VECTORS_FIXTURES = [
 
 
 const EPC_SCHEMES_DATASET = [
-  { name: "SGTIN-96", family: "Trade Items (GTIN)", primaryAI: "01", headerBits: "00110000", headerHex: "0x30", tagPrefix: "urn:epc:tag:sgtin-96:", purePrefix: "urn:epc:id:sgtin:" },
-  { name: "SGTIN-198", family: "Trade Items (GTIN)", primaryAI: "01", headerBits: "00110110", headerHex: "0x36", tagPrefix: "urn:epc:tag:sgtin-198:", purePrefix: "urn:epc:id:sgtin:" },
-  { name: "SGTIN++", family: "Trade Items (GTIN)", primaryAI: "01, 21+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:sgtin-198:", purePrefix: "urn:epc:id:sgtin:" },
-  { name: "SSCC-96", family: "Logistics (SSCC)", primaryAI: "00", headerBits: "00110001", headerHex: "0x31", tagPrefix: "urn:epc:tag:sscc-96:", purePrefix: "urn:epc:id:sscc:" },
-  { name: "SSCC++", family: "Logistics (SSCC)", primaryAI: "00+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:sscc-96:", purePrefix: "urn:epc:id:sscc:" },
-  { name: "GRAI-96", family: "Assets (GRAI/GIAI)", primaryAI: "8003", headerBits: "00110011", headerHex: "0x33", tagPrefix: "urn:epc:tag:grai-96:", purePrefix: "urn:epc:id:grai:" },
-  { name: "GRAI-170", family: "Assets (GRAI/GIAI)", primaryAI: "8003", headerBits: "00110111", headerHex: "0x37", tagPrefix: "urn:epc:tag:grai-170:", purePrefix: "urn:epc:id:grai:" },
-  { name: "GRAI++", family: "Assets (GRAI/GIAI)", primaryAI: "8003+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:grai-170:", purePrefix: "urn:epc:id:grai:" },
-  { name: "GIAI-96", family: "Assets (GRAI/GIAI)", primaryAI: "8004", headerBits: "00110100", headerHex: "0x34", tagPrefix: "urn:epc:tag:giai-96:", purePrefix: "urn:epc:id:giai:" },
-  { name: "GIAI-202", family: "Assets (GRAI/GIAI)", primaryAI: "8004", headerBits: "00111000", headerHex: "0x38", tagPrefix: "urn:epc:tag:giai-202:", purePrefix: "urn:epc:id:giai:" },
-  { name: "GIAI++", family: "Assets (GRAI/GIAI)", primaryAI: "8004+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:giai-202:", purePrefix: "urn:epc:id:giai:" },
-  { name: "GDTI-96", family: "Documents & Services (GDTI/SGCN)", primaryAI: "253", headerBits: "00101100", headerHex: "0x2C", tagPrefix: "urn:epc:tag:gdti-96:", purePrefix: "urn:epc:id:gdti:" },
-  { name: "GDTI-174", family: "Documents & Services (GDTI/SGCN)", primaryAI: "253", headerBits: "00111110", headerHex: "0x3E", tagPrefix: "urn:epc:tag:gdti-174:", purePrefix: "urn:epc:id:gdti:" },
-  { name: "GDTI++", family: "Documents & Services (GDTI/SGCN)", primaryAI: "253+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:gdti-174:", purePrefix: "urn:epc:id:gdti:" },
-  { name: "SGCN-96", family: "Documents & Services (GDTI/SGCN)", primaryAI: "255", headerBits: "00111111", headerHex: "0x3F", tagPrefix: "urn:epc:tag:sgcn-96:", purePrefix: "urn:epc:id:sgcn:" },
-  { name: "SGCN++", family: "Documents & Services (GDTI/SGCN)", primaryAI: "255+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:sgcn-96:", purePrefix: "urn:epc:id:sgcn:" },
-  { name: "CPI-96", family: "Trade Items (GTIN)", primaryAI: "8010", headerBits: "00111100", headerHex: "0x3C", tagPrefix: "urn:epc:tag:cpi-96:", purePrefix: "urn:epc:id:cpi:" },
-  { name: "CPI-var", family: "Trade Items (GTIN)", primaryAI: "8010", headerBits: "00111101", headerHex: "0x3D", tagPrefix: "urn:epc:tag:cpi-var:", purePrefix: "urn:epc:id:cpi:" },
-  { name: "CPI++", family: "Trade Items (GTIN)", primaryAI: "8010+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:cpi-var:", purePrefix: "urn:epc:id:cpi:" },
-  { name: "ITIP-110", family: "Trade Items (GTIN)", primaryAI: "8006", headerBits: "01000000", headerHex: "0x40", tagPrefix: "urn:epc:tag:itip-110:", purePrefix: "urn:epc:id:itip:" },
-  { name: "ITIP-212", family: "Trade Items (GTIN)", primaryAI: "8006", headerBits: "01000001", headerHex: "0x41", tagPrefix: "urn:epc:tag:itip-212:", purePrefix: "urn:epc:id:itip:" },
-  { name: "ITIP++", family: "Trade Items (GTIN)", primaryAI: "8006+", headerBits: "11111101", headerHex: "0xFD", tagPrefix: "urn:epc:tag:itip-212:", purePrefix: "urn:epc:id:itip:" },
-  { name: "GINC-96", family: "Logistics (SSCC)", primaryAI: "401", headerBits: "00111010", headerHex: "0x3A", tagPrefix: "urn:epc:tag:ginc-96:", purePrefix: "urn:epc:id:ginc:" },
-  { name: "GSIN-96", family: "Logistics (SSCC)", primaryAI: "402", headerBits: "00111011", headerHex: "0x3B", tagPrefix: "urn:epc:tag:gsin-96:", purePrefix: "urn:epc:id:gsin:" }
+  {"name":"SGTIN++","family":"Trade Items (GTIN)","primaryAI":"01, 21","headerBits":"11111101","headerHex":"0xFD","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/01/09521234123453/21/32a%2Fb"},
+  {"name":"DSGTIN++","family":"Trade Items (GTIN)","primaryAI":"01, 21, 11","headerBits":"11111100","headerHex":"0xFC","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/01/09521234123453/21/32a%2Fb?11=241225"},
+  {"name":"ITIP++","family":"Trade Items (GTIN)","primaryAI":"8006, 21","headerBits":"11101101","headerHex":"0xED","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8006/095212341234530102/21/32a%2Fb"},
+  {"name":"SSCC++","family":"Logistics (SSCC)","primaryAI":"00","headerBits":"11101111","headerHex":"0xEF","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/00/106141412345678908"},
+  {"name":"SGLN++","family":"Locations (GLN)","primaryAI":"414, 254","headerBits":"11101001","headerHex":"0xE9","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/414/0614141123452/254/32a%2Fb"},
+  {"name":"GRAI++","family":"Assets (GRAI/GIAI)","primaryAI":"8003","headerBits":"11101011","headerHex":"0xEB","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8003/0061414112345232a%2Fb"},
+  {"name":"GIAI++","family":"Assets (GRAI/GIAI)","primaryAI":"8004","headerBits":"11101110","headerHex":"0xEE","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8004/061414132a%2Fb"},
+  {"name":"GDTI++","family":"Documents & Services (GDTI/SGCN)","primaryAI":"253","headerBits":"11101010","headerHex":"0xEA","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/253/061414112345232a%2Fb"},
+  {"name":"GSRN++","family":"Service Relations (GSRN)","primaryAI":"8018","headerBits":"11100111","headerHex":"0xE7","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8018/061414112345678901"},
+  {"name":"GSRNP++","family":"Service Relations (GSRN)","primaryAI":"8017","headerBits":"11101000","headerHex":"0xE8","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8017/061414112345678901"},
+  {"name":"SGCN++","family":"Documents & Services (GDTI/SGCN)","primaryAI":"255","headerBits":"11101100","headerHex":"0xEC","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/255/06141411234521234"},
+  {"name":"CPI++","family":"Trade Items (GTIN)","primaryAI":"8010, 8011","headerBits":"11100110","headerHex":"0xE6","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8010/0614141CP1234/8011/1234"},
+  {"name":"SGTIN+","family":"Trade Items (GTIN)","primaryAI":"01, 21","headerBits":"11110111","headerHex":"0xF7","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/01/09521234123453/21/32a%2Fb"},
+  {"name":"DSGTIN+","family":"Trade Items (GTIN)","primaryAI":"01, 21, 11","headerBits":"11111011","headerHex":"0xFB","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/01/09521234123453/21/32a%2Fb?11=241225"},
+  {"name":"ITIP+","family":"Trade Items (GTIN)","primaryAI":"8006, 21","headerBits":"11110011","headerHex":"0xF3","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8006/095212341234530102/21/32a%2Fb"},
+  {"name":"SSCC+","family":"Logistics (SSCC)","primaryAI":"00","headerBits":"11111001","headerHex":"0xF9","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/00/106141412345678908"},
+  {"name":"SGLN+","family":"Locations (GLN)","primaryAI":"414, 254","headerBits":"11110010","headerHex":"0xF2","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/414/0614141123452/254/32a%2Fb"},
+  {"name":"GRAI+","family":"Assets (GRAI/GIAI)","primaryAI":"8003","headerBits":"11110001","headerHex":"0xF1","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8003/0061414112345232a%2Fb"},
+  {"name":"GIAI+","family":"Assets (GRAI/GIAI)","primaryAI":"8004","headerBits":"11111010","headerHex":"0xFA","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8004/061414132a%2Fb"},
+  {"name":"GDTI+","family":"Documents & Services (GDTI/SGCN)","primaryAI":"253","headerBits":"11110110","headerHex":"0xF6","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/253/061414112345232a%2Fb"},
+  {"name":"GSRN+","family":"Service Relations (GSRN)","primaryAI":"8018","headerBits":"11110100","headerHex":"0xF4","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8018/061414112345678901"},
+  {"name":"GSRNP+","family":"Service Relations (GSRN)","primaryAI":"8017","headerBits":"11110101","headerHex":"0xF5","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8017/061414112345678901"},
+  {"name":"SGCN+","family":"Documents & Services (GDTI/SGCN)","primaryAI":"255","headerBits":"11111000","headerHex":"0xF8","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/255/06141411234521234"},
+  {"name":"CPI+","family":"Trade Items (GTIN)","primaryAI":"8010, 8011","headerBits":"11110000","headerHex":"0xF0","tagPrefix":"","purePrefix":"","sampleInput":"https://id.gs1.org/8010/0614141CP1234/8011/1234"},
+  {"name":"SGTIN-96","family":"Trade Items (GTIN)","primaryAI":"01, 21","headerBits":"00110000","headerHex":"0x30","tagPrefix":"urn:epc:tag:sgtin-96:","purePrefix":"urn:epc:id:sgtin:","sampleInput":"urn:epc:id:sgtin:0614141.112345.400"},
+  {"name":"SGTIN-198","family":"Trade Items (GTIN)","primaryAI":"01, 21","headerBits":"00110110","headerHex":"0x36","tagPrefix":"urn:epc:tag:sgtin-198:","purePrefix":"urn:epc:id:sgtin:","sampleInput":"urn:epc:id:sgtin:0614141.112345.SERIAL123"},
+  {"name":"ITIP-110","family":"Trade Items (GTIN)","primaryAI":"8006, 21","headerBits":"01000000","headerHex":"0x40","tagPrefix":"urn:epc:tag:itip-110:","purePrefix":"urn:epc:id:itip:","sampleInput":"urn:epc:id:itip:0614141.123456.01.02.400"},
+  {"name":"ITIP-212","family":"Trade Items (GTIN)","primaryAI":"8006, 21","headerBits":"01000001","headerHex":"0x41","tagPrefix":"urn:epc:tag:itip-212:","purePrefix":"urn:epc:id:itip:","sampleInput":"urn:epc:id:itip:0614141.123456.01.02.SERIAL123"},
+  {"name":"SSCC-96","family":"Logistics (SSCC)","primaryAI":"00","headerBits":"00110001","headerHex":"0x31","tagPrefix":"urn:epc:tag:sscc-96:","purePrefix":"urn:epc:id:sscc:","sampleInput":"urn:epc:id:sscc:0614141.1234567890"},
+  {"name":"SGLN-96","family":"Locations (GLN)","primaryAI":"414, 254","headerBits":"00110010","headerHex":"0x32","tagPrefix":"urn:epc:tag:sgln-96:","purePrefix":"urn:epc:id:sgln:","sampleInput":"urn:epc:id:sgln:0614141.12345.400"},
+  {"name":"SGLN-195","family":"Locations (GLN)","primaryAI":"414, 254","headerBits":"00111001","headerHex":"0x39","tagPrefix":"urn:epc:tag:sgln-195:","purePrefix":"urn:epc:id:sgln:","sampleInput":"urn:epc:id:sgln:0614141.12345.GLNEXT123"},
+  {"name":"GID-96","family":"Documents & Services (GDTI/SGCN)","primaryAI":"Direct DoD/EPC","headerBits":"00110101","headerHex":"0x35","tagPrefix":"urn:epc:tag:gid-96:","purePrefix":"urn:epc:id:gid:","sampleInput":"urn:epc:id:gid:1234567.12345.123456"},
+  {"name":"GRAI-96","family":"Assets (GRAI/GIAI)","primaryAI":"8003","headerBits":"00110011","headerHex":"0x33","tagPrefix":"urn:epc:tag:grai-96:","purePrefix":"urn:epc:id:grai:","sampleInput":"urn:epc:id:grai:0614141.12345.1234"},
+  {"name":"GRAI-170","family":"Assets (GRAI/GIAI)","primaryAI":"8003","headerBits":"00110111","headerHex":"0x37","tagPrefix":"urn:epc:tag:grai-170:","purePrefix":"urn:epc:id:grai:","sampleInput":"urn:epc:id:grai:0614141.12345.SERIAL123"},
+  {"name":"GIAI-96","family":"Assets (GRAI/GIAI)","primaryAI":"8004","headerBits":"00110100","headerHex":"0x34","tagPrefix":"urn:epc:tag:giai-96:","purePrefix":"urn:epc:id:giai:","sampleInput":"urn:epc:id:giai:0614141.12345"},
+  {"name":"GIAI-202","family":"Assets (GRAI/GIAI)","primaryAI":"8004","headerBits":"00111000","headerHex":"0x38","tagPrefix":"urn:epc:tag:giai-202:","purePrefix":"urn:epc:id:giai:","sampleInput":"urn:epc:id:giai:0614141.ASSET12345"},
+  {"name":"GDTI-96","family":"Documents & Services (GDTI/SGCN)","primaryAI":"253","headerBits":"00101100","headerHex":"0x2C","tagPrefix":"urn:epc:tag:gdti-96:","purePrefix":"urn:epc:id:gdti:","sampleInput":"urn:epc:id:gdti:0614141.12345.1234"},
+  {"name":"GDTI-113","family":"Documents & Services (GDTI/SGCN)","primaryAI":"253","headerBits":"00111010","headerHex":"0x3A","tagPrefix":"urn:epc:tag:gdti-113:","purePrefix":"urn:epc:id:gdti:","sampleInput":"urn:epc:id:gdti:0614141.12345.123456"},
+  {"name":"GDTI-174","family":"Documents & Services (GDTI/SGCN)","primaryAI":"253","headerBits":"00111110","headerHex":"0x3E","tagPrefix":"urn:epc:tag:gdti-174:","purePrefix":"urn:epc:id:gdti:","sampleInput":"urn:epc:id:gdti:0614141.12345.DOC12345"},
+  {"name":"GSRN-96","family":"Service Relations (GSRN)","primaryAI":"8018","headerBits":"00101101","headerHex":"0x2D","tagPrefix":"urn:epc:tag:gsrn-96:","purePrefix":"urn:epc:id:gsrn:","sampleInput":"urn:epc:id:gsrn:0614141.1234567890"},
+  {"name":"GSRNP-96","family":"Service Relations (GSRN)","primaryAI":"8017","headerBits":"00101110","headerHex":"0x2E","tagPrefix":"urn:epc:tag:gsrnp-96:","purePrefix":"urn:epc:id:gsrnp:","sampleInput":"urn:epc:id:gsrnp:0614141.1234567890"},
+  {"name":"SGCN-96","family":"Documents & Services (GDTI/SGCN)","primaryAI":"255","headerBits":"00111111","headerHex":"0x3F","tagPrefix":"urn:epc:tag:sgcn-96:","purePrefix":"urn:epc:id:sgcn:","sampleInput":"urn:epc:id:sgcn:0614141.12345.1234"},
+  {"name":"ADI-var","family":"Documents & Services (GDTI/SGCN)","primaryAI":"Direct DoD/EPC","headerBits":"00111011","headerHex":"0x3B","tagPrefix":"urn:epc:tag:adi-var:","purePrefix":"urn:epc:id:adi:","sampleInput":"urn:epc:id:adi:12345.PART456.SER789"},
+  {"name":"CPI-96","family":"Trade Items (GTIN)","primaryAI":"8010, 8011","headerBits":"00111100","headerHex":"0x3C","tagPrefix":"urn:epc:tag:cpi-96:","purePrefix":"urn:epc:id:cpi:","sampleInput":"urn:epc:id:cpi:0614141.12345.1234"},
+  {"name":"CPI-var","family":"Trade Items (GTIN)","primaryAI":"8010, 8011","headerBits":"00111101","headerHex":"0x3D","tagPrefix":"urn:epc:tag:cpi-var:","purePrefix":"urn:epc:id:cpi:","sampleInput":"urn:epc:id:cpi:061414112345.PART123.1234"},
+  {"name":"USDOD-96","family":"Documents & Services (GDTI/SGCN)","primaryAI":"Direct DoD/EPC","headerBits":"00101111","headerHex":"0x2F","tagPrefix":"urn:epc:tag:usdod-96:","purePrefix":"urn:epc:id:usdod:","sampleInput":"urn:epc:id:usdod:123456.12345678"},
+  {"name":"GINC-96","family":"Logistics (SSCC)","primaryAI":"401","headerBits":"00111010","headerHex":"0x3A","tagPrefix":"urn:epc:tag:ginc-96:","purePrefix":"urn:epc:id:ginc:","sampleInput":"urn:epc:id:ginc:0614141.1234567890"}
 ];
 
 const SEARCH_INDEX = [
@@ -4305,8 +4921,24 @@ const SEARCH_INDEX = [
     title: "EPC Scheme Directory & Bit Capacity Matrix",
     section: "Section 3",
     badge: "SCHEMES",
-    keywords: "scheme directory capacity matrix 24 schemes sgtin sscc grai giai gdti sgcn cpi itip ginc gsin header bits uri prefix",
-    content: "Comprehensive catalog of all 24 GS1 Electronic Product Code (EPC) schemes supported by TDTtranslator, showing primary Application Identifiers, header bit patterns, Tag URI prefixes, and Pure Identity patterns with category filter pills."
+    keywords: "scheme directory capacity matrix 47 schemes sgtin sscc grai giai gdti sgcn cpi itip ginc gsin header bits uri prefix",
+    content: "Comprehensive catalog of all 47 GS1 Electronic Product Code (EPC) schemes supported by TDTtranslator, showing primary Application Identifiers, header bit patterns, Tag URI prefixes, and Pure Identity patterns across 6 category filter pills."
+  },
+  {
+    id: "subfield-deconstructor",
+    title: "Interactive Sub-Field Chunk Deconstructor",
+    section: "Section 5",
+    badge: "INSPECTOR",
+    keywords: "sub-field chunk deconstructor inspector bitstream click inspect hostname header filter gtin serial component",
+    content: "Clickable interactive sub-field deconstruction pane within the Live Playground. Click any functional chunk in the bitstream visualizer to inspect its sub-field components, bit lengths, binary values, and semantic interpretations."
+  },
+  {
+    id: "regex-sandbox",
+    title: "Interactive Regex Pattern Sandbox",
+    section: "Section 4",
+    badge: "SANDBOX",
+    keywords: "regex sandbox regular expression validation permitted hostname urn code 40 alphanumeric date yymmdd grammar rule regexpermittedhostname regexurncode40 regexalphanumeric",
+    content: "Interactive regex sandbox for testing strings against core TDT 2.3 regular expressions: regexPermittedHostname, regexURNcode40, regexAlphanumeric, regexAllNumeric, regexDateYYMMDD, and regexRule. Features real-time match validation, character violation position analysis, and grammar capture group extraction."
   },
   {
     id: "table-f-calculator",
@@ -4315,6 +4947,14 @@ const SEARCH_INDEX = [
     badge: "CALCULATOR",
     keywords: "table f calculator ai compaction bit savings radix-100 base-128 packed calendar gtin date serial batch weight",
     content: "Live Table F compaction calculator widget: input any GS1 Application Identifier (AI 01, 10, 17, 21, 3103, 8020) to compute its compacted binary bitstream, uncompressed 7-bit ASCII bits comparison, percentage bit savings, and governing TDS clause."
+  },
+  {
+    id: "check-digit-calculator",
+    title: "Interactive Luhn Modulo-10 Check Digit Calculator",
+    section: "Section 8",
+    badge: "CALCULATOR",
+    keywords: "check digit modulo 10 luhn calculator gtin sscc gs1 genspecs 7.9 odd even weights 3 1 sum verification",
+    content: "Interactive Luhn Modulo-10 Check Digit Calculator implementing GS1 General Specifications Section 7.9 standard weighting algorithm (3x for odd positions, 1x for even positions right-to-left). Calculates check digits for GTIN-8, GTIN-12, GTIN-13, GTIN-14, SSCC-18, and validates complete payload strings with step-by-step arithmetic traces."
   },
   {
     id: "project-tree",
@@ -4915,8 +5555,101 @@ isRunningVectors: false,
       vectorsSummary: '',
       testFixtures: TEST_VECTORS_FIXTURES,
       activeSchemeFamily: 'All',
-      schemeFamilies: ['All', 'Trade Items (GTIN)', 'Logistics (SSCC)', 'Assets (GRAI/GIAI)', 'Documents & Services (GDTI/SGCN)'],
+      schemeFamilies: ['All', 'Trade Items (GTIN)', 'Logistics (SSCC)', 'Assets (GRAI/GIAI)', 'Locations (GLN)', 'Service Relations (GSRN)', 'Documents & Services (GDTI/SGCN)'],
       schemesDataset: EPC_SCHEMES_DATASET,
+      schemeSearchQuery: '',
+      copiedCliRunner: false,
+      calcLuhnMode: 'payload',
+      calcLuhnInput: '0952123412345',
+      showLuhnTrace: true,
+      regexSandboxKey: 'regexPermittedHostname',
+      sandboxTestString: 'id.abcde.com',
+      cliRunnerScript: `/**
+ * tdt_cli_test_runner.js
+ * Standalone automated test runner for GS1 TDS / TDT 2.3 translation engine.
+ * Run: node tdt_cli_test_runner.js
+ */
+const TDTtranslator = require('./TDTtranslator.js');
+
+const FIXTURES = [
+  {
+    name: "SGTIN-96 Standard Trade Item",
+    scheme: "SGTIN-96",
+    input: "urn:epc:id:sgtin:0614141.112345.400",
+    filter: 1,
+    gcpLength: 7,
+    expectedHex: "3034257BF46DB64000000190"
+  },
+  {
+    name: "SGTIN++ Extensible Multi-AI with Custom Domain",
+    scheme: "SGTIN++",
+    input: "https://id.gs1.org/01/09521234123453/21/32a%2Fb",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "FD0095212341234538566CB0AFC515067E6C6E0"
+  },
+  {
+    name: "GRAI-96 Asset Identifier",
+    scheme: "GRAI-96",
+    input: "urn:epc:id:grai:0614141.12345.1234",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "3314257BF40C0E40000004D2"
+  },
+  {
+    name: "GIAI-96 Global Individual Asset Identifier",
+    scheme: "GIAI-96",
+    input: "urn:epc:id:giai:0614141.12345",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "3414257BF400000000003039"
+  },
+  {
+    name: "SSCC-96 Serial Shipping Container Code",
+    scheme: "SSCC-96",
+    input: "urn:epc:id:sscc:0614141.1234567890",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "3114257BF4499602D2000000"
+  }
+];
+
+async function runTests() {
+  console.log('=== GS1 TDS / TDT 2.3 Automated Test Runner ===\\n');
+  const t0 = Date.now();
+  const translator = new TDTtranslator();
+  await translator.initialized;
+  translator.processData();
+  console.log('Engine initialized in ' + (Date.now() - t0) + 'ms\\n');
+
+  let passed = 0;
+  for (const f of FIXTURES) {
+    const start = Date.now();
+    try {
+      const hex = translator.translate(f.input, f.scheme, 'HEX', {
+        filter: f.filter,
+        gs1companyprefixlength: f.gcpLength
+      });
+      const dur = Date.now() - start;
+      const isMatch = hex.toUpperCase() === f.expectedHex.toUpperCase();
+      if (isMatch) {
+        passed++;
+        console.log('[PASS] ' + f.name + ' (' + dur + 'ms)');
+      } else {
+        console.error('[FAIL] ' + f.name);
+        console.error('       Expected: ' + f.expectedHex);
+        console.error('       Actual:   ' + hex);
+      }
+    } catch (err) {
+      console.error('[ERROR] ' + f.name + ': ' + err.message);
+    }
+  }
+
+  console.log('\\nResults: ' + passed + '/' + FIXTURES.length + ' passed (' + (Date.now() - t0) + 'ms total)');
+  process.exit(passed === FIXTURES.length ? 0 : 1);
+}
+
+runTests();`,
       selectedChunk: null,
       calcSelectedPreset: '01',
       calcAI: '01',
@@ -4951,7 +5684,8 @@ isRunningVectors: false,
         { label: 'EPC Pure URI', val: 'urn:epc:id:sgtin:9521234.012345.32a%2Fb' },
         { label: 'Binary', val: '111101111000100101010010000101000011001010000101000101110011011001000000010100011000000111001000101110010110010111111' },
         { label: 'Hex', val: 'F73095212341234538566CB0AFC4' },
-        { label: 'Bare KV', val: 'gtin=09521234123453;serial=32a/b' }
+        { label: 'Bare KV', val: 'gtin=09521234123453;serial=32a/b' },
+        { label: 'Compressed DL (Hex)', val: 'https://id.gs1.org/eh3014257BF46DB64000000190' }
       ]
     };
   },
@@ -5061,8 +5795,249 @@ isRunningVectors: false,
       });
     },
     filteredSchemesList() {
-      if (this.activeSchemeFamily === 'All') return this.schemesDataset;
-      return this.schemesDataset.filter(s => s.family === this.activeSchemeFamily);
+      let list = this.schemesDataset;
+      if (this.activeSchemeFamily !== 'All') {
+        list = list.filter(s => s.family === this.activeSchemeFamily);
+      }
+      if (this.schemeSearchQuery && this.schemeSearchQuery.trim()) {
+        const q = this.schemeSearchQuery.trim().toLowerCase();
+        list = list.filter(s => 
+          (s.name && s.name.toLowerCase().includes(q)) ||
+          (s.family && s.family.toLowerCase().includes(q)) ||
+          (s.primaryAI && s.primaryAI.toLowerCase().includes(q)) ||
+          (s.headerBits && s.headerBits.toLowerCase().includes(q)) ||
+          (s.headerHex && s.headerHex.toLowerCase().includes(q)) ||
+          (s.tagPrefix && s.tagPrefix.toLowerCase().includes(q)) ||
+          (s.purePrefix && s.purePrefix.toLowerCase().includes(q))
+        );
+      }
+      return list;
+    },
+    calcResultHex() {
+      if (!this.calcResult || !this.calcResult.binary) return '';
+      const bin = this.calcResult.binary;
+      const pad = (4 - (bin.length % 4)) % 4;
+      const padded = bin + '0'.repeat(pad);
+      let hex = '';
+      for (let i = 0; i < padded.length; i += 4) {
+        hex += parseInt(padded.substr(i, 4), 2).toString(16).toUpperCase();
+      }
+      return hex;
+    },
+    luhnCalculationResult() {
+      const raw = (this.calcLuhnInput || '').trim();
+      const digitsOnly = raw.replace(/\D/g, '');
+      if (!digitsOnly) return null;
+
+      const isValidationMode = this.calcLuhnMode === 'full';
+      if (isValidationMode && digitsOnly.length < 2) {
+        return null;
+      }
+      const payload = isValidationMode ? digitsOnly.slice(0, -1) : digitsOnly;
+      const enteredTrailingDigit = isValidationMode ? parseInt(digitsOnly.slice(-1), 10) : null;
+
+      // Scan payload right-to-left from position 1
+      let totalSum = 0;
+      const steps = [];
+      const len = payload.length;
+
+      for (let i = len - 1; i >= 0; i--) {
+        const posR2L = len - i; // 1-based index from right
+        const digit = parseInt(payload.charAt(i), 10);
+        const weight = (posR2L % 2 === 1) ? 3 : 1;
+        const product = digit * weight;
+        totalSum += product;
+        steps.push({
+          posR2L,
+          digit,
+          weight,
+          product,
+          runningSum: totalSum
+        });
+      }
+
+      const checkDigit = (10 - (totalSum % 10)) % 10;
+      const fullIdentifier = payload + checkDigit;
+      const checkDigitMatches = isValidationMode ? (enteredTrailingDigit === checkDigit) : true;
+
+      return {
+        payload,
+        payloadLength: payload.length,
+        totalSum,
+        checkDigit,
+        fullIdentifier,
+        isValidationMode,
+        enteredTrailingDigit,
+        checkDigitMatches,
+        steps
+      };
+    },
+    currentRegexPresets() {
+      switch (this.regexSandboxKey) {
+        case 'regexPermittedHostname':
+          return [
+            { label: 'Valid Domain', val: 'id.abcde.com' },
+            { label: 'Valid Port', val: 'id.gs1.org:8080' },
+            { label: 'Hyphenated', val: 'my-custom-resolver.net' },
+            { label: 'Invalid Space', val: 'id .example.com' },
+            { label: 'Invalid Unicode', val: 'id.éxample.org' }
+          ];
+        case 'regexURNcode40':
+          return [
+            { label: 'Valid Strategy 0', val: 'ID.ABCDE.COM' },
+            { label: 'Valid Colons', val: 'EPC:ID:SGTIN:0614141' },
+            { label: 'Invalid Lowercase', val: 'id.abcde.com' },
+            { label: 'Invalid Slash', val: 'ABC/DEF' }
+          ];
+        case 'regexAlphanumeric':
+          return [
+            { label: 'Valid Alphanumeric', val: 'SER-9988#A' },
+            { label: 'Valid Printable ASCII', val: 'BATCH/2026-X' },
+            { label: 'Invalid Space', val: 'SER 9988' },
+            { label: 'Invalid Tab', val: 'SER\t9988' }
+          ];
+        case 'regexAllNumeric':
+          return [
+            { label: 'Valid GTIN-14 Digits', val: '09521234123453' },
+            { label: 'Valid SSCC Digits', val: '106141412345678908' },
+            { label: 'Invalid Letters', val: '0952123412345X' },
+            { label: 'Invalid Hyphen', val: '0952-1234-1234' }
+          ];
+        case 'regexDateYYMMDD':
+          return [
+            { label: 'Valid Expiry (2026-12-31)', val: '261231' },
+            { label: 'Valid Leap Year Day', val: '240229' },
+            { label: 'Invalid Month (13)', val: '261315' },
+            { label: 'Invalid Day (32)', val: '261232' },
+            { label: 'Invalid Length', val: '20261231' }
+          ];
+        case 'regexRule':
+          return [
+            { label: 'Rule URLDECODE', val: 'URLDECODE(urnEncodedSerial)' },
+            { label: 'Rule SUBSTRING', val: 'SUBSTRING(hostname,1,12)' },
+            { label: 'Rule HOSTNAME2BINARY', val: 'HOSTNAME2BINARY(domain)' },
+            { label: 'Invalid Syntax', val: 'NOT_A_RULE_CALL' }
+          ];
+        default:
+          return [];
+      }
+    },
+    regexSandboxResult() {
+      const key = this.regexSandboxKey;
+      const str = this.sandboxTestString !== undefined ? this.sandboxTestString : '';
+      let regex = null;
+      let patternSource = '';
+
+      switch (key) {
+        case 'regexPermittedHostname':
+          regex = /^[!%-?A-Z_a-z\x22]+$/;
+          patternSource = '/^[!%-?A-Z_a-z\\x22]+$/';
+          break;
+        case 'regexURNcode40':
+          regex = /^[A-Z0-9\.:-]+$/;
+          patternSource = '/^[A-Z0-9\\.:-]+$/';
+          break;
+        case 'regexAlphanumeric':
+          regex = /^[\x21-\x23\x25-\x5A\x5A-\x7A]+$/;
+          patternSource = '/^[\\x21-\\x23\\x25-\\x5A\\x5A-\\x7A]+$/';
+          break;
+        case 'regexAllNumeric':
+          regex = /^[0-9]+$/;
+          patternSource = '/^[0-9]+$/';
+          break;
+        case 'regexDateYYMMDD':
+          regex = /^[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|30|31)$/;
+          patternSource = '/^[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|30|31)$/';
+          break;
+        case 'regexRule':
+          regex = /^([A-Z0-9_]+)\((.+)\)$/;
+          patternSource = '/^([A-Z0-9_]+)\\((.+)\\)$/';
+          break;
+        default:
+          return null;
+      }
+
+      if (!str) {
+        return {
+          matches: false,
+          patternSource,
+          violationReport: 'Input string is empty.'
+        };
+      }
+
+      const match = str.match(regex);
+      if (match) {
+        let groups = null;
+        if (key === 'regexRule') {
+          groups = {
+            func: match[1],
+            args: match[2]
+          };
+        }
+        return {
+          matches: true,
+          patternSource,
+          groups
+        };
+      }
+
+      // Diagnose character violation
+      let violationReport = '';
+      if (key === 'regexRule') {
+        violationReport = 'String does not match FUNCTION(ARG1, ARG2, ...) grammar pattern.';
+      } else if (key === 'regexDateYYMMDD') {
+        if (str.length !== 6) {
+          violationReport = `Expected exactly 6 numeric digits (YYMMDD), received ${str.length} characters.`;
+        } else {
+          const mm = parseInt(str.substr(2, 2), 10);
+          const dd = parseInt(str.substr(4, 2), 10);
+          if (mm < 1 || mm > 12) {
+            violationReport = `Month component '${str.substr(2, 2)}' is outside valid calendar range 01–12.`;
+          } else if (dd < 1 || dd > 31) {
+            violationReport = `Day component '${str.substr(4, 2)}' is outside valid calendar range 01–31.`;
+          } else {
+            violationReport = 'Date format fails standard calendar pattern.';
+          }
+        }
+      } else {
+        // Find first offending character
+        let charRegex = null;
+        switch (key) {
+          case 'regexPermittedHostname':
+            charRegex = /[!%-?A-Z_a-z\x22]/;
+            break;
+          case 'regexURNcode40':
+            charRegex = /[A-Z0-9\.:-]/;
+            break;
+          case 'regexAlphanumeric':
+            charRegex = /[\x21-\x23\x25-\x5A\x5A-\x7A]/;
+            break;
+          case 'regexAllNumeric':
+            charRegex = /[0-9]/;
+            break;
+        }
+
+        if (charRegex) {
+          for (let i = 0; i < str.length; i++) {
+            const ch = str.charAt(i);
+            if (!charRegex.test(ch)) {
+              const code = '0x' + ch.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0');
+              const displayChar = ch === ' ' ? '<space>' : ch;
+              violationReport = `Character '${displayChar}' at position ${i + 1} (ASCII ${code}) is not permitted by ${key}.`;
+              break;
+            }
+          }
+        }
+        if (!violationReport) {
+          violationReport = 'String does not satisfy full regex boundary condition.';
+        }
+      }
+
+      return {
+        matches: false,
+        patternSource,
+        violationReport
+      };
     },
     selectedChunkSubFields() {
       if (!this.selectedChunk) return [];
@@ -5250,7 +6225,7 @@ isRunningVectors: false,
         const duration = Math.max(1, Math.round(t1 - t0));
         totalMs += duration;
         if (passed) passCount++;
-        this.vectorResults[v.scheme] = { passed, ms: duration };
+        this.vectorResults[v.name || v.scheme] = { passed, ms: duration };
       }
 
       this.isRunningVectors = false;
@@ -5265,6 +6240,69 @@ isRunningVectors: false,
       }
       this.scrollTo('live-playground');
       this.runPlaygroundTranslation();
+    },
+    loadSchemeIntoPlayground(sch) {
+      if (sch && sch.sampleInput) {
+        this.playgroundInput = sch.sampleInput;
+      }
+      this.playgroundFilter = 0;
+      this.playgroundGcpAuto = true;
+      this.scrollTo('live-playground');
+      this.runPlaygroundTranslation();
+    },
+    copyCliRunnerScript() {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(this.cliRunnerScript).then(() => {
+        this.copiedCliRunner = true;
+        setTimeout(() => {
+          this.copiedCliRunner = false;
+        }, 2000);
+      });
+    },
+    setLuhnMode(mode) {
+      if (this.calcLuhnMode === mode) return;
+      this.calcLuhnMode = mode;
+      const raw = (this.calcLuhnInput || '').trim().replace(/\D/g, '');
+      if (raw) {
+        if (mode === 'full') {
+          if (this.luhnCalculationResult) {
+            this.calcLuhnInput = this.luhnCalculationResult.fullIdentifier;
+          }
+        } else {
+          if ([8, 12, 13, 14, 18].includes(raw.length)) {
+            this.calcLuhnInput = raw.slice(0, -1);
+          }
+        }
+      }
+    },
+    loadLuhnPreset(presetKey) {
+      const isFull = this.calcLuhnMode === 'full';
+      switch (presetKey) {
+        case 'gtin14':
+          this.calcLuhnInput = isFull ? '09521234123453' : '0952123412345';
+          break;
+        case 'gtin13':
+          this.calcLuhnInput = isFull ? '5012345678900' : '501234567890';
+          break;
+        case 'sscc18':
+          this.calcLuhnInput = isFull ? '106141412345678908' : '10614141234567890';
+          break;
+        case 'gtin12':
+          this.calcLuhnInput = isFull ? '012345678905' : '01234567890';
+          break;
+        case 'gtin8':
+          this.calcLuhnInput = isFull ? '12345670' : '1234567';
+          break;
+      }
+    },
+    loadRegexPreset(str) {
+      this.sandboxTestString = str;
+    },
+    onRegexPatternChange() {
+      const presets = this.currentRegexPresets;
+      if (presets && presets.length > 0) {
+        this.sandboxTestString = presets[0].val;
+      }
     },
     selectBitChunk(chunk, idx) {
       if (this.selectedChunk && this.selectedChunk.idx === idx) {
@@ -5481,7 +6519,7 @@ isRunningVectors: false,
 
         // Run translations across representation levels with reactive options
         const outputs = {};
-        const targetLevels = ['BINARY', 'HEX', 'GS1_DIGITAL_LINK', 'TAG_ENCODING', 'PURE_IDENTITY'];
+        const targetLevels = ['BINARY', 'HEX', 'GS1_DIGITAL_LINK', 'TAG_ENCODING', 'PURE_IDENTITY', 'GS1_AI_JSON', 'BARE_IDENTIFIER'];
         
         const baseOptions = {
           filter: this.playgroundFilter !== undefined ? this.playgroundFilter : 0,
@@ -5503,11 +6541,17 @@ isRunningVectors: false,
               totalBits = bitArr.join('').length;
 
               if (Array.isArray(bitArr) && Array.isArray(nameArr) && bitArr.length === nameArr.length) {
-                chunks = bitArr.map((bits, idx) => ({
-                  name: nameArr[idx] || ('segment-' + idx),
-                  bits: bits,
-                  len: bits.length
-                }));
+                chunks = bitArr.map((bits, idx) => {
+                  let chunkName = nameArr[idx] || ('segment-' + idx);
+                  if (idx === 0 && (chunkName.toLowerCase() === 'literal' || bits.length === 8)) {
+                    chunkName = 'EPC Header';
+                  }
+                  return {
+                    name: chunkName,
+                    bits: bits,
+                    len: bits.length
+                  };
+                });
               }
             } else {
               outputs[lvl] = this.translator.translate(raw, scheme, lvl, baseOptions);
@@ -5555,14 +6599,28 @@ isRunningVectors: false,
         this.playgroundResult = {
           scheme,
           sourceLevel,
-          totalBits,
           outputs,
           chunks,
+          totalBits,
           hostnameData
         };
       } catch (err) {
         this.playgroundError = 'Translation failed: ' + err.message;
         this.playgroundResult = null;
+      }
+    },
+    handleGlobalKeydown(e) {
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        const searchBox = document.getElementById('global-search');
+        if (searchBox) {
+          searchBox.focus();
+          searchBox.select();
+        }
+      } else if (e.key === 'Escape' && this.searchQuery) {
+        this.searchQuery = '';
+        const searchBox = document.getElementById('global-search');
+        if (searchBox) searchBox.blur();
       }
     }
   },
@@ -5585,23 +6643,17 @@ isRunningVectors: false,
     }
 
     // Global keyboard shortcut: '/' to search, 'Escape' to clear
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
-        e.preventDefault();
-        const searchBox = document.getElementById('global-search');
-        if (searchBox) {
-          searchBox.focus();
-          searchBox.select();
-        }
-      } else if (e.key === 'Escape' && this.searchQuery) {
-        this.searchQuery = '';
-        const searchBox = document.getElementById('global-search');
-        if (searchBox) searchBox.blur();
-      }
-    });
+    window.addEventListener('keydown', this.handleGlobalKeydown);
 
     // Scroll listener for back-to-top button
     window.addEventListener('scroll', this.handleScroll, { passive: true });
+
+    // 15-second safety timer to alert user if schemas take unusually long to load
+    setTimeout(() => {
+      if (!this.isEngineReady && !this.playgroundError) {
+        this.playgroundError = 'TDT engine schema loading is taking longer than expected. Please ensure schemas/ directory is accessible.';
+      }
+    }, 15000);
 
     // Initialize local TDTtranslator instance
     if (typeof TDTtranslator !== 'undefined') {
@@ -5622,6 +6674,10 @@ isRunningVectors: false,
         this.playgroundError = 'TDT engine unavailable: ' + err.message;
       }
     }
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.handleGlobalKeydown);
+    window.removeEventListener('scroll', this.handleScroll);
   }
 }).mount('#app');
 

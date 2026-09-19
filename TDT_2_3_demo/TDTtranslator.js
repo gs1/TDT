@@ -3216,8 +3216,13 @@ class TDTtranslator {
             console.debug("grammarComponent = " + grammarComponent);
             if (/^'(.+?)'$/.test(grammarComponent)) {
                 console.debug(grammarComponent + " is literal");
-                finalOutputArray.push(grammarComponent.replace(/^'/,"").replace(/'$/,""));
-                outputArrayEntries.push('literal')
+                let litVal = grammarComponent.replace(/^'/,"").replace(/'$/,"");
+                finalOutputArray.push(litVal);
+                if (outputLevel === "BINARY" && outputArrayEntries.length === 0) {
+                    outputArrayEntries.push('EPC Header');
+                } else {
+                    outputArrayEntries.push('literal');
+                }
             }
             if (/^[a-zA-Z][a-zA-Z0-9_]*$/.test(grammarComponent)) {
                 console.debug("Non-literal grammar component : " + grammarComponent);
