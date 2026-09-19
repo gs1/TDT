@@ -9,11 +9,8 @@
   <!-- Web App Manifest -->
   <link rel="manifest" href="manifest.webmanifest">
   
-  <!-- Favicon & Base Typography -->
+  <!-- Favicon & Local Offline Typography -->
   <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Vue 3 Global Build (Local fallback with CDN redundancy) -->
   <script src="vue.global.js"></script>
@@ -31,6 +28,23 @@
   <script src="TDTtranslator.js"></script>
 
   <style>
+    /* Local Offline Typography */
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 300 800;
+      font-display: swap;
+      src: url('fonts/inter.woff2') format('woff2');
+    }
+
+    @font-face {
+      font-family: 'Fira Code';
+      font-style: normal;
+      font-weight: 400 700;
+      font-display: swap;
+      src: url('fonts/firacode.woff2') format('woff2');
+    }
+
     :root {
       --gs1-blue: #002c6c;
       --gs1-blue-light: #0b4594;
@@ -1811,6 +1825,41 @@
       color: #38bdf8;
       border-left-color: #38bdf8;
     }
+    .nav-sub-item.active {
+      color: #38bdf8;
+      border-left-color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Document Category Header Banners */
+    .doc-category-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 20px 0;
+      padding: 10px 16px;
+      background: linear-gradient(90deg, rgba(0, 44, 104, 0.08) 0%, rgba(0, 44, 104, 0.01) 100%);
+      border-left: 4px solid var(--gs1-blue);
+      border-radius: 0 6px 6px 0;
+    }
+    .doc-category-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gs1-orange);
+      background: rgba(242, 107, 34, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(242, 107, 34, 0.2);
+    }
+    .doc-category-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gs1-blue);
+    }
 
     /* EPC Scheme Catalog Search & Action */
     .scheme-search-bar {
@@ -2036,102 +2085,144 @@
         </div>
       </div>
 
-      <!-- Normal 8-Section Navigation -->
+      <!-- Normal 9-Section Navigation -->
       <div v-else>
-        <div class="nav-group-title">Core Specifications</div>
+        <!-- Quick Reference & Cheat Sheet -->
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'purpose' }" 
+          :class="{ active: currentSection === 'quick-cheat-sheet' }" 
+          @click="scrollTo('quick-cheat-sheet')"
+          style="margin-bottom: 8px;"
+        >
+          <span>⚡ Quick Reference &amp; Cheat Sheet</span>
+        </a>
+
+        <!-- Category A: Core Specifications & Environment -->
+        <div class="nav-group-title">A. Core Specifications &amp; Environment</div>
+        <a 
+          class="nav-item" 
+          :class="{ active: isSectionActive('purpose') }" 
           @click="scrollTo('purpose')"
         >
-          <span>1. Purpose &amp; GS1 Standards</span>
-        </a>
-        <a 
-          class="nav-item" 
-          :class="{ active: currentSection === 'tech-stack' }" 
-          @click="scrollTo('tech-stack')"
-        >
-          <span>2. Tech Stack &amp; BOM</span>
+          <span>1. Technical Purpose &amp; GS1 Standards</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('table-viewer')">Table Artifacts</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('headless-batch')">CLI Batch Translation</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('web-embedding')">Web Embedding</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('web-workers-batch')">Web Workers</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('integration-recipes')">Integration Recipes</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'standards-table' }" @click.stop="scrollTo('standards-table')">Normative GS1 Standards</a></li>
         </ul>
+
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'contracts' }" 
+          :class="{ active: isSectionActive('tech-stack') }" 
+          @click="scrollTo('tech-stack')"
+        >
+          <span>2. Tech Stack &amp; Dependency BOM</span>
+        </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'project-tree' }" @click.stop="scrollTo('project-tree')">Repository Directory Layout</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'table-artifacts' }" @click.stop="scrollTo('table-artifacts')">Authoritative TDS Tables</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'table-viewer' }" @click.stop="scrollTo('table-viewer')">Table Artifacts Quick-Inspector</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'integration-recipes' }" @click.stop="scrollTo('integration-recipes')">Integration Recipes</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'headless-batch' }" @click.stop="scrollTo('headless-batch')">Headless Toolkit Architecture</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'web-embedding' }" @click.stop="scrollTo('web-embedding')">Web Embedding Guide</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'web-workers-batch' }" @click.stop="scrollTo('web-workers-batch')">Web Worker Batch Processing</a></li>
+        </ul>
+
+        <a 
+          class="nav-item" 
+          :class="{ active: isSectionActive('contracts') }" 
           @click="scrollTo('contracts')"
         >
-          <span>3. Inputs, Outputs &amp; Contracts</span>
+          <span>3. Inputs, Outputs &amp; Data Contracts</span>
           <span class="badge">8 Levels</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('test-vectors')">Normative Test Suite</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('scheme-directory')">47 EPC Schemes Catalog</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'syntax-levels' }" @click.stop="scrollTo('syntax-levels')">The 8 Target Syntax Levels</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'test-vectors' }" @click.stop="scrollTo('test-vectors')">Normative Test Vectors Matrix</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'scheme-directory' }" @click.stop="scrollTo('scheme-directory')">47 EPC Schemes Catalog</a></li>
         </ul>
 
-        <div class="nav-group-title" style="margin-top: 14px;">Architecture &amp; Flow</div>
+        <!-- Category B: Architecture & Codec Engine -->
+        <div class="nav-group-title" style="margin-top: 14px;">B. Architecture &amp; Codec Engine</div>
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'architecture' }" 
+          :class="{ active: isSectionActive('architecture') }" 
           @click="scrollTo('architecture')"
         >
-          <span>4. System Architecture &amp; Lifecycle</span>
+          <span>4. System Architecture &amp; Data Flow</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('transformation-pipeline')">Data Pipeline</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('core-regex')">Core Regex Validation</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('regex-sandbox')">Interactive Regex Sandbox</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('schema-loading')">Schema Initialization</a></li>
-        </ul>
-        <a 
-          class="nav-item" 
-          :class="{ active: currentSection === 'hostname-codec' }" 
-          @click="scrollTo('hostname-codec')"
-        >
-          <span>5. Hostname Compaction (§14.5.16)</span>
-          <span class="badge">56-bit</span>
-        </a>
-        <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('56-bit-walkthrough')">56-Bit Walkthrough</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('subfield-deconstructor')">Sub-Field Deconstructor</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'transformation-pipeline' }" @click.stop="scrollTo('transformation-pipeline')">Data Transformation Pipeline</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'core-regex' }" @click.stop="scrollTo('core-regex')">Core Regex Validation</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'regex-sandbox' }" @click.stop="scrollTo('regex-sandbox')">Interactive Regex Sandbox</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'schema-loading' }" @click.stop="scrollTo('schema-loading')">Schema Initialization</a></li>
         </ul>
 
-        <div class="nav-group-title" style="margin-top: 14px;">API Reference</div>
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'codebase-ref' }" 
+          :class="{ active: isSectionActive('hostname-codec') }" 
+          @click="scrollTo('hostname-codec')"
+        >
+          <span>5. Hostname Compaction (TDS §14.5.16)</span>
+        </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" :class="{ active: currentSection === '56-bit-walkthrough' }" @click.stop="scrollTo('56-bit-walkthrough')">56-Bit Hostname Walkthrough</a></li>
+        </ul>
+
+        <a 
+          class="nav-item" 
+          :class="{ active: isSectionActive('live-playground') }" 
+          @click="scrollTo('live-playground')"
+        >
+          <span>6. Live Codec Playground &amp; Bitstream Inspector</span>
+          <span class="badge">Live</span>
+        </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'subfield-deconstructor' }" @click.stop="scrollTo('subfield-deconstructor')">Sub-Field Deconstructor</a></li>
+        </ul>
+
+        <!-- Category C: Implementation & UI Controller -->
+        <div class="nav-group-title" style="margin-top: 14px;">C. Implementation &amp; UI Controller</div>
+        <a 
+          class="nav-item" 
+          :class="{ active: isSectionActive('codebase-ref') }" 
           @click="scrollTo('codebase-ref')"
         >
-          <span>6. Codebase Reference Index</span>
+          <span>7. Complete Codebase Reference Index</span>
           <span class="badge">{{ filteredMethods.length }}</span>
         </a>
+        <ul class="nav-sub-list">
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'methods-index' }" @click.stop="scrollTo('methods-index')">Method Search &amp; API Catalog</a></li>
+        </ul>
+
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'ui-walkthrough' }" 
+          :class="{ active: isSectionActive('ui-walkthrough') }" 
           @click="scrollTo('ui-walkthrough')"
         >
-          <span>7. UI Components &amp; State</span>
+          <span>8. UI Components &amp; State Exploration</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('live-playground')">Live Codec Playground</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('dom-mapping-table')">DOM Directives</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'ui-state-table' }" @click.stop="scrollTo('ui-state-table')">Primary State Properties</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'reactive-cascade' }" @click.stop="scrollTo('reactive-cascade')">Reactive State Cascade Flow</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'dom-mapping-table' }" @click.stop="scrollTo('dom-mapping-table')">DOM Element &amp; Directive Mapping</a></li>
         </ul>
+
+        <!-- Category D: Maintenance & Succession -->
+        <div class="nav-group-title" style="margin-top: 14px;">D. Maintenance &amp; Succession</div>
         <a 
           class="nav-item" 
-          :class="{ active: currentSection === 'succession' }" 
+          :class="{ active: isSectionActive('succession') }" 
           @click="scrollTo('succession')"
         >
-          <span>8. Extension &amp; Succession Guide</span>
+          <span>9. Maintenance, Extension &amp; Succession</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" @click.stop="scrollTo('table-f-calculator')">Table F Compaction Calculator</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('table-f-matrix')">Compaction Algorithm Matrix</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('check-digit-calculator')">Luhn Modulo-10 Calculator</a></li>
-          <li><a class="nav-sub-item" @click.stop="scrollTo('troubleshooting-matrix')">Troubleshooting Matrix</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'table-f-calculator' }" @click.stop="scrollTo('table-f-calculator')">Table F Compaction Calculator</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'table-f-matrix' }" @click.stop="scrollTo('table-f-matrix')">Compaction Algorithm Matrix</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'check-digit-calculator' }" @click.stop="scrollTo('check-digit-calculator')">Luhn Modulo-10 GS1 Check Digit Calculator</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'troubleshooting-matrix' }" @click.stop="scrollTo('troubleshooting-matrix')">Troubleshooting Matrix</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'scheme-anatomy' }" @click.stop="scrollTo('scheme-anatomy')">Scheme Definition Anatomy</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'succession-ai' }" @click.stop="scrollTo('succession-ai')">Step-by-Step Extension Guides</a></li>
         </ul>
       </div>
     </nav>
@@ -2254,6 +2345,12 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- CATEGORY A: CORE SPECIFICATIONS & ENVIRONMENT -->
+      <div class="doc-category-banner">
+        <span class="doc-category-tag">Category A</span>
+        <span class="doc-category-title">Core Specifications &amp; Environment</span>
       </div>
 
       <!-- SECTION 1: PURPOSE & GS1 STANDARDS -->
@@ -2395,10 +2492,20 @@
 ├── <span class="tree-file">vue.global.js</span>              <span class="tree-comment"># Vue 3.3.4 Global Build (zero-build reactive runtime)</span>
 ├── <span class="tree-file">jszip.js</span>                   <span class="tree-comment"># JSZip v3.10.1 client-side unarchiving library</span>
 ├── <span class="tree-file">jszip-utils.js</span>             <span class="tree-comment"># JSZip AJAX / ArrayBuffer bridge loader</span>
-├── <span class="tree-file">sw.js</span>                      <span class="tree-comment"># Service Worker script (PWA offline caching, cache version v1.0.6)</span>
+├── <span class="tree-file">sw.js</span>                      <span class="tree-comment"># Service Worker script (PWA offline caching, cache version v1.0.7)</span>
 ├── <span class="tree-file">manifest.webmanifest</span>       <span class="tree-comment"># PWA Application Manifest metadata</span>
 ├── <span class="tree-file">icon-192.png</span>, <span class="tree-file">icon-512.png</span> <span class="tree-comment"># High-resolution PWA home screen application icons</span>
 ├── <span class="tree-file">gcpprefixformatlist.json</span>   <span class="tree-comment"># Optional GS1 Company Prefix format allocation list (~14 MB)</span>
+├── <span class="tree-folder">fonts/</span>                     <span class="tree-comment"># Local offline WOFF2 web fonts (Inter, Fira Code)</span>
+│   ├── <span class="tree-file">inter.woff2</span>            <span class="tree-comment"># Inter UI typeface (weights 300..800)</span>
+│   └── <span class="tree-file">firacode.woff2</span>         <span class="tree-comment"># Fira Code monospace typeface with coding ligatures (weights 400..700)</span>
+├── <span class="tree-folder">minimal_version_for_resolvers/</span> <span class="tree-comment"># Standalone lightweight resolver deployment example</span>
+│   ├── <span class="tree-file">index.html</span>             <span class="tree-comment"># Minimal resolver web UI for decompressing /eh and /ex Digital Links</span>
+│   ├── <span class="tree-file">createApp.js</span>           <span class="tree-comment"># Compact Vue 3 controller (&lt;90 lines) invoking TDTtranslator</span>
+│   ├── <span class="tree-file">style.css</span>              <span class="tree-comment"># Streamlined dark-themed resolver stylesheet</span>
+│   ├── <span class="tree-file">test_minimal.html</span>      <span class="tree-comment"># Automated browser verification test harness</span>
+│   ├── <span class="tree-file">TDTtranslator.js</span>       <span class="tree-comment"># Core translation engine runtime copy</span>
+│   └── <span class="tree-folder">schemas/</span>               <span class="tree-comment"># Normative scheme definitions and lookup tables</span>
 ├── <span class="tree-folder">schemas/</span>                   <span class="tree-comment"># Normative declarative scheme definitions (47 EPC schemes) and lookup tables</span>
 │   ├── <span class="tree-file">TDT_TableA.json</span>        <span class="tree-comment"># 7-bit subdomain and TLD optimization dictionary (TDS §14.5.16)</span>
 │   ├── <span class="tree-file">TDT_TableB1.json</span>&ndash;<span class="tree-file">B4.json</span><span class="tree-comment"># 14-bit extended domain partition tables (TDS §14.5.16)</span>
@@ -2559,27 +2666,33 @@
           <button 
             role="tab"
             :aria-selected="activeRecipeTab === 'browser'"
+            :tabindex="activeRecipeTab === 'browser' ? 0 : -1"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'browser' }" 
             @click="activeRecipeTab = 'browser'"
+            @keydown="navigateTablist($event, activeRecipeTab, ['browser', 'worker', 'node'], val => activeRecipeTab = val)"
           >
             Vanilla Browser Script Tag
           </button>
           <button 
             role="tab"
             :aria-selected="activeRecipeTab === 'worker'"
+            :tabindex="activeRecipeTab === 'worker' ? 0 : -1"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'worker' }" 
             @click="activeRecipeTab = 'worker'"
+            @keydown="navigateTablist($event, activeRecipeTab, ['browser', 'worker', 'node'], val => activeRecipeTab = val)"
           >
             Web Worker Background Thread
           </button>
           <button 
             role="tab"
             :aria-selected="activeRecipeTab === 'node'"
+            :tabindex="activeRecipeTab === 'node' ? 0 : -1"
             class="recipe-tab-btn" 
             :class="{ active: activeRecipeTab === 'node' }" 
             @click="activeRecipeTab = 'node'"
+            @keydown="navigateTablist($event, activeRecipeTab, ['browser', 'worker', 'node'], val => activeRecipeTab = val)"
           >
             Headless Node.js Microservice
           </button>
@@ -2779,6 +2892,18 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           <pre><code>{{ customWebSnippet }}</code></pre>
         </div>
 
+        <div class="callout note" style="margin-top: 16px;">
+          <strong>Pre-Packaged Minimal Resolver Reference Implementation:</strong>
+          <p style="margin-top: 6px;">
+            For developers building dedicated GS1 Digital Link resolvers, reverse proxies, or edge decompression services, the repository includes a self-contained, turnkey template in the <code>minimal_version_for_resolvers/</code> directory:
+          </p>
+          <ul style="margin: 8px 0 0 18px; padding: 0;">
+            <li><strong><code>minimal_version_for_resolvers/index.html</code></strong>: A stripped-down, focused single-page resolver interface for decompressing <code>/eh...</code> (Hex) and <code>/ex...</code> (Base64) compressed Digital Links without the overhead of full EPC scheme catalog tables.</li>
+            <li><strong><code>minimal_version_for_resolvers/createApp.js</code></strong>: A compact Vue 3 Options API controller under 90 lines illustrating direct invocation of <code>translator.autodetect()</code> and <code>translator.translate(input, match.scheme, 'GS1_DIGITAL_LINK')</code>.</li>
+            <li><strong><code>minimal_version_for_resolvers/test_minimal.html</code></strong>: An automated browser-based verification test suite checking dual <code>/eh</code> and <code>/ex</code> decompression directly against the canonical GS1 Digital Link output.</li>
+          </ul>
+        </div>
+
         <h4 id="web-workers-batch">High-Throughput Web Worker Batch Processing (Non-Blocking UI)</h4>
         <p>
           While translating an individual barcode or EPC Tag URI on the browser's main thread takes approximately 5 milliseconds, batch processing hundreds or thousands of tags in a synchronous loop blocks the JavaScript event loop. This causes DOM freezes, halts CSS animations, and triggers browser "Page Unresponsive" warnings.
@@ -2859,8 +2984,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               <tr>
                 <td><strong>Compressed Digital Link</strong></td>
                 <td><code>COMPRESSED_GS1_DIGITAL_LINK</code></td>
-                <td><code>https://example.com/eh30164596f40c0e5cbe991a83</code></td>
-                <td>Hex (<code>/eh...</code>) or Base64 (<code>/ex...</code>) bitstream in path segment.</td>
+                <td>
+                  <div><code>https://example.com/eh30164596f40c0e5cbe991a83</code> (Hex)</div>
+                  <div style="margin-top: 4px;"><code>https://example.com/exMBZFlvQMDly-mRqD</code> (Base64)</div>
+                </td>
+                <td>Hex (<code>/eh...</code>) or file-safe/URI-safe Base64 (<code>/ex...</code>) bitstream in path segment.</td>
               </tr>
               <tr>
                 <td><strong>Binary Encoded TDS Data</strong></td>
@@ -3004,9 +3132,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             :key="cat" 
             role="tab"
             :aria-selected="activeSchemeFamily === cat"
+            :tabindex="activeSchemeFamily === cat ? 0 : -1"
             class="method-cat-pill" 
             :class="{ active: activeSchemeFamily === cat }"
             @click="activeSchemeFamily = cat"
+            @keydown="navigateTablist($event, activeSchemeFamily, schemeFamilies, val => activeSchemeFamily = val)"
           >
             {{ cat }}
           </button>
@@ -3047,6 +3177,12 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           </table>
         </div>
       </section>
+
+      <!-- CATEGORY B: ARCHITECTURE & CODEC ENGINE -->
+      <div class="doc-category-banner">
+        <span class="doc-category-tag">Category B</span>
+        <span class="doc-category-title">Architecture &amp; Codec Engine</span>
+      </div>
 
       <!-- SECTION 4: ARCHITECTURE & LIFECYCLE -->
       <section id="architecture" class="doc-section">
@@ -3118,9 +3254,9 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </tr>
               <tr>
                 <td><code>regexAlphanumeric</code></td>
-                <td><code>^[\x21-\x23\x25-\x5A\x5A-\x7A]+$</code></td>
+                <td><code>^[\x21-\x23\x25-\x5A\x5F\x61-\x7A]+$</code></td>
                 <td>
-                  <strong>Table F Variable-Length Alphanumeric (§14.5.6):</strong> Defined verbatim on <code>TDTtranslator.regexAlphanumeric</code>. Validates printable 7-bit ASCII characters for general text AIs (e.g. serial numbers, batch/lot), spanning ASCII 0x21–0x23 (<code>!-#</code>), 0x25–0x5A (<code>%-Z</code>), and 0x5A–0x7A (<code>Z-z</code>), strictly excluding space (0x20) and control characters.
+                  <strong>Table F Variable-Length Alphanumeric (§14.5.6):</strong> Defined verbatim on <code>TDTtranslator.regexAlphanumeric</code>. Validates printable 7-bit ASCII characters for general text AIs (e.g. serial numbers, batch/lot), spanning ASCII 0x21–0x23 (<code>!-#</code>), 0x25–0x5A (<code>%-Z</code>), 0x5F (<code>_</code>), and 0x61–0x7A (<code>a-z</code>), strictly excluding space (0x20), dollar sign (0x24), and backtick (0x60).
                 </td>
               </tr>
               <tr>
@@ -3297,12 +3433,16 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           <p>
             In <code>internalHostname2Binary</code>, candidate tokens must be sorted first by character length descending, and if lengths are equal, by <strong>bit length ascending</strong> (<code>(a.bitLength || a.binary.length) - (b.bitLength || b.binary.length)</code>). This guarantees Table A (7-bit) entries take precedence over Table B (14-bit) entries.
           </p>
-          <p>
-            Furthermore, matching must use <code>hostname.startsWith(o.substring, cursor)</code> rather than <code>indexOf</code> starting from index 0, ensuring repeated subdomains (e.g. <code>co.example.co.uk</code>) match properly.
-          </p>
         </div>
+      </section>
 
-        <h3 id="live-playground">Interactive Codec Playground &amp; Bitstream Inspector</h3>
+      <!-- SECTION 6: LIVE CODEC PLAYGROUND & BITSTREAM INSPECTOR -->
+      <section id="live-playground" class="doc-section">
+        <div class="section-header">
+          <div class="section-icon">06</div>
+          <h2 class="section-title">Live Codec Playground &amp; Bitstream Inspector</h2>
+          <a href="#live-playground" class="section-anchor">#</a>
+        </div>
         <p>
           Test custom domain inputs and explore the live bitstream partitioning produced by the in-browser <code>TDTtranslator</code> engine:
         </p>
@@ -3437,9 +3577,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                     type="button"
                     role="radio"
                     :aria-checked="playgroundBitGrouping === 'chunks'"
+                    :tabindex="playgroundBitGrouping === 'chunks' ? 0 : -1"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'chunks' }" 
                     @click="playgroundBitGrouping = 'chunks'"
+                    @keydown="navigateTablist($event, playgroundBitGrouping, ['chunks', 'nibbles', 'octets'], val => playgroundBitGrouping = val)"
                   >
                     Functional Chunks
                   </button>
@@ -3447,9 +3589,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                     type="button"
                     role="radio"
                     :aria-checked="playgroundBitGrouping === 'nibbles'"
+                    :tabindex="playgroundBitGrouping === 'nibbles' ? 0 : -1"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'nibbles' }" 
                     @click="playgroundBitGrouping = 'nibbles'"
+                    @keydown="navigateTablist($event, playgroundBitGrouping, ['chunks', 'nibbles', 'octets'], val => playgroundBitGrouping = val)"
                   >
                     4-Bit Nibbles
                   </button>
@@ -3457,9 +3601,11 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                     type="button"
                     role="radio"
                     :aria-checked="playgroundBitGrouping === 'octets'"
+                    :tabindex="playgroundBitGrouping === 'octets' ? 0 : -1"
                     class="bit-mode-btn" 
                     :class="{ active: playgroundBitGrouping === 'octets' }" 
                     @click="playgroundBitGrouping = 'octets'"
+                    @keydown="navigateTablist($event, playgroundBitGrouping, ['chunks', 'nibbles', 'octets'], val => playgroundBitGrouping = val)"
                   >
                     8-Bit Octets
                   </button>
@@ -3482,36 +3628,50 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </div>
 
               <!-- Interactive Sub-Field Deconstruction Pane -->
-              <div id="subfield-deconstructor" class="chunk-deconstructor-pane" v-if="selectedChunk && playgroundBitGrouping === 'chunks'">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                  <strong style="color: #38bdf8;">
-                    Sub-Field Deconstruction: <code>{{ selectedChunk.name }}</code> ({{ selectedChunk.len }} bits)
-                  </strong>
-                  <button class="btn-action-sm" @click="selectedChunk = null" style="padding: 2px 6px;">Close &times;</button>
+              <div id="subfield-deconstructor" class="chunk-deconstructor-pane" v-if="playgroundBitGrouping === 'chunks'">
+                <div v-if="selectedChunk">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <strong style="color: #38bdf8;">
+                      Sub-Field Deconstruction: <code>{{ selectedChunk.name }}</code> ({{ selectedChunk.len }} bits)
+                    </strong>
+                    <button class="btn-action-sm" @click="selectedChunk = null" style="padding: 2px 6px;">Close &times;</button>
+                  </div>
+                  <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 8px;">
+                    Bit Range: <code>Bit {{ selectedChunk.startBit }} &ndash; Bit {{ selectedChunk.endBit }}</code> of {{ playgroundResult.totalBits }} total EPC bits.
+                  </div>
+                  
+                  <div class="data-table-wrapper" style="margin: 0; background: #000000; border-color: #1e293b;">
+                    <table class="data-table dark-table">
+                      <thead>
+                        <tr>
+                          <th>Sub-Field Component</th>
+                          <th>Bit Length</th>
+                          <th>Binary Value</th>
+                          <th>Semantic Representation / Meaning</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(sub, sIdx) in selectedChunkSubFields" :key="sIdx">
+                          <td class="subfield-name-cell"><strong>{{ sub.name }}</strong></td>
+                          <td class="subfield-len-cell"><span class="bit-length-badge">{{ sub.bits.length }} bits</span></td>
+                          <td class="subfield-bits-cell"><code class="binary-val-code">{{ sub.bits }}</code></td>
+                          <td class="subfield-meaning-cell">{{ sub.meaning }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 8px;">
-                  Bit Range: <code>Bit {{ selectedChunk.startBit }} &ndash; Bit {{ selectedChunk.endBit }}</code> of {{ playgroundResult.totalBits }} total EPC bits.
-                </div>
-                
-                <div class="data-table-wrapper" style="margin: 0; background: #000000; border-color: #1e293b;">
-                  <table class="data-table dark-table">
-                    <thead>
-                      <tr>
-                        <th>Sub-Field Component</th>
-                        <th>Bit Length</th>
-                        <th>Binary Value</th>
-                        <th>Semantic Representation / Meaning</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(sub, sIdx) in selectedChunkSubFields" :key="sIdx">
-                        <td class="subfield-name-cell"><strong>{{ sub.name }}</strong></td>
-                        <td class="subfield-len-cell"><span class="bit-length-badge">{{ sub.bits.length }} bits</span></td>
-                        <td class="subfield-bits-cell"><code class="binary-val-code">{{ sub.bits }}</code></td>
-                        <td class="subfield-meaning-cell">{{ sub.meaning }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div v-else style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px;">
+                  <span style="font-size: 13px; color: #94a3b8;">
+                    Click any functional bit chunk above to inspect its sub-field bit boundaries and semantic representations.
+                  </span>
+                  <button 
+                    v-if="playgroundResult.chunks && playgroundResult.chunks.length" 
+                    class="btn-action-sm" 
+                    @click="selectBitChunk(playgroundResult.chunks[0], 0)"
+                  >
+                    Inspect First Chunk &rarr;
+                  </button>
                 </div>
               </div>
 
@@ -3643,10 +3803,16 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         </div>
       </section>
 
-      <!-- SECTION 6: CODEBASE REFERENCE -->
+      <!-- CATEGORY C: IMPLEMENTATION & UI CONTROLLER -->
+      <div class="doc-category-banner">
+        <span class="doc-category-tag">Category C</span>
+        <span class="doc-category-title">Implementation &amp; UI Controller</span>
+      </div>
+
+      <!-- SECTION 7: CODEBASE REFERENCE -->
       <section id="codebase-ref" class="doc-section">
         <div class="section-header">
-          <div class="section-icon">06</div>
+          <div class="section-icon">07</div>
           <h2 class="section-title">Complete Codebase Reference Index</h2>
           <a href="#codebase-ref" class="section-anchor">#</a>
         </div>
@@ -3655,14 +3821,18 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           Granular API documentation for all public and private methods across <code>TDTtranslator.js</code> and <code>createApp.js</code>:
         </p>
 
-        <div class="method-filter-bar">
-          <div class="method-category-pills">
+        <div class="method-filter-bar" id="methods-index">
+          <div class="method-category-pills" role="tablist" aria-label="Method categories">
             <button 
               v-for="cat in methodCategories" 
               :key="cat" 
+              role="tab"
+              :aria-selected="activeMethodCategory === cat"
+              :tabindex="activeMethodCategory === cat ? 0 : -1"
               class="method-cat-pill" 
               :class="{ active: activeMethodCategory === cat }"
               @click="activeMethodCategory = cat"
+              @keydown="navigateTablist($event, activeMethodCategory, methodCategories, val => activeMethodCategory = val)"
             >
               {{ cat }}
             </button>
@@ -3741,10 +3911,10 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         </div>
       </section>
 
-      <!-- SECTION 7: UI COMPONENTS & STATE -->
+      <!-- SECTION 8: UI COMPONENTS & STATE -->
       <section id="ui-walkthrough" class="doc-section">
         <div class="section-header">
-          <div class="section-icon">07</div>
+          <div class="section-icon">08</div>
           <h2 class="section-title">UI Components &amp; State Exploration</h2>
           <a href="#ui-walkthrough" class="section-anchor">#</a>
         </div>
@@ -3911,10 +4081,16 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         </div>
       </section>
 
-      <!-- SECTION 8: EXTENSION & SUCCESSION GUIDE -->
+      <!-- CATEGORY D: MAINTENANCE & SUCCESSION -->
+      <div class="doc-category-banner">
+        <span class="doc-category-tag">Category D</span>
+        <span class="doc-category-title">Maintenance &amp; Succession</span>
+      </div>
+
+      <!-- SECTION 9: EXTENSION & SUCCESSION GUIDE -->
       <section id="succession" class="doc-section">
         <div class="section-header">
-          <div class="section-icon">08</div>
+          <div class="section-icon">09</div>
           <h2 class="section-title">Maintenance, Extension &amp; Succession Guide</h2>
           <a href="#succession" class="section-anchor">#</a>
         </div>
@@ -4092,18 +4268,22 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <button 
               role="tab"
               :aria-selected="calcLuhnMode === 'payload'"
+              :tabindex="calcLuhnMode === 'payload' ? 0 : -1"
               class="method-cat-pill" 
               :class="{ active: calcLuhnMode === 'payload' }"
               @click="setLuhnMode('payload')"
+              @keydown="navigateTablist($event, calcLuhnMode, ['payload', 'full'], val => setLuhnMode(val))"
             >
               Calculate Check Digit (Input is Payload)
             </button>
             <button 
               role="tab"
               :aria-selected="calcLuhnMode === 'full'"
+              :tabindex="calcLuhnMode === 'full' ? 0 : -1"
               class="method-cat-pill" 
               :class="{ active: calcLuhnMode === 'full' }"
               @click="setLuhnMode('full')"
+              @keydown="navigateTablist($event, calcLuhnMode, ['payload', 'full'], val => setLuhnMode(val))"
             >
               Validate Full Identifier (Trailing Digit is Check Digit)
             </button>
@@ -4385,7 +4565,7 @@ const METHOD_INDEX = [
     type: "Instance Method",
     badgeClass: "badge-instance",
     category: "Public API",
-    sourceLine: "TDTtranslator.js:L2671–2783",
+    sourceLine: "TDTtranslator.js:L2680–2781",
     description: "Evaluates an incoming character string against all registered TDS scheme regular expressions to identify the EPC scheme and source representation level.",
     params: [
       { name: "inputString", type: "string", desc: "The incoming data string to identify." }
@@ -4420,7 +4600,7 @@ const METHOD_INDEX = [
     type: "Instance Method",
     badgeClass: "badge-instance",
     category: "Public API",
-    sourceLine: "TDTtranslator.js:L2785–3426",
+    sourceLine: "TDTtranslator.js:L2794–3421",
     description: "Executes end-to-end translation from the source string into the target structural level, evaluating extraction rules, Table F lookups, and grammar formatting.",
     params: [
       { name: "inputString", type: "string", desc: "The data string to translate." },
@@ -4444,7 +4624,7 @@ const METHOD_INDEX = [
     type: "Instance Method",
     badgeClass: "badge-instance",
     category: "Formatters & Conversions",
-    sourceLine: "TDTtranslator.js:L3428–3441",
+    sourceLine: "TDTtranslator.js:L3442–3455",
     description: "Converts a continuous binary bitstream into uppercase hexadecimal, padding unaligned trailing bits with zeros to the next 4-bit nibble boundary.",
     params: [
       { name: "inputBinaryString", type: "string", desc: "Stream sequence containing strictly '0' and '1' characters." }
@@ -4469,7 +4649,7 @@ const METHOD_INDEX = [
     type: "Instance Method",
     badgeClass: "badge-instance",
     category: "Formatters & Conversions",
-    sourceLine: "TDTtranslator.js:L3449–3460",
+    sourceLine: "TDTtranslator.js:L3463–3474",
     description: "Converts a hexadecimal string into an equivalent continuous binary bitstream, expanding each hex character into a 4-bit zero-padded binary nibble.",
     params: [
       { name: "inputHexString", type: "string", desc: "Hexadecimal string (0-9, A-F)." }
@@ -4492,7 +4672,7 @@ const METHOD_INDEX = [
     type: "Instance Method",
     badgeClass: "badge-instance",
     category: "Public API",
-    sourceLine: "TDTtranslator.js:L177–241",
+    sourceLine: "TDTtranslator.js:L452–460",
     description: "Compiles, parses, and activates in-memory schema indexes and regex objects once JSON table and scheme artifacts have finished loading.",
     params: [],
     returns: "void",
@@ -4509,7 +4689,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Compaction Codecs",
-    sourceLine: "TDTtranslator.js:L556–694",
+    sourceLine: "TDTtranslator.js:L565–695",
     description: "Encodes a custom domain/hostname losslessly according to TDS §14.5.16, choosing the most compact representation between URN Code 40 and 7-bit ASCII with optimizations.",
     params: [
       { name: "hostname", type: "string", desc: "Domain string such as 'id.abcde.com'." }
@@ -4540,7 +4720,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Compaction Codecs",
-    sourceLine: "TDTtranslator.js:L696–788",
+    sourceLine: "TDTtranslator.js:L705–783",
     description: "Decodes a binary bitstream chunk back into a plaintext hostname, inspecting the 1-bit indicator and reversing either URN Code 40 or 7-bit ASCII optimization tables.",
     params: [
       { name: "binaryString", type: "string", desc: "Bitstream chunk starting with 1-bit indicator." }
@@ -4565,7 +4745,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Compaction Codecs",
-    sourceLine: "TDTtranslator.js:L2363–2388",
+    sourceLine: "TDTtranslator.js:L2363–2387",
     description: "Generic compaction router that maps a data field to its corresponding TDS Table F codec method based on options.section.",
     params: [
       { name: "inputCharacterString", type: "string", desc: "Element value to compact." },
@@ -4587,7 +4767,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Compaction Codecs",
-    sourceLine: "TDTtranslator.js:L2391–2417",
+    sourceLine: "TDTtranslator.js:L2399–2412",
     description: "Decodes a binary bitstream chunk back into a plaintext Application Identifier element using the TDS Section compaction method specified in options.section.",
     params: [
       { name: "inputBinaryString", type: "string", desc: "Binary bit sequence to unpack." },
@@ -4612,7 +4792,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Grammar Rules & Validation",
-    sourceLine: "TDTtranslator.js:L2521–2547",
+    sourceLine: "TDTtranslator.js:L524–537",
     description: "Calculates the official GS1 check digit using the normative modulo-10 algorithm with alternating weights 3 and 1 backwards across numeric identification keys.",
     params: [
       { name: "gs1IDValue", type: "string", desc: "Numeric string of digits (e.g. 13 digits of a GTIN-14 or 17 digits of an SSCC-18)." }
@@ -4637,7 +4817,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Grammar Rules & Validation",
-    sourceLine: "TDTtranslator.js:L840–1180",
+    sourceLine: "TDTtranslator.js:L803–974",
     description: "Evaluates declarative grammar transformation rules (URLDECODE, SUBSTRING, PAD_LEFT, HOSTNAME2BINARY) during token extraction and formatting phases.",
     params: [
       { name: "rule", type: "Object", desc: "Rule specification object from scheme definition JSON." },
@@ -4662,7 +4842,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Formatters & Conversions",
-    sourceLine: "TDTtranslator.js:L2550–2610",
+    sourceLine: "TDTtranslator.js:L988–1009",
     description: "Re-orders and normalizes an input GS1 AI JSON string so primary sequence attributes appear in standard positional order before peripheral attributes.",
     params: [
       { name: "string", type: "string", desc: "Raw incoming JSON string representing GS1 AI key-values." },
@@ -4692,7 +4872,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Formatters & Conversions",
-    sourceLine: "TDTtranslator.js:L2613–2668",
+    sourceLine: "TDTtranslator.js:L1019–1072",
     description: "Parses and normalizes a GS1 Digital Link URI string to ensure path segments follow the standard primary AI sequence before query parameters.",
     params: [
       { name: "string", type: "string", desc: "Incoming Digital Link URI string." },
@@ -4714,7 +4894,7 @@ const METHOD_INDEX = [
     type: "Static Method",
     badgeClass: "badge-static",
     category: "Grammar Rules & Validation",
-    sourceLine: "TDTtranslator.js:L245–320",
+    sourceLine: "TDTtranslator.js:L473–490",
     description: "Standardizes raw table JSON rows from TDS artifacts into normalized { binary, substring, bitLength } objects, filtering pointer rows (!row.d).",
     params: [
       { name: "rawJSON", type: "Object", desc: "Raw table object parsed from TDT_TableA.json, etc." }
@@ -4737,7 +4917,7 @@ const METHOD_INDEX = [
     type: "Static Getter",
     badgeClass: "badge-getter",
     category: "Compaction Codecs",
-    sourceLine: "TDTtranslator.js:L2324–2361",
+    sourceLine: "TDTtranslator.js:L2333–2349",
     description: "Dictionary mapping TDS Section identifiers (14.5.2 through 14.5.14) to their respective validation regexes, encoders, and decoders.",
     params: [],
     returns: "Object — Table of codec descriptors keyed by TDS section number.",
@@ -4829,6 +5009,32 @@ const TEST_VECTORS_FIXTURES = [
       HEX: "3114257BF4499602D2000000"
     },
     tdsSection: "14.4.4"
+  },
+  {
+    name: "SGTIN-96 Compressed Digital Link (Hex /eh)",
+    scheme: "SGTIN-96",
+    inputLevel: "COMPRESSED_GS1_DIGITAL_LINK",
+    input: "https://example.com/eh30164596f40c0e5cbe991a83",
+    filter: 0,
+    gcpLength: 7,
+    expectedOutputs: {
+      HEX: "30164596F40C0E5CBE991A83",
+      GS1_DIGITAL_LINK: "https://example.com/01/09528765123457/21/123456789123"
+    },
+    tdsSection: "14.5.16"
+  },
+  {
+    name: "SGTIN-96 Compressed Digital Link (Base64 /ex)",
+    scheme: "SGTIN-96",
+    inputLevel: "COMPRESSED_GS1_DIGITAL_LINK",
+    input: "https://example.com/exMBZFlvQMDly-mRqD",
+    filter: 0,
+    gcpLength: 7,
+    expectedOutputs: {
+      HEX: "30164596F40C0E5CBE991A83",
+      GS1_DIGITAL_LINK: "https://example.com/01/09528765123457/21/123456789123"
+    },
+    tdsSection: "14.5.16"
   }
 ];
 
@@ -5082,7 +5288,7 @@ const SEARCH_INDEX = [
     section: "Section 4",
     badge: "REGEX",
     keywords: "regex constants regexpermittedhostname regexurncode40 regexalphanumeric regexallnumeric regexdateyymmdd regexrule character sets character classes",
-    content: "Deep-dive regex reference table: regexPermittedHostname (^[!%-?A-Z_a-z\\x22]+$ matching domain characters), regexURNcode40 (^[A-Z0-9\\.:-]+$ for Strategy 0), regexAlphanumeric (^[\\x21-\\x23\\x25-\\x5A\\x5A-\\x7A]+$ for Table F 7-bit ASCII), regexAllNumeric (^[0-9]+$ for §14.5.2 & §14.5.4), regexDateYYMMDD (^[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|30|31)$), and regexRule (^([A-Z0-9_]+)\\((.+)\\)$ parsing grammar functions)."
+    content: "Deep-dive regex reference table: regexPermittedHostname (^[!%-?A-Z_a-z\\x22]+$ matching domain characters), regexURNcode40 (^[A-Z0-9\\.:-]+$ for Strategy 0), regexAlphanumeric (^[\\x21-\\x23\\x25-\\x5A\\x5F\\x61-\\x7A]+$ for Table F 7-bit ASCII), regexAllNumeric (^[0-9]+$ for §14.5.2 & §14.5.4), regexDateYYMMDD (^[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|30|31)$), and regexRule (^([A-Z0-9_]+)\\((.+)\\)$ parsing grammar functions)."
   },
   {
     id: "schema-loading",
@@ -5611,6 +5817,22 @@ const FIXTURES = [
     filter: 0,
     gcpLength: 7,
     expectedHex: "3114257BF4499602D2000000"
+  },
+  {
+    name: "SGTIN-96 Compressed Digital Link (Hex /eh)",
+    scheme: "SGTIN-96",
+    input: "https://example.com/eh30164596f40c0e5cbe991a83",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "30164596F40C0E5CBE991A83"
+  },
+  {
+    name: "SGTIN-96 Compressed Digital Link (Base64 /ex)",
+    scheme: "SGTIN-96",
+    input: "https://example.com/exMBZFlvQMDly-mRqD",
+    filter: 0,
+    gcpLength: 7,
+    expectedHex: "30164596F40C0E5CBE991A83"
   }
 ];
 
@@ -5685,7 +5907,8 @@ runTests();`,
         { label: 'Binary', val: '111101111000100101010010000101000011001010000101000101110011011001000000010100011000000111001000101110010110010111111' },
         { label: 'Hex', val: 'F73095212341234538566CB0AFC4' },
         { label: 'Bare KV', val: 'gtin=09521234123453;serial=32a/b' },
-        { label: 'Compressed DL (Hex)', val: 'https://id.gs1.org/eh3014257BF46DB64000000190' }
+        { label: 'Compressed DL (Hex)', val: 'https://example.com/eh30164596f40c0e5cbe991a83' },
+        { label: 'Compressed DL (Base64)', val: 'https://example.com/exMBZFlvQMDly-mRqD' }
       ]
     };
   },
@@ -5938,8 +6161,8 @@ runTests();`,
           patternSource = '/^[A-Z0-9\\.:-]+$/';
           break;
         case 'regexAlphanumeric':
-          regex = /^[\x21-\x23\x25-\x5A\x5A-\x7A]+$/;
-          patternSource = '/^[\\x21-\\x23\\x25-\\x5A\\x5A-\\x7A]+$/';
+          regex = /^[\x21-\x23\x25-\x5A\x5F\x61-\x7A]+$/;
+          patternSource = '/^[\\x21-\\x23\\x25-\\x5A\\x5F\\x61-\\x7A]+$/';
           break;
         case 'regexAllNumeric':
           regex = /^[0-9]+$/;
@@ -6010,7 +6233,7 @@ runTests();`,
             charRegex = /[A-Z0-9\.:-]/;
             break;
           case 'regexAlphanumeric':
-            charRegex = /[\x21-\x23\x25-\x5A\x5A-\x7A]/;
+            charRegex = /[\x21-\x23\x25-\x5A\x5F\x61-\x7A]/;
             break;
           case 'regexAllNumeric':
             charRegex = /[0-9]/;
@@ -6150,11 +6373,34 @@ runTests();`,
   methods: {
     scrollTo(id) {
       this.currentSection = id;
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.replaceState(null, null, '#' + id);
+      if (id === 'subfield-deconstructor') {
+        this.playgroundBitGrouping = 'chunks';
+        if (!this.selectedChunk && this.playgroundResult && this.playgroundResult.chunks && this.playgroundResult.chunks.length) {
+          this.selectBitChunk(this.playgroundResult.chunks[0], 0);
+        }
       }
+      this.$nextTick(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, null, '#' + id);
+        }
+      });
+    },
+    isSectionActive(sectionId) {
+      if (this.currentSection === sectionId) return true;
+      const sectionSubIds = {
+        'purpose': ['standards-table'],
+        'tech-stack': ['project-tree', 'table-artifacts', 'table-viewer', 'integration-recipes', 'headless-batch', 'web-embedding', 'web-workers-batch'],
+        'contracts': ['syntax-levels', 'test-vectors', 'scheme-directory'],
+        'architecture': ['transformation-pipeline', 'core-regex', 'regex-reference', 'regex-sandbox', 'schema-loading'],
+        'hostname-codec': ['56-bit-walkthrough'],
+        'live-playground': ['subfield-deconstructor'],
+        'codebase-ref': ['methods-index'],
+        'ui-walkthrough': ['ui-state-table', 'reactive-cascade', 'dom-mapping-table'],
+        'succession': ['table-f-calculator', 'table-f-matrix', 'check-digit-calculator', 'troubleshooting-matrix', 'scheme-anatomy', 'succession-ai', 'succession-hostname', 'succession-scheme', 'succession-testing']
+      };
+      return (sectionSubIds[sectionId] || []).includes(this.currentSection);
     },
     navigateTo(id) {
       this.scrollTo(id);
@@ -6257,6 +6503,37 @@ runTests();`,
         setTimeout(() => {
           this.copiedCliRunner = false;
         }, 2000);
+      });
+    },
+    navigateTablist(e, currentVal, optionsArray, updateFn) {
+      const key = e.key;
+      if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(key)) return;
+      e.preventDefault();
+      const count = optionsArray.length;
+      if (count === 0) return;
+      let currentIndex = optionsArray.indexOf(currentVal);
+      if (currentIndex === -1) currentIndex = 0;
+
+      let nextIndex = currentIndex;
+      if (key === 'ArrowRight' || key === 'ArrowDown') {
+        nextIndex = (currentIndex + 1) % count;
+      } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
+        nextIndex = (currentIndex - 1 + count) % count;
+      } else if (key === 'Home') {
+        nextIndex = 0;
+      } else if (key === 'End') {
+        nextIndex = count - 1;
+      }
+
+      const nextVal = optionsArray[nextIndex];
+      updateFn(nextVal);
+
+      // Focus the newly active tab button
+      this.$nextTick(() => {
+        const targetBtn = e.currentTarget.parentElement ? e.currentTarget.parentElement.querySelector('[role="tab"][aria-selected="true"], [role="radio"][aria-checked="true"]') : null;
+        if (targetBtn && typeof targetBtn.focus === 'function') {
+          targetBtn.focus();
+        }
       });
     },
     setLuhnMode(mode) {

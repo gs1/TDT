@@ -101,7 +101,7 @@ class TDTtranslator {
     static regexUpperCaseHexadecimal = /^[0-9A-F]+$/;
     static regexLowerCaseHexadecimal = /^[0-9a-f]+$/;
     static regexHexadecimal = /^[0-9A-Fa-f]+$/;
-    static regexAlphanumeric = /^[\x21-\x23\x25-\x5A\x5A-\x7A]+$/;
+    static regexAlphanumeric = /^[\x21-\x23\x25-\x5A\x5F\x61-\x7A]+$/;
     static regexAllNumeric = /^[0-9]+$/;
     static regexEightBit = /^[\x00-\x7F]*$/;
     static regexSevenBit = /^[\x20-\x7F]*$/;

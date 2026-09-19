@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tdt-translator-v1.0.6';
+const CACHE_NAME = 'tdt-translator-v1.0.7';
 const ASSETS_TO_CACHE = [
   './index.html',
   './developer_guide.html',
@@ -8,7 +8,9 @@ const ASSETS_TO_CACHE = [
   './vue.global.js',
   './manifest.webmanifest',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './fonts/inter.woff2',
+  './fonts/firacode.woff2'
 ];
 
 // Install Event: Cache all core assets
