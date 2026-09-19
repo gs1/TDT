@@ -50,11 +50,11 @@
       --gs1-blue-light: #0b4594;
       --gs1-blue-soft: #eef4ff;
       --gs1-orange: #f26334;
-      --gs1-orange-hover: #d94f22;
+      --gs1-orange-hover: #9a3412;
       --gs1-bg: #f8fafc;
       --gs1-card: #ffffff;
       --gs1-text: #1e293b;
-      --gs1-text-muted: #64748b;
+      --gs1-text-muted: #334155;
       --gs1-border: #e2e8f0;
       --gs1-border-focus: #0b4594;
       --gs1-code-bg: #000000;
@@ -319,9 +319,9 @@
     }
 
     mark {
-      background: var(--gs1-orange);
-      color: #ffffff;
-      padding: 0 3px;
+      background: #fbbf24;
+      color: #000000;
+      padding: 1px 4px;
       border-radius: 2px;
       font-weight: 700;
     }
@@ -368,10 +368,10 @@
 
     .btn-clear-search {
       background: #f1f5f9;
-      border: 1px solid var(--gs1-border);
-      color: #475569;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       padding: 5px 12px;
       border-radius: 4px;
       cursor: pointer;
@@ -380,7 +380,7 @@
 
     .btn-clear-search:hover {
       background: #e2e8f0;
-      color: var(--gs1-text);
+      color: #000000;
     }
 
     /* Workbench Quick Link */
@@ -452,22 +452,22 @@
 
     /* Method Signature Copy Button */
     .btn-copy-sig {
-      background: transparent;
+      background: #f1f5f9;
       border: 1px solid #cbd5e1;
-      color: #475569;
+      color: #002c6c;
       padding: 2px 7px;
       border-radius: 4px;
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       margin-left: 8px;
       transition: all 0.15s;
     }
 
     .btn-copy-sig:hover {
-      background: #f1f5f9;
-      color: var(--gs1-blue);
-      border-color: var(--gs1-blue);
+      background: #002c6c;
+      color: #ffffff;
+      border-color: #002c6c;
     }
 
     .btn-copy-sig.copied {
@@ -599,7 +599,8 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #94a3b8;
+      color: #cbd5e1;
+      font-weight: 600;
       margin-bottom: 3px;
     }
 
@@ -621,7 +622,7 @@
 
     .playground-bit-label {
       font-size: 11px;
-      color: #94a3b8;
+      color: #cbd5e1;
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
@@ -668,9 +669,10 @@
     }
 
     .nav-item.active {
-      background: var(--gs1-orange);
+      background: #0b4594;
       color: #ffffff;
-      font-weight: 600;
+      font-weight: 700;
+      border-left: 3px solid #38bdf8;
     }
 
     .nav-item .badge {
@@ -943,9 +945,10 @@
     }
 
     .btn-copy-code.copied {
-      background: var(--gs1-success);
-      color: #ffffff;
-      border-color: var(--gs1-success);
+      background: #052e16;
+      color: #86efac;
+      border-color: #10b981;
+      font-weight: 600;
     }
 
     pre {
@@ -983,39 +986,104 @@
       border-radius: 0 var(--gs1-radius-sm) var(--gs1-radius-sm) 0;
       margin: 16px 0;
       font-size: 13.5px;
+      color: #0f172a;
+      line-height: 1.55;
     }
 
     .callout.warning {
-      border-left-color: var(--gs1-warning);
+      border-left-color: #b45309;
       background: #fffbeb;
+      color: #451a03;
     }
 
-    .callout.success {
-      border-left-color: var(--gs1-success);
+    .callout.warning strong {
+      color: #78350f;
+    }
+
+    .callout.success,
+    .callout.green {
+      border-left-color: #15803d;
       background: #f0fdf4;
+      color: #052e16;
+    }
+
+    .callout.success strong,
+    .callout.green strong {
+      color: #14532d;
     }
 
     .callout.orange {
-      border-left-color: var(--gs1-orange);
+      border-left-color: #c2410c;
       background: #fff7ed;
+      color: #431407;
+    }
+
+    .callout.orange strong {
+      color: #7c2d12;
     }
 
     .callout strong {
       color: var(--gs1-blue);
       display: block;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
+    }
+
+    .callout code {
+      background: #ffffff;
+      color: #002c6c;
+      border: 1px solid #bae6fd;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
     }
 
     .callout.warning strong {
       color: #92400e;
     }
 
-    .callout.success strong {
+    .callout.success strong,
+    .callout.green strong {
       color: #065f46;
     }
 
     .callout.orange strong {
       color: #9a3412;
+    }
+
+    /* High-Contrast Callouts inside .sandbox-card (Dark Context) */
+    .sandbox-card .callout {
+      background: rgba(14, 165, 233, 0.12);
+      border-left: 4px solid #38bdf8;
+      color: #e0f2fe;
+    }
+    .sandbox-card .callout strong {
+      color: #38bdf8;
+    }
+    .sandbox-card .callout.warning {
+      background: rgba(245, 158, 11, 0.12);
+      border-left-color: #f59e0b;
+      color: #fef3c7;
+    }
+    .sandbox-card .callout.warning strong {
+      color: #f59e0b;
+    }
+    .sandbox-card .callout.success,
+    .sandbox-card .callout.green {
+      background: rgba(16, 185, 129, 0.12);
+      border-left-color: #10b981;
+      color: #d1fae5;
+    }
+    .sandbox-card .callout.success strong,
+    .sandbox-card .callout.green strong {
+      color: #34d399;
+    }
+    .sandbox-card .callout.orange {
+      background: rgba(242, 99, 52, 0.12);
+      border-left-color: var(--gs1-orange);
+      color: #ffedd5;
+    }
+    .sandbox-card .callout.orange strong {
+      color: #fb923c;
     }
 
     /* Bitstream Breakdown Interactive Preview */
@@ -1183,9 +1251,10 @@
       transition: all 0.15s ease;
     }
     .playground-toggle-btn.active {
-      background: #0284c7;
+      background: #002c6c;
       color: #ffffff;
       border-color: #38bdf8;
+      font-weight: 700;
     }
     .bit-display-modes {
       display: flex;
@@ -1226,9 +1295,10 @@
       color: #ffffff;
     }
     .btn-copy-output.copied {
-      background: var(--gs1-success);
-      color: #ffffff;
-      border-color: var(--gs1-success);
+      background: #052e16;
+      color: #86efac;
+      border-color: #10b981;
+      font-weight: 600;
     }
     .output-val-cell {
       display: flex;
@@ -1309,14 +1379,15 @@
     .source-anchor {
       font-family: 'Fira Code', monospace;
       font-size: 11px;
-      color: #64748b;
+      color: #334155;
       background: #e2e8f0;
       padding: 2px 6px;
       border-radius: 4px;
+      font-weight: 600;
     }
     .method-collapse-icon {
       font-size: 12px;
-      color: #64748b;
+      color: #1e293b;
       transition: transform 0.2s ease;
       display: inline-block;
       margin-right: 6px;
@@ -1370,7 +1441,7 @@
     }
     .ascii-tree .tree-folder { color: #38bdf8; font-weight: 700; }
     .ascii-tree .tree-file { color: #f8fafc; }
-    .ascii-tree .tree-comment { color: #94a3b8; font-style: italic; }
+    .ascii-tree .tree-comment { color: #93c5fd; font-style: italic; }
 
     /* Print Styles */
     @media print {
@@ -1804,7 +1875,8 @@
     }
     .calc-stat-label {
       font-size: 10px;
-      color: #94a3b8;
+      color: #cbd5e1;
+      font-weight: 600;
       text-transform: uppercase;
     }
     .calc-stat-val {
@@ -1924,7 +1996,7 @@
       white-space: nowrap;
     }
     .btn-load-pg:hover {
-      background: #0284c7;
+      background: #075985;
       border-color: #38bdf8;
       color: #ffffff;
     }
@@ -2022,6 +2094,156 @@
     }
     .step-trace-table tr:hover td {
       background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* EPC Partition Visualizer Bar */
+    .partition-bar-wrapper {
+      margin: 14px 0;
+      background: #000000;
+      padding: 12px;
+      border-radius: var(--gs1-radius-sm);
+      border: 1px solid #1e293b;
+    }
+    .partition-bar {
+      display: flex;
+      width: 100%;
+      height: 38px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+    .partition-seg {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+      transition: width 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 0 4px;
+    }
+    .partition-seg-sub {
+      font-size: 9px;
+      font-weight: 500;
+      opacity: 0.85;
+      font-family: 'Fira Code', monospace;
+    }
+    .seg-header { background: #38bdf8; }
+    .seg-filter { background: #a78bfa; }
+    .seg-partition { background: #fbbf24; }
+    .seg-gcp { background: #34d399; }
+    .seg-itemref { background: #fb923c; }
+    .seg-serial { background: #e879f9; }
+    .seg-remainder { background: #334155; color: #ffffff; font-weight: 700; }
+
+    .partition-slider-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 12px 0;
+    }
+    .partition-slider-wrapper label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .partition-range-input {
+      width: 100%;
+      accent-color: #38bdf8;
+      cursor: pointer;
+    }
+
+    /* Hostname Compaction Comparator */
+    .comparator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .comparator-col {
+      background: #000000;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    .comparator-col.winner {
+      border-color: #10b981;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+    .comparator-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .comparator-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .winner-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .runner-up-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(100, 116, 139, 0.2);
+      border: 1px solid #475569;
+      color: #94a3b8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Digital Link Deconstructor */
+    .dl-component-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .dl-component-card {
+      background: #000000;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 8px 12px;
+    }
+    .dl-component-type {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .dl-component-val {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      margin-top: 3px;
+      word-break: break-all;
     }
 
   </style>
@@ -2151,6 +2373,7 @@
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'syntax-levels' }" @click.stop="scrollTo('syntax-levels')">The 8 Target Syntax Levels</a></li>
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'test-vectors' }" @click.stop="scrollTo('test-vectors')">Normative Test Vectors Matrix</a></li>
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'scheme-directory' }" @click.stop="scrollTo('scheme-directory')">47 EPC Schemes Catalog</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'partition-visualizer' }" @click.stop="scrollTo('partition-visualizer')">EPC Partition &amp; Bit Boundary Explorer</a></li>
         </ul>
 
         <!-- Category B: Architecture & Codec Engine -->
@@ -2167,6 +2390,7 @@
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'core-regex' }" @click.stop="scrollTo('core-regex')">Core Regex Validation</a></li>
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'regex-sandbox' }" @click.stop="scrollTo('regex-sandbox')">Interactive Regex Sandbox</a></li>
           <li><a class="nav-sub-item" :class="{ active: currentSection === 'schema-loading' }" @click.stop="scrollTo('schema-loading')">Schema Initialization</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === 'dl-pipeline-visualizer' }" @click.stop="scrollTo('dl-pipeline-visualizer')">Digital Link Deconstructor</a></li>
         </ul>
 
         <a 
@@ -2177,7 +2401,7 @@
           <span>5. Hostname Compaction (TDS §14.5.16)</span>
         </a>
         <ul class="nav-sub-list">
-          <li><a class="nav-sub-item" :class="{ active: currentSection === '56-bit-walkthrough' }" @click.stop="scrollTo('56-bit-walkthrough')">56-Bit Hostname Walkthrough</a></li>
+          <li><a class="nav-sub-item" :class="{ active: currentSection === '56-bit-walkthrough' }" @click.stop="scrollTo('56-bit-walkthrough')">Hostname Strategy Comparator</a></li>
         </ul>
 
         <a 
@@ -2644,7 +2868,7 @@
             />
           </div>
 
-          <div style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">
+          <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">
             Showing {{ filteredTableRecords.length }} matching records:
           </div>
 
@@ -2667,7 +2891,7 @@
                   </td>
                 </tr>
                 <tr v-if="filteredTableRecords.length === 0">
-                  <td :colspan="tableColumns.length" style="text-align: center; color: #cbd5e1;">
+                  <td :colspan="tableColumns.length" style="text-align: center; color: #cbd5e1; font-weight: 600; padding: 16px;">
                     No records match "{{ searchTableQuery }}".
                   </td>
                 </tr>
@@ -3100,7 +3324,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                   <span v-if="vectorResults[v.name || v.scheme]" :class="vectorResults[v.name || v.scheme].passed ? 'status-badge-pass' : 'status-badge-fail'">
                     {{ vectorResults[v.name || v.scheme].passed ? ('✓ Passed (' + vectorResults[v.name || v.scheme].ms + 'ms)') : '✗ Failed' }}
                   </span>
-                  <span v-else style="color: #94a3b8; font-size: 11px;">Not run</span>
+                  <span v-else style="color: #334155; font-weight: 700; font-size: 11px;">Not run</span>
                 </td>
                 <td>
                   <button class="btn-load-pg" @click="loadVectorIntoPlayground(v)" title="Load into Playground">
@@ -3117,13 +3341,16 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           Reference catalog of all 47 GS1 Electronic Product Code (EPC) schemes supported by the translation engine:
         </p>
 
-        <div style="background: rgba(14, 165, 233, 0.08); border-left: 3px solid #0ea5e9; padding: 10px 14px; margin-bottom: 14px; border-radius: 0 4px 4px 0; font-size: 12px; color: #cbd5e1; line-height: 1.5;">
-          <strong>Architecture Note on EPC URN Support:</strong> EPC URN structures (<code>TAG_ENCODING</code> / <code>PURE_IDENTITY</code>) are exclusively supported on legacy TDS 1.x schemes (e.g. <code>SGTIN-96</code>, <code>SSCC-96</code>). All modern schemes introduced since TDS 2.0 onwards (<code>+</code> and <code>++</code>) drop support for EPC URN formats entirely, standardising on GS1 Digital Link URIs (<code>https://...</code>), Binary, Hex, and GS1 AI Key-Value structures. Tag URI Prefix and Pure Identity URI fields are therefore empty for all <code>+</code> and <code>++</code> schemes.
+        <div class="callout" style="border-left: 4px solid #002c6c; background: #f0f9ff; color: #0f172a; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+          <strong style="color: #002c6c; font-size: 14px; font-weight: 700; margin-bottom: 6px; display: block;">Architecture Note on EPC URN Support:</strong>
+          <p style="margin: 0; color: #0f172a; line-height: 1.55;">
+            EPC URN structures (<code>TAG_ENCODING</code> / <code>PURE_IDENTITY</code>) are exclusively supported on legacy TDS 1.x schemes (e.g. <code>SGTIN-96</code>, <code>SSCC-96</code>). All modern schemes introduced since TDS 2.0 onwards (<code>+</code> and <code>++</code>) drop support for EPC URN formats entirely, standardising on GS1 Digital Link URIs (<code>https://...</code>), Binary, Hex, and GS1 AI Key-Value structures. Tag URI Prefix and Pure Identity URI fields are therefore empty for all <code>+</code> and <code>++</code> schemes.
+          </p>
         </div>
 
         <div class="scheme-search-bar">
           <div class="scheme-search-box">
-            <span aria-hidden="true" style="color: #94a3b8; font-size: 13px;">🔍</span>
+            <span aria-hidden="true" style="color: #334155; font-size: 13px;">🔍</span>
             <input 
               type="text" 
               v-model="schemeSearchQuery" 
@@ -3135,7 +3362,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <button 
               v-if="schemeSearchQuery" 
               @click="schemeSearchQuery = ''" 
-              style="background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; padding: 0 4px;"
+              style="background: transparent; border: none; color: #334155; cursor: pointer; font-size: 14px; padding: 0 4px; font-weight: 700;"
               title="Clear search"
               aria-label="Clear scheme search"
             >&times;</button>
@@ -3180,8 +3407,8 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                 <td><span class="method-badge badge-instance">{{ sch.family }}</span></td>
                 <td><code>{{ sch.primaryAI }}</code></td>
                 <td><code>{{ sch.headerBits }} ({{ sch.headerHex }})</code></td>
-                <td><code v-if="sch.tagPrefix" style="font-size: 11px;">{{ sch.tagPrefix }}</code><span v-else style="color: #64748b; font-size: 11px;">—</span></td>
-                <td><code v-if="sch.purePrefix" style="font-size: 11px;">{{ sch.purePrefix }}</code><span v-else style="color: #64748b; font-size: 11px;">—</span></td>
+                <td><code v-if="sch.tagPrefix" style="font-size: 11px;">{{ sch.tagPrefix }}</code><span v-else style="color: #334155; font-weight: 700; font-size: 12px;">—</span></td>
+                <td><code v-if="sch.purePrefix" style="font-size: 11px;">{{ sch.purePrefix }}</code><span v-else style="color: #334155; font-weight: 700; font-size: 12px;">—</span></td>
                 <td>
                   <button 
                     class="btn-load-pg" 
@@ -3194,6 +3421,132 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- EPC Partition Table & Floating Bit Boundary Explorer -->
+        <h3 id="partition-visualizer">EPC Partition Table &amp; Floating Bit Boundary Explorer</h3>
+        <p>
+          In legacy 96-bit EPC schemes (such as <code>SGTIN-96</code>, <code>SSCC-96</code>, <code>GRAI-96</code>, <code>GIAI-96</code>, <code>SGLN-96</code>), TDS allocates a strictly fixed total bit budget for identification (e.g. 44 bits for SGTIN-96; 58 bits for SSCC-96). A 3-bit partition value (<em>P</em> &isin; 0..6) dynamically shifts the internal boundary between the GS1 Company Prefix (<em>M</em> bits) and the Item Reference or Serial Reference (<em>N</em> bits).
+        </p>
+
+        <div class="sandbox-card">
+          <!-- Scheme Selector Pills -->
+          <div class="method-category-pills" role="tablist" aria-label="Partition Schemes" style="margin-bottom: 14px;">
+            <button 
+              v-for="s in partitionSchemesList" 
+              :key="s.id"
+              role="tab"
+              :aria-selected="selectedPartitionScheme === s.id"
+              :tabindex="selectedPartitionScheme === s.id ? 0 : -1"
+              class="method-cat-pill" 
+              :class="{ active: selectedPartitionScheme === s.id }"
+              @click="selectedPartitionScheme = s.id"
+              @keydown="navigateTablist($event, selectedPartitionScheme, partitionSchemesList.map(x => x.id), val => selectedPartitionScheme = val)"
+            >
+              {{ s.name }}
+            </button>
+          </div>
+
+          <!-- GCP Length Controls -->
+          <div v-if="!currentPartitionData.isExtensible" style="margin-bottom: 14px;">
+            <div class="partition-slider-wrapper">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="gcp-slider">GS1 Company Prefix (GCP) Length: <strong style="color: #38bdf8;">{{ selectedGcpLength }} Digits</strong></label>
+                <span style="font-size: 11px; color: #cbd5e1;">Partition Value <em>P</em>: <strong style="color: #fbbf24;">{{ currentPartitionRow.partitionValue }} ({{ currentPartitionRow.partitionBits }})</strong></span>
+              </div>
+              <input 
+                id="gcp-slider" 
+                type="range" 
+                min="6" 
+                max="12" 
+                step="1" 
+                v-model.number="selectedGcpLength" 
+                class="partition-range-input"
+                aria-label="GS1 Company Prefix Length Slider"
+              />
+              <div style="display: flex; justify-content: space-between; font-size: 10px; color: #cbd5e1; font-family: 'Fira Code', monospace;">
+                <span>6 digits (Min GCP)</span>
+                <span>7</span>
+                <span>8</span>
+                <span>9</span>
+                <span>10</span>
+                <span>11</span>
+                <span>12 digits (Max GCP)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modern Extensible Scheme Notice -->
+          <div v-else class="callout green" style="margin-bottom: 14px;">
+            <strong>Modern TDS 2.0+ Extensible Scheme Architecture</strong>
+            <code>{{ currentPartitionData.name }}</code> completely eliminates partition tables and the rigid 44-bit ceiling! Company Prefix and Item Reference are dynamically compacted using Table F Radix-100 base-128 compression. Arbitrary prefix lengths (6–12 digits) are accommodated without sacrificing serial number capacity.
+          </div>
+
+          <!-- Dynamic Segmented Bit Boundary Visualizer Bar -->
+          <div class="partition-bar-wrapper">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #cbd5e1; text-transform: uppercase;">
+                {{ currentPartitionData.name }} Bit Allocation Map ({{ currentPartitionData.totalBits }} Bits Total)
+              </span>
+              <span style="font-size: 11px; color: #38bdf8; font-family: 'Fira Code', monospace;">
+                Header: {{ currentPartitionData.headerBits }}b | Filter: 3b | Fixed Block: {{ currentPartitionData.fixedBlockBits }}b
+              </span>
+            </div>
+            <div class="partition-bar">
+              <div class="partition-seg seg-header" :style="{ width: (currentPartitionData.headerBits / currentPartitionData.totalBits * 100) + '%' }" title="EPC Header">
+                <span>Header</span>
+                <span class="partition-seg-sub">{{ currentPartitionData.headerBits }}b</span>
+              </div>
+              <div class="partition-seg seg-filter" :style="{ width: (3 / currentPartitionData.totalBits * 100) + '%' }" title="Filter Value">
+                <span>Flt</span>
+                <span class="partition-seg-sub">3b</span>
+              </div>
+              <div v-if="!currentPartitionData.isExtensible" class="partition-seg seg-partition" :style="{ width: (3 / currentPartitionData.totalBits * 100) + '%' }" title="Partition Bits">
+                <span>Part</span>
+                <span class="partition-seg-sub">3b</span>
+              </div>
+              <div class="partition-seg seg-gcp" :style="{ width: (currentPartitionRow.gcpBits / currentPartitionData.totalBits * 100) + '%' }" :title="'GS1 Company Prefix: ' + currentPartitionRow.gcpBits + ' bits (' + selectedGcpLength + ' digits)'">
+                <span>GCP ({{ selectedGcpLength }}d)</span>
+                <span class="partition-seg-sub">{{ currentPartitionRow.gcpBits }}b</span>
+              </div>
+              <div class="partition-seg seg-itemref" :style="{ width: (currentPartitionRow.itemRefBits / currentPartitionData.totalBits * 100) + '%' }" :title="currentPartitionData.itemRefLabel + ': ' + currentPartitionRow.itemRefBits + ' bits (' + currentPartitionRow.itemRefDigits + ' digits)'">
+                <span>{{ currentPartitionData.itemRefShort }}</span>
+                <span class="partition-seg-sub">{{ currentPartitionRow.itemRefBits }}b</span>
+              </div>
+              <div v-if="currentPartitionData.remainderBits > 0" class="partition-seg seg-serial" :style="{ width: (currentPartitionData.remainderBits / currentPartitionData.totalBits * 100) + '%' }" :title="currentPartitionData.remainderLabel + ': ' + currentPartitionData.remainderBits + ' bits'">
+                <span>{{ currentPartitionData.remainderShort }}</span>
+                <span class="partition-seg-sub">{{ currentPartitionData.remainderBits }}b</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Capacity & Technical Metrics -->
+          <div class="calc-stat-grid" v-if="!currentPartitionData.isExtensible">
+            <div class="calc-stat-card">
+              <div class="calc-stat-label">Partition Value <em>P</em></div>
+              <div class="calc-stat-val" style="color: #fbbf24;">{{ currentPartitionRow.partitionValue }} (<code>{{ currentPartitionRow.partitionBits }}</code>)</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-label">Company Prefix (GCP)</div>
+              <div class="calc-stat-val" style="color: #34d399;">{{ currentPartitionRow.gcpBits }} bits ({{ selectedGcpLength }} digits)</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-label">{{ currentPartitionData.itemRefLabel }}</div>
+              <div class="calc-stat-val" style="color: #fb923c;">{{ currentPartitionRow.itemRefBits }} bits ({{ currentPartitionRow.itemRefDigits }} digits)</div>
+            </div>
+            <div class="calc-stat-card">
+              <div class="calc-stat-label">Fixed Total <em>M</em> + <em>N</em></div>
+              <div class="calc-stat-val" style="color: #38bdf8;">{{ currentPartitionData.fixedBlockBits }} bits</div>
+            </div>
+          </div>
+
+          <!-- Capacity Limits & Architectural Explanation -->
+          <div v-if="!currentPartitionData.isExtensible" class="callout orange" style="margin-top: 10px; font-size: 12px; line-height: 1.5;">
+            <strong>Mathematical Capacity Limits (Partition <em>P</em> = {{ currentPartitionRow.partitionValue }}):</strong>
+            Company Prefix integer range: <code>0</code> to <code>{{ currentPartitionRow.maxGcpVal }}</code> (10<sup>{{ selectedGcpLength }}</sup> &minus; 1).<br>
+            {{ currentPartitionData.itemRefLabel }} integer range: <code>0</code> to <code>{{ currentPartitionRow.maxItemRefVal }}</code> (10<sup>{{ currentPartitionRow.itemRefDigits }}</sup> &minus; 1).<br>
+            Notice that as GCP length increases from 6 to 12 digits, the partition bits slide from <code>110</code> to <code>000</code>, allocating more bits to GCP (20 &rarr; 40) and fewer to {{ currentPartitionData.itemRefLabel }} (24 &rarr; 4).
+          </div>
         </div>
       </section>
 
@@ -3334,7 +3687,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           </div>
 
           <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px;">
-            <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">PRESETS:</span>
+            <span style="font-size: 11px; color: #cbd5e1; margin-right: 4px;">PRESETS:</span>
             <button 
               v-for="p in currentRegexPresets" 
               :key="p.label" 
@@ -3362,10 +3715,10 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
 
             <!-- Capture Groups for regexRule -->
             <div v-if="regexSandboxResult.matches && regexSandboxResult.groups" style="background: #000000; border: 1px solid #1e293b; padding: 10px 14px; border-radius: 4px; margin-top: 10px;">
-              <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px; font-weight: 600;">CAPTURED GRAMMAR GROUPS:</div>
+              <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px; font-weight: 600;">CAPTURED GRAMMAR GROUPS:</div>
               <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'Fira Code', monospace; font-size: 12px;">
-                <div><span style="color: #94a3b8;">Group 1 (Function Name):</span> <strong style="color: #38bdf8;">{{ regexSandboxResult.groups.func }}</strong></div>
-                <div><span style="color: #94a3b8;">Group 2 (Arguments):</span> <strong style="color: #a7f3d0;">{{ regexSandboxResult.groups.args }}</strong></div>
+                <div><span style="color: #cbd5e1;">Group 1 (Function Name):</span> <strong style="color: #38bdf8;">{{ regexSandboxResult.groups.func }}</strong></div>
+                <div><span style="color: #cbd5e1;">Group 2 (Arguments):</span> <strong style="color: #a7f3d0;">{{ regexSandboxResult.groups.args }}</strong></div>
               </div>
             </div>
           </div>
@@ -3378,6 +3731,146 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
         <p>
           The private method <code>#fetchDirectoryData(baseDir)</code> loads <code>manifest.json</code> via HTTP <code>fetch()</code> in browsers, and maps each entry into memory cache arrays. If run in a Node.js test environment, it transparently falls back to <code>fs.readFileSync</code>.
         </p>
+
+        <!-- GS1 Digital Link Normalization & Positional Grammar Deconstructor -->
+        <h3 id="dl-pipeline-visualizer">GS1 Digital Link URI Parsing &amp; Positional Grammar Deconstructor</h3>
+        <p>
+          GS1 Digital Link URIs encode identification keys, key qualifiers, and data attributes in web URIs. The translation engine executes <code>digitalLinkPreFormat()</code> and <code>digitalLinkPostFormat()</code> to decompose URIs into canonical components, normalize unordered query strings into standard positional sequence, decode URL-escaped entities (e.g. <code>%2F</code> &rarr; <code>/</code>), and format outputs across multiple GS1 syntaxes:
+        </p>
+
+        <div class="sandbox-card">
+          <div class="calc-grid">
+            <div class="calc-group" style="flex: 2;">
+              <label for="dl-input">GS1 Digital Link URI Input</label>
+              <input 
+                id="dl-input" 
+                type="text" 
+                v-model="dlInput" 
+                placeholder="https://example.com/01/09521234123453/21/32a%2Fb?10=BATCH01&17=261231" 
+                autocomplete="off"
+                style="font-family: 'Fira Code', monospace; font-size: 12.5px;"
+              />
+            </div>
+          </div>
+
+          <!-- Presets -->
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px;">
+            <span style="font-size: 11px; color: #cbd5e1; margin-right: 4px;">CURATED PRESETS:</span>
+            <button class="preset-chip" @click="loadDlPreset('tradeItem')">Basic GTIN + Serial</button>
+            <button class="preset-chip" @click="loadDlPreset('multiAi')">Multi-AI with Escapes (%2F)</button>
+            <button class="preset-chip" @click="loadDlPreset('customDomain')">Custom Domain DL</button>
+            <button class="preset-chip" @click="loadDlPreset('unorderedQuery')">Unordered Query Parameters</button>
+          </div>
+
+          <div v-if="dlParsedResult">
+            <!-- Deconstructed Components Grid -->
+            <div class="dl-component-grid">
+              <div class="dl-component-card">
+                <div class="dl-component-type">Stem / Base Hostname</div>
+                <div class="dl-component-val">{{ dlParsedResult.stem || '(None)' }}</div>
+              </div>
+              <div class="dl-component-card">
+                <div class="dl-component-type">Primary Key AI</div>
+                <div class="dl-component-val" style="color: #34d399;">
+                  AI ({{ dlParsedResult.primaryAi }}): {{ dlParsedResult.primaryVal }}
+                </div>
+              </div>
+              <div class="dl-component-card">
+                <div class="dl-component-type">Path Key Qualifiers</div>
+                <div class="dl-component-val" style="color: #fbbf24;">
+                  <span v-if="dlParsedResult.pathQualifiers.length === 0" style="color: #cbd5e1;">(None)</span>
+                  <span v-for="q in dlParsedResult.pathQualifiers" :key="q.ai" style="margin-right: 6px;">
+                    AI ({{ q.ai }}): {{ q.val }}
+                  </span>
+                </div>
+              </div>
+              <div class="dl-component-card">
+                <div class="dl-component-type">Query Attributes</div>
+                <div class="dl-component-val" style="color: #e879f9;">
+                  <span v-if="dlParsedResult.queryAttributes.length === 0" style="color: #cbd5e1;">(None)</span>
+                  <span v-for="a in dlParsedResult.queryAttributes" :key="a.ai" style="margin-right: 6px;">
+                    AI ({{ a.ai }}): {{ a.val }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Granular Parsed AI Attribute Table -->
+            <div class="data-table-wrapper" style="margin: 12px 0;">
+              <table class="data-table dark-table">
+                <thead>
+                  <tr>
+                    <th>AI</th>
+                    <th>Attribute Description</th>
+                    <th>Grammar Role</th>
+                    <th>Raw Value</th>
+                    <th>Normalized Value</th>
+                    <th>Compaction Method</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="attr in dlParsedResult.allAttributes" :key="attr.ai">
+                    <td><strong>AI ({{ attr.ai }})</strong></td>
+                    <td style="color: #f1f5f9;">{{ attr.title }}</td>
+                    <td>
+                      <span class="method-badge" :class="attr.roleBadgeClass">{{ attr.role }}</span>
+                    </td>
+                    <td><code>{{ attr.rawVal }}</code></td>
+                    <td><code style="color: #38bdf8;">{{ attr.normalizedVal }}</code></td>
+                    <td style="color: #cbd5e1;">{{ attr.compactionMethod }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Normalized Multi-Syntax Representations -->
+            <div style="margin-top: 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; margin-bottom: 6px;">
+                Normalized Output Representations:
+              </div>
+
+              <!-- Canonical Digital Link URI -->
+              <div style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                  <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">CANONICAL GS1 DIGITAL LINK URI:</span>
+                  <button class="btn-copy-sm" @click="copyOutput(dlParsedResult.canonicalDl, 'dlCanonical')">
+                    {{ copiedOutputKey === 'dlCanonical' ? '✓ Copied' : '📋 Copy' }}
+                  </button>
+                </div>
+                <div style="background: #000000; padding: 6px 10px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 12px; color: #38bdf8; word-break: break-all;">
+                  {{ dlParsedResult.canonicalDl }}
+                </div>
+              </div>
+
+              <!-- GS1 Element String -->
+              <div style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                  <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">GS1 ELEMENT STRING (HUMAN-READABLE BARCODE NOTATION):</span>
+                  <button class="btn-copy-sm" @click="copyOutput(dlParsedResult.elementString, 'dlElement')">
+                    {{ copiedOutputKey === 'dlElement' ? '✓ Copied' : '📋 Copy' }}
+                  </button>
+                </div>
+                <div style="background: #000000; padding: 6px 10px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 12px; color: #34d399; word-break: break-all;">
+                  {{ dlParsedResult.elementString }}
+                </div>
+              </div>
+
+              <!-- GS1 AI JSON -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                  <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">STRUCTURED GS1 AI JSON OBJECT:</span>
+                  <button class="btn-copy-sm" @click="copyOutput(dlParsedResult.jsonString, 'dlJson')">
+                    {{ copiedOutputKey === 'dlJson' ? '✓ Copied' : '📋 Copy' }}
+                  </button>
+                </div>
+                <pre style="background: #000000; padding: 8px 10px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 12px; color: #f8fafc; margin: 0;"><code>{{ dlParsedResult.jsonString }}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div v-else class="callout warning" style="margin: 10px 0 0 0;">
+            Invalid or incomplete GS1 Digital Link URI. Please enter a valid URI containing a primary key path (e.g. <code>https://id.gs1.org/01/09521234123453</code>).
+          </div>
+        </div>
       </section>
 
       <!-- SECTION 5: HOSTNAME COMPACTION -->
@@ -3396,56 +3889,168 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           <li><strong>Strategy 1 (7-bit ASCII with Optimizations)</strong>: Compresses subdomains and TLDs using pre-cached dictionary tables (Table A = 7 bits; Tables B1–B4 = 14 bits), falling back to raw 7-bit ASCII for unoptimized characters. Indicator bit = <code>1</code>.</li>
         </ul>
 
-        <h3 id="56-bit-walkthrough">The 56-Bit Custom Hostname Walkthrough</h3>
+        <h3 id="56-bit-walkthrough">Interactive Hostname Compaction Strategy Comparator (TDS §14.5.16)</h3>
         <p>
-          For the target domain <code>id.abcde.com</code>, the translation engine selects 7-bit ASCII with optimizations, producing exactly <strong>56 bits</strong>:
+          TDS 2.3 Section 14.5.16 evaluates two competing strategies in parallel to minimize tag bit occupancy for custom domains. Test any domain name to inspect intermediate tokenization and compare strategy outcomes in real time:
         </p>
 
-        <div class="bit-diagram">
-          <div class="bit-chunk chunk-header" title="1-bit Indicator: 1 = 7-bit ASCII with optimizations">
-            <span>1</span>
-            <span class="bit-chunk-label">Ind (1b)</span>
+        <div class="sandbox-card">
+          <div class="calc-grid">
+            <div class="calc-group" style="flex: 2;">
+              <label for="host-comp-input">Custom Hostname / Domain Input</label>
+              <input 
+                id="host-comp-input" 
+                type="text" 
+                v-model="hostCompInput" 
+                placeholder="e.g. id.abcde.com, id.gs1.org, example.com..." 
+                autocomplete="off"
+                style="font-family: 'Fira Code', monospace; font-size: 13px;"
+              />
+            </div>
           </div>
-          <div class="bit-chunk chunk-toggle" title="6-bit Virtual Length: 000111 = 7 virtual 7-bit characters">
-            <span>000111</span>
-            <span class="bit-chunk-label">Len (6b)</span>
+
+          <!-- Presets -->
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px;">
+            <span style="font-size: 11px; color: #cbd5e1; margin-right: 4px;">STANDARD PRESETS:</span>
+            <button class="preset-chip" @click="loadHostCompPreset('abcde')">id.abcde.com (56b)</button>
+            <button class="preset-chip" @click="loadHostCompPreset('gs1')">id.gs1.org (42b)</button>
+            <button class="preset-chip" @click="loadHostCompPreset('example')">example.com (56b)</button>
+            <button class="preset-chip" @click="loadHostCompPreset('trace')">trace.walmart.com</button>
+            <button class="preset-chip" @click="loadHostCompPreset('code40')">XYZ-99.NET (Code 40 Winner)</button>
           </div>
-          <div class="bit-chunk chunk-host" title="Table A optimization for 'id.' (7 bits: 0100000)">
-            <span>0100000</span>
-            <span class="bit-chunk-label">'id.' (7b)</span>
+
+          <div v-if="hostCompResult">
+            <!-- Winner Summary Banner -->
+            <div class="calc-stat-grid">
+              <div class="calc-stat-card" style="border-color: #10b981;">
+                <div class="calc-stat-label">Winning Strategy</div>
+                <div class="calc-stat-val" style="color: #10b981; font-size: 13px;">
+                  {{ hostCompResult.winner === 'strategy1' ? 'Strategy 1 (7-Bit ASCII + Tables)' : 'Strategy 0 (URN Code 40)' }}
+                </div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Winning Total Bits</div>
+                <div class="calc-stat-val" style="color: #38bdf8;">{{ hostCompResult.winningBits }} bits</div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Bit Economy</div>
+                <div class="calc-stat-val" style="color: var(--gs1-success);">
+                  <span v-if="hostCompResult.bitDiff > 0">Saved {{ hostCompResult.bitDiff }} bits ({{ hostCompResult.savingsPercent }}%)</span>
+                  <span v-else>Equal bit length</span>
+                </div>
+              </div>
+              <div class="calc-stat-card">
+                <div class="calc-stat-label">Indicator &amp; Length</div>
+                <div class="calc-stat-val" style="color: #fbbf24; font-size: 12px; font-family: 'Fira Code', monospace;">
+                  Ind: '{{ hostCompResult.indicator }}' | Len: {{ hostCompResult.lenBin }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Side-by-Side Strategy Comparison Grid -->
+            <div class="comparator-grid">
+              <!-- Strategy 0 Column -->
+              <div class="comparator-col" :class="{ winner: hostCompResult.winner === 'strategy0' }">
+                <div class="comparator-header">
+                  <div class="comparator-title">Strategy 0: URN Code 40 Polynomial</div>
+                  <span :class="hostCompResult.winner === 'strategy0' ? 'winner-badge' : 'runner-up-badge'">
+                    {{ hostCompResult.winner === 'strategy0' ? '🏆 Winner' : 'Runner-Up' }}
+                  </span>
+                </div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">
+                  Formula: (1600 &times; <em>c</em><sub>1</sub> + 40 &times; <em>c</em><sub>2</sub> + <em>c</em><sub>3</sub> + 1) &rarr; 16-bit binary word per 3 characters.
+                </div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">
+                  <strong>Total Bits</strong>: 1 (Ind) + 6 (Len) + {{ hostCompResult.code40Result.payload.length }} (Payload) = <strong style="color: #38bdf8;">{{ hostCompResult.code40Result.totalBits }} bits</strong>
+                </div>
+                <div style="overflow-x: auto; max-height: 220px;">
+                  <table class="step-trace-table">
+                    <thead>
+                      <tr>
+                        <th>Triplet</th>
+                        <th>Indices (<em>c</em><sub>1</sub>, <em>c</em><sub>2</sub>, <em>c</em><sub>3</sub>)</th>
+                        <th>Polynomial Value</th>
+                        <th>16-Bit Word</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(t, idx) in hostCompResult.code40Result.triplets" :key="idx">
+                        <td><code>'{{ t.raw }}'</code></td>
+                        <td>{{ t.i1 }}, {{ t.i2 }}, {{ t.i3 }}</td>
+                        <td style="color: #fbbf24;">{{ t.val }}</td>
+                        <td style="color: #38bdf8;"><code>{{ t.bin16 }}</code></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Strategy 1 Column -->
+              <div class="comparator-col" :class="{ winner: hostCompResult.winner === 'strategy1' }">
+                <div class="comparator-header">
+                  <div class="comparator-title">Strategy 1: Optimized 7-Bit ASCII &amp; Tables</div>
+                  <span :class="hostCompResult.winner === 'strategy1' ? 'winner-badge' : 'runner-up-badge'">
+                    {{ hostCompResult.winner === 'strategy1' ? '🏆 Winner' : 'Runner-Up' }}
+                  </span>
+                </div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">
+                  Greedy longest match: Table A (7 bits), Table B1–B4 (14 bits), or literal 7-bit ASCII.
+                </div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">
+                  <strong>Total Bits</strong>: 1 (Ind) + 6 (Len) + {{ hostCompResult.optResult.payload.length }} (Payload) = <strong style="color: #38bdf8;">{{ hostCompResult.optResult.totalBits }} bits</strong>
+                </div>
+                <div style="overflow-x: auto; max-height: 220px;">
+                  <table class="step-trace-table">
+                    <thead>
+                      <tr>
+                        <th>Token Substring</th>
+                        <th>Match Classification</th>
+                        <th>Bit Length</th>
+                        <th>Bit Sequence</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(tok, idx) in hostCompResult.optResult.tokens" :key="idx">
+                        <td><code>'{{ tok.str }}'</code></td>
+                        <td>
+                          <span class="method-badge" :class="tok.type === 'optimisation' ? 'badge-static' : 'badge-instance'">
+                            {{ tok.source }}
+                          </span>
+                        </td>
+                        <td style="color: #fbbf24;">{{ tok.bitLength }}b</td>
+                        <td style="color: #38bdf8;"><code>{{ tok.bits }}</code></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assembled Binary Bitstream -->
+            <div style="margin-top: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-size: 11px; color: #cbd5e1; font-weight: 700; text-transform: uppercase;">
+                  Assembled Winning Binary Bitstream ({{ hostCompResult.winningBits }} Bits):
+                </span>
+                <button class="btn-copy-sm" @click="copyOutput(hostCompResult.assembledBitstream, 'hostBits')">
+                  {{ copiedOutputKey === 'hostBits' ? '✓ Copied' : '📋 Copy Bitstream' }}
+                </button>
+              </div>
+              <div style="background: #000000; padding: 10px 12px; border-radius: 4px; border: 1px solid #1e293b; font-family: 'Fira Code', monospace; font-size: 13px; color: #38bdf8; word-break: break-all;">
+                <span style="color: var(--gs1-orange); font-weight: 700;" title="Indicator Bit">{{ hostCompResult.indicator }}</span><span style="color: #fbbf24; font-weight: 700;" title="6-Bit Virtual Length">{{ hostCompResult.lenBin }}</span><span>{{ hostCompResult.winningPayload }}</span>
+              </div>
+            </div>
+
+            <!-- Roundtrip Verification -->
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cbd5e1;">
+              <span class="badge-match">✓ Roundtrip Validated</span>
+              <span>Decoded back via <code>internalBinary2Hostname()</code>: <strong style="color: #ffffff;">{{ hostCompResult.decodedHost }}</strong></span>
+            </div>
           </div>
-          <div class="bit-chunk chunk-gtin" title="7-bit ASCII for 'a' (1100001)">
-            <span>1100001</span>
-            <span class="bit-chunk-label">'a' (7b)</span>
-          </div>
-          <div class="bit-chunk chunk-gtin" title="7-bit ASCII for 'b' (1100010)">
-            <span>1100010</span>
-            <span class="bit-chunk-label">'b' (7b)</span>
-          </div>
-          <div class="bit-chunk chunk-gtin" title="7-bit ASCII for 'c' (1100011)">
-            <span>1100011</span>
-            <span class="bit-chunk-label">'c' (7b)</span>
-          </div>
-          <div class="bit-chunk chunk-gtin" title="7-bit ASCII for 'd' (1100100)">
-            <span>1100100</span>
-            <span class="bit-chunk-label">'d' (7b)</span>
-          </div>
-          <div class="bit-chunk chunk-gtin" title="7-bit ASCII for 'e' (1100101)">
-            <span>1100101</span>
-            <span class="bit-chunk-label">'e' (7b)</span>
-          </div>
-          <div class="bit-chunk chunk-host" title="Table A optimization for '.com' (7 bits: 1011011)">
-            <span>1011011</span>
-            <span class="bit-chunk-label">'.com' (7b)</span>
+          <div v-else class="callout warning" style="margin: 10px 0 0 0;">
+            Invalid hostname. Permitted characters are lowercase/uppercase letters, digits, '.', '-', and ':'.
           </div>
         </div>
-
-        <p>
-          <strong>Total Hostname Bits</strong>: 1 (Indicator) + 6 (Length) + 7 (<code>id.</code>) + 35 (<code>abcde</code>) + 7 (<code>.com</code>) = <strong>56 bits</strong>.
-        </p>
-        <p>
-          By comparison, URN Code 40 requires padding to a multiple of 3 characters (12 characters = four 16-bit blocks = 64 bits + 7-bit header = <strong>71 bits</strong>). The engine automatically selects the 56-bit encoding because <code>asciiResult.totalBits &lt; urnResult.totalBits</code>.
-        </p>
 
         <div class="callout warning" id="tiebreaker-rules">
           <strong>Critical Codec Invariant: Tiebreaker Sorting &amp; Cursor Match</strong>
@@ -3471,13 +4076,13 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <div class="playground-title">
               <span>TDT 2.3 Live Bitstream &amp; Hostname Inspector</span>
             </div>
-            <span class="playground-status-pill" :style="isEngineReady ? 'background: rgba(16, 185, 129, 0.2); color: #10b981;' : 'background: rgba(245, 158, 11, 0.2); color: #f59e0b;'">
+            <span class="playground-status-pill" :style="isEngineReady ? 'background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: 700;' : 'background: rgba(245, 158, 11, 0.25); color: #fbbf24; font-weight: 700;'">
               {{ isEngineReady ? 'Engine Ready' : 'Initializing...' }}
             </span>
           </div>
 
           <div class="playground-chips">
-            <span style="font-size: 11px; color: #94a3b8; align-self: center; margin-right: 4px;">Quick Presets:</span>
+            <span style="font-size: 11px; color: #cbd5e1; align-self: center; margin-right: 4px;">Quick Presets:</span>
             <button 
               v-for="preset in playgroundPresets" 
               :key="preset.label" 
@@ -3569,14 +4174,14 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               <strong style="color: #ffffff;">TDS §14.5.16 Hostname Compaction Comparison:</strong>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0;">
                 <div :style="playgroundResult.hostnameData.strategy === 0 ? 'border: 1px solid #10b981; padding: 8px; border-radius: 4px; background: rgba(16,185,129,0.1);' : 'border: 1px solid #374151; padding: 8px; border-radius: 4px;'">
-                  <div style="font-weight: 700; font-size: 12px; color: #94a3b8;">Strategy 0: URN Code 40</div>
+                  <div style="font-weight: 700; font-size: 12px; color: #f8fafc;">Strategy 0: URN Code 40</div>
                   <div style="font-size: 14px; font-weight: 700; color: #ffffff;">{{ playgroundResult.hostnameData.urnBits }} bits</div>
-                  <div style="font-size: 11px; color: #94a3b8;">Padded to 16-bit 3-char blocks + 7-bit header</div>
+                  <div style="font-size: 11px; color: #cbd5e1;">Padded to 16-bit 3-char blocks + 7-bit header</div>
                 </div>
                 <div :style="playgroundResult.hostnameData.strategy === 1 ? 'border: 1px solid #10b981; padding: 8px; border-radius: 4px; background: rgba(16,185,129,0.1);' : 'border: 1px solid #374151; padding: 8px; border-radius: 4px;'">
-                  <div style="font-weight: 700; font-size: 12px; color: #94a3b8;">Strategy 1: 7-bit ASCII + Tables A/B</div>
+                  <div style="font-weight: 700; font-size: 12px; color: #f8fafc;">Strategy 1: 7-bit ASCII + Tables A/B</div>
                   <div style="font-size: 14px; font-weight: 700; color: #ffffff;">{{ playgroundResult.hostnameData.asciiBits }} bits</div>
-                  <div style="font-size: 11px; color: #94a3b8;">Subdomain / TLD table lookup + 7-bit chars</div>
+                  <div style="font-size: 11px; color: #cbd5e1;">Subdomain / TLD table lookup + 7-bit chars</div>
                 </div>
               </div>
               <p style="margin: 0; font-size: 12px; color: #93c5fd;">
@@ -3591,7 +4196,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               <div class="playground-bit-label">
                 <span>Bitstream Inspection ({{ playgroundResult.totalBits }} bits)</span>
                 <div class="bit-display-modes" role="radiogroup" aria-label="Bit display grouping">
-                  <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">Grouping:</span>
+                  <span style="font-size: 11px; color: #cbd5e1; margin-right: 4px;">Grouping:</span>
                   <button 
                     type="button"
                     role="radio"
@@ -3681,7 +4286,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
                   </div>
                 </div>
                 <div v-else style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px;">
-                  <span style="font-size: 13px; color: #94a3b8;">
+                  <span style="font-size: 13px; color: #cbd5e1;">
                     Click any functional bit chunk above to inspect its sub-field bit boundaries and semantic representations.
                   </span>
                   <button 
@@ -4170,7 +4775,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
 
             <div style="margin-top: 10px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">COMPACTED BITSTREAM:</span>
+                <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">COMPACTED BITSTREAM:</span>
                 <button 
                   class="btn-copy-sm" 
                   @click="copyOutput(calcResult.binary, 'tableFBits')"
@@ -4186,7 +4791,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
 
             <div style="margin-top: 10px;" v-if="calcResultHex">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">HEXADECIMAL EQUIVALENT (Zero-Padded):</span>
+                <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">HEXADECIMAL EQUIVALENT (Zero-Padded):</span>
                 <button 
                   class="btn-copy-sm" 
                   @click="copyOutput(calcResultHex, 'tableFHex')"
@@ -4200,7 +4805,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </div>
             </div>
 
-            <div style="font-size: 12px; color: #94a3b8; margin-top: 8px;">
+            <div style="font-size: 12px; color: #cbd5e1; margin-top: 8px;">
               <strong>Compaction Algorithm:</strong> {{ calcResult.algorithmExplanation }}
             </div>
           </div>
@@ -4324,7 +4929,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
           </div>
 
           <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px;">
-            <span style="font-size: 11px; color: #94a3b8; margin-right: 4px;">STANDARD PRESETS:</span>
+            <span style="font-size: 11px; color: #cbd5e1; margin-right: 4px;">STANDARD PRESETS:</span>
             <button class="preset-chip" @click="loadLuhnPreset('gtin14')">{{ calcLuhnMode === 'payload' ? 'GTIN-14 (13 Digits)' : 'GTIN-14 (14 Digits)' }}</button>
             <button class="preset-chip" @click="loadLuhnPreset('gtin13')">{{ calcLuhnMode === 'payload' ? 'GTIN-13 (12 Digits)' : 'GTIN-13 (13 Digits)' }}</button>
             <button class="preset-chip" @click="loadLuhnPreset('sscc18')">{{ calcLuhnMode === 'payload' ? 'SSCC-18 (17 Digits)' : 'SSCC-18 (18 Digits)' }}</button>
@@ -4350,7 +4955,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
               </div>
               <div class="calc-stat-card">
                 <div class="calc-stat-label">Standard Formula</div>
-                <div class="calc-stat-val" style="font-size: 11px; color: #cbd5e1; margin-top: 4px;">
+                <div class="calc-stat-val" style="font-size: 11px; color: #f8fafc; margin-top: 4px;">
                   (10 - ({{ luhnCalculationResult.totalSum }} % 10)) % 10 = {{ luhnCalculationResult.checkDigit }}
                 </div>
               </div>
@@ -4359,7 +4964,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <!-- Complete / Evaluated Identifier -->
             <div style="margin-top: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">
+                <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">
                   {{ luhnCalculationResult.isValidationMode ? 'EVALUATED IDENTIFIER (TRAILING CHECK DIGIT HIGHLIGHTED):' : 'COMPLETED IDENTIFIER (WITH CALCULATED CHECK DIGIT):' }}
                 </span>
                 <button 
@@ -4388,7 +4993,7 @@ Batch translation complete: 5 items in 33ms (6.60ms/item)
             <!-- Step-by-Step Arithmetic Trace -->
             <div style="margin-top: 14px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">GS1 MODULO-10 ARITHMETIC BREAKDOWN (RIGHT-TO-LEFT WEIGHTING):</span>
+                <span style="font-size: 11px; color: #cbd5e1; font-weight: 600;">GS1 MODULO-10 ARITHMETIC BREAKDOWN (RIGHT-TO-LEFT WEIGHTING):</span>
                 <button 
                   class="btn-copy-sm" 
                   @click="showLuhnTrace = !showLuhnTrace"
@@ -5150,6 +5755,14 @@ const SEARCH_INDEX = [
     content: "Comprehensive catalog of all 47 GS1 Electronic Product Code (EPC) schemes supported by TDTtranslator, showing primary Application Identifiers, header bit patterns, Tag URI prefixes, and Pure Identity patterns across 6 category filter pills."
   },
   {
+    id: "partition-visualizer",
+    title: "Interactive EPC Partition & Bit Boundary Explorer",
+    section: "Section 3",
+    badge: "PLAYGROUND",
+    keywords: "partition table visualizer explorer bit boundary floating gcp company prefix length slider 6 to 12 digits sgtin-96 sscc-96 grai-96 giai-96 extensible radix-100",
+    content: "Interactive bit allocation map and dynamic partition table explorer. Move the GS1 Company Prefix length slider (6 to 12 digits) to visualize the sliding bit boundary between Company Prefix (M) and Item/Serial Reference (N) within the fixed 44-bit block for legacy TDS 1.x schemes (SGTIN-96, SSCC-96, GRAI-96, GIAI-96), and compare against modern TDS 2.0+ extensible Radix-100 base-128 compression."
+  },
+  {
     id: "subfield-deconstructor",
     title: "Interactive Sub-Field Chunk Deconstructor",
     section: "Section 5",
@@ -5318,6 +5931,14 @@ const SEARCH_INDEX = [
     content: "All 9 Table definitions (TDT_TableA.json, TDT_TableB1-B4.json, TDT_TableF.json, etc.) and 46 scheme configurations reside unzipped under schemas/. The private method #fetchDirectoryData(baseDir) loads manifest.json via HTTP fetch() in browsers, mapping each entry into memory cache arrays. If run in a Node.js test environment, it transparently falls back to fs.readFileSync."
   },
   {
+    id: "dl-pipeline-visualizer",
+    title: "Interactive GS1 Digital Link Deconstructor & Grammar Pipeline",
+    section: "Section 4",
+    badge: "PLAYGROUND",
+    keywords: "digital link deconstructor pipeline visualizer canonical uri grammar positional path qualifiers query attributes element string json urldecode",
+    content: "Live GS1 Digital Link URI deconstructor and positional grammar normalizer. Enter any GS1 Digital Link URI or choose from curated presets to inspect the extracted stem, primary key AI, path key qualifiers, and unordered query attributes. View real-time decomposition into granular attribute tables with compaction methods, canonical Digital Link URI, GS1 Element String (barcode human-readable), and GS1 AI JSON object."
+  },
+  {
     id: "hostname-codec",
     title: "5. Hostname Compaction Architecture (TDS §14.5.16)",
     section: "Section 5",
@@ -5327,11 +5948,11 @@ const SEARCH_INDEX = [
   },
   {
     id: "56-bit-walkthrough",
-    title: "56-Bit Custom Hostname Walkthrough (id.abcde.com)",
+    title: "Interactive Hostname Compaction Strategy Comparator (TDS §14.5.16)",
     section: "Section 5",
-    badge: "CALCULATION",
-    keywords: "56-bit 56 bits id.abcde.com walkthrough calculation indicator virtual length table a 7 bits 35 bits 71 bits comparison ascii",
-    content: "For the target domain id.abcde.com, the engine selects 7-bit ASCII with optimizations producing exactly 56 bits: 1-bit Indicator (1) + 6-bit Virtual Length (000111 = 7 characters) + Table A 'id.' (7 bits: 0100000) + 7-bit ASCII 'a', 'b', 'c', 'd', 'e' (35 bits) + Table A '.com' (7 bits: 1011011) = 56 bits. URN Code 40 requires 71 bits. The engine chooses the 56-bit encoding because asciiResult.totalBits < urnResult.totalBits."
+    badge: "PLAYGROUND",
+    keywords: "hostname compaction strategy comparator live dual strategy tds 14.5.16 strategy 0 strategy 1 urn code 40 7-bit ascii dictionary tables bit economy winner 56 bits",
+    content: "Interactive dual-strategy hostname compaction comparator implementing TDS 2.3 Section 14.5.16. Compare Strategy 0 (URN Code 40 polynomial base-40 triplets) and Strategy 1 (Optimized 7-bit ASCII with Table A 7-bit and Table B 14-bit dictionary lookups) side-by-side with step-by-step token traces, bit economy metrics, winner badge, and roundtrip decoding verification."
   },
   {
     id: "tiebreaker-rules",
@@ -5928,7 +6549,19 @@ runTests();`,
         { label: 'Bare KV', val: 'gtin=09521234123453;serial=32a/b' },
         { label: 'Compressed DL (Hex)', val: 'https://example.com/eh30164596f40c0e5cbe991a83' },
         { label: 'Compressed DL (Base64)', val: 'https://example.com/exMBZFlvQMDly-mRqD' }
-      ]
+      ],
+      // Interactive Pedagogical Playgrounds State
+      selectedPartitionScheme: 'sgtin-96',
+      selectedGcpLength: 7,
+      partitionSchemesList: [
+        { id: 'sgtin-96', name: 'SGTIN-96' },
+        { id: 'sscc-96', name: 'SSCC-96' },
+        { id: 'grai-96', name: 'GRAI-96' },
+        { id: 'giai-96', name: 'GIAI-96' },
+        { id: 'sgtin-plus', name: 'SGTIN++ (TDS 2.0+ Extensible)' }
+      ],
+      dlInput: 'https://example.com/01/09521234123453/21/32a%2Fb?10=BATCH01&17=261231',
+      hostCompInput: 'id.abcde.com'
     };
   },
   computed: {
@@ -6387,9 +7020,495 @@ runTests();`,
         return parts ? parts.join(' ') : bin;
       }
       return bin;
+    },
+
+    // --- PEDAGOGICAL PLAYGROUND 1: EPC PARTITION TABLE & FLOATING BOUNDARY EXPLORER ---
+    currentPartitionData() {
+      const PARTITION_DATA_MAP = {
+        'sgtin-96': {
+          name: 'SGTIN-96',
+          isExtensible: false,
+          headerBits: 8,
+          totalBits: 96,
+          fixedBlockBits: 44,
+          itemRefLabel: 'Item Reference',
+          itemRefShort: 'ItemRef',
+          remainderBits: 38,
+          remainderLabel: 'Serial Number',
+          remainderShort: 'Serial (38b)',
+          rows: {
+            12: { partitionValue: 0, partitionBits: '000', gcpBits: 40, itemRefBits: 4, itemRefDigits: 1 },
+            11: { partitionValue: 1, partitionBits: '001', gcpBits: 37, itemRefBits: 7, itemRefDigits: 2 },
+            10: { partitionValue: 2, partitionBits: '010', gcpBits: 34, itemRefBits: 10, itemRefDigits: 3 },
+            9:  { partitionValue: 3, partitionBits: '011', gcpBits: 30, itemRefBits: 14, itemRefDigits: 4 },
+            8:  { partitionValue: 4, partitionBits: '100', gcpBits: 27, itemRefBits: 17, itemRefDigits: 5 },
+            7:  { partitionValue: 5, partitionBits: '101', gcpBits: 24, itemRefBits: 20, itemRefDigits: 6 },
+            6:  { partitionValue: 6, partitionBits: '110', gcpBits: 20, itemRefBits: 24, itemRefDigits: 7 }
+          }
+        },
+        'sscc-96': {
+          name: 'SSCC-96',
+          isExtensible: false,
+          headerBits: 8,
+          totalBits: 96,
+          fixedBlockBits: 58,
+          itemRefLabel: 'Serial Reference',
+          itemRefShort: 'SerialRef',
+          remainderBits: 24,
+          remainderLabel: 'Reserved Zero Padding',
+          remainderShort: 'Pad (24b)',
+          rows: {
+            12: { partitionValue: 0, partitionBits: '000', gcpBits: 40, itemRefBits: 18, itemRefDigits: 5 },
+            11: { partitionValue: 1, partitionBits: '001', gcpBits: 37, itemRefBits: 21, itemRefDigits: 6 },
+            10: { partitionValue: 2, partitionBits: '010', gcpBits: 34, itemRefBits: 24, itemRefDigits: 7 },
+            9:  { partitionValue: 3, partitionBits: '011', gcpBits: 30, itemRefBits: 28, itemRefDigits: 8 },
+            8:  { partitionValue: 4, partitionBits: '100', gcpBits: 27, itemRefBits: 31, itemRefDigits: 9 },
+            7:  { partitionValue: 5, partitionBits: '101', gcpBits: 24, itemRefBits: 34, itemRefDigits: 10 },
+            6:  { partitionValue: 6, partitionBits: '110', gcpBits: 20, itemRefBits: 38, itemRefDigits: 11 }
+          }
+        },
+        'grai-96': {
+          name: 'GRAI-96',
+          isExtensible: false,
+          headerBits: 8,
+          totalBits: 96,
+          fixedBlockBits: 44,
+          itemRefLabel: 'Asset Type',
+          itemRefShort: 'AssetType',
+          remainderBits: 38,
+          remainderLabel: 'Serial Number',
+          remainderShort: 'Serial (38b)',
+          rows: {
+            12: { partitionValue: 0, partitionBits: '000', gcpBits: 40, itemRefBits: 4, itemRefDigits: 1 },
+            11: { partitionValue: 1, partitionBits: '001', gcpBits: 37, itemRefBits: 7, itemRefDigits: 2 },
+            10: { partitionValue: 2, partitionBits: '010', gcpBits: 34, itemRefBits: 10, itemRefDigits: 3 },
+            9:  { partitionValue: 3, partitionBits: '011', gcpBits: 30, itemRefBits: 14, itemRefDigits: 4 },
+            8:  { partitionValue: 4, partitionBits: '100', gcpBits: 27, itemRefBits: 17, itemRefDigits: 5 },
+            7:  { partitionValue: 5, partitionBits: '101', gcpBits: 24, itemRefBits: 20, itemRefDigits: 6 },
+            6:  { partitionValue: 6, partitionBits: '110', gcpBits: 20, itemRefBits: 24, itemRefDigits: 7 }
+          }
+        },
+        'giai-96': {
+          name: 'GIAI-96',
+          isExtensible: false,
+          headerBits: 8,
+          totalBits: 96,
+          fixedBlockBits: 82,
+          itemRefLabel: 'Individual Asset Reference',
+          itemRefShort: 'AssetRef',
+          remainderBits: 0,
+          remainderLabel: '',
+          remainderShort: '',
+          rows: {
+            12: { partitionValue: 0, partitionBits: '000', gcpBits: 40, itemRefBits: 42, itemRefDigits: 13 },
+            11: { partitionValue: 1, partitionBits: '001', gcpBits: 37, itemRefBits: 45, itemRefDigits: 14 },
+            10: { partitionValue: 2, partitionBits: '010', gcpBits: 34, itemRefBits: 48, itemRefDigits: 15 },
+            9:  { partitionValue: 3, partitionBits: '011', gcpBits: 30, itemRefBits: 52, itemRefDigits: 16 },
+            8:  { partitionValue: 4, partitionBits: '100', gcpBits: 27, itemRefBits: 55, itemRefDigits: 17 },
+            7:  { partitionValue: 5, partitionBits: '101', gcpBits: 24, itemRefBits: 58, itemRefDigits: 18 },
+            6:  { partitionValue: 6, partitionBits: '110', gcpBits: 20, itemRefBits: 62, itemRefDigits: 19 }
+          }
+        },
+        'sgtin-plus': {
+          name: 'SGTIN++ (TDS 2.0+ Extensible)',
+          isExtensible: true,
+          headerBits: 8,
+          totalBits: 152,
+          fixedBlockBits: 64,
+          itemRefLabel: 'Item Reference',
+          itemRefShort: 'ItemRef',
+          remainderBits: 77,
+          remainderLabel: 'Multi-AI Payload (Serial + Batch + Attributes)',
+          remainderShort: 'Ext Data',
+          rows: {
+            7: { partitionValue: 0, partitionBits: 'N/A', gcpBits: 28, itemRefBits: 24, itemRefDigits: 7 }
+          }
+        }
+      };
+      return PARTITION_DATA_MAP[this.selectedPartitionScheme] || PARTITION_DATA_MAP['sgtin-96'];
+    },
+    currentPartitionRow() {
+      const data = this.currentPartitionData;
+      const len = this.selectedGcpLength || 7;
+      const row = (data.rows && (data.rows[len] || data.rows[7] || data.rows[12])) || {
+        partitionValue: 5, partitionBits: '101', gcpBits: 24, itemRefBits: 20, itemRefDigits: 6
+      };
+      const maxGcp = (Math.pow(10, len) - 1).toLocaleString();
+      const maxItemRef = (Math.pow(10, row.itemRefDigits) - 1).toLocaleString();
+      return {
+        ...row,
+        maxGcpVal: maxGcp,
+        maxItemRefVal: maxItemRef
+      };
+    },
+
+    // --- PEDAGOGICAL PLAYGROUND 2: GS1 DIGITAL LINK NORMALIZER & DECONSTRUCTOR ---
+    dlParsedResult() {
+      const raw = (this.dlInput || '').trim();
+      if (!raw) return null;
+
+      let urlObj;
+      try {
+        urlObj = new URL(raw.startsWith('http') ? raw : 'https://' + raw);
+      } catch (e) {
+        return null;
+      }
+
+      const stem = urlObj.origin;
+      const pathSegments = urlObj.pathname.split('/').filter(Boolean);
+      if (pathSegments.length < 2) return null;
+
+      const AI_DICTIONARY = {
+        '01': { title: 'Global Trade Item Number (GTIN)', role: 'Primary Key', roleBadgeClass: 'badge-static', compaction: 'Radix-100 Base-128 Numeric (TDS §14.5.4)' },
+        '00': { title: 'Serial Shipping Container Code (SSCC)', role: 'Primary Key', roleBadgeClass: 'badge-static', compaction: 'Radix-100 Base-128 Numeric (TDS §14.5.4)' },
+        '21': { title: 'Serial Number', role: 'Key Qualifier', roleBadgeClass: 'badge-instance', compaction: '7-Bit ASCII / Table E Compaction (TDS §14.5.7)' },
+        '22': { title: 'Consumer Product Variant (CPV)', role: 'Key Qualifier', roleBadgeClass: 'badge-instance', compaction: 'Table E Compaction (TDS §14.5.6)' },
+        '10': { title: 'Batch or Lot Number', role: 'Data Attribute', roleBadgeClass: 'badge-instance', compaction: 'Table E Compaction (TDS §14.5.6)' },
+        '17': { title: 'Expiration Date (YYMMDD)', role: 'Data Attribute', roleBadgeClass: 'badge-static', compaction: 'Day Offset Integer (TDS §14.5.11)' },
+        '15': { title: 'Best Before Date (YYMMDD)', role: 'Data Attribute', roleBadgeClass: 'badge-static', compaction: 'Day Offset Integer (TDS §14.5.11)' },
+        '3103': { title: 'Net Weight (kg, 3 dec)', role: 'Data Attribute', roleBadgeClass: 'badge-instance', compaction: 'Integer Compaction (TDS §14.5.10)' },
+        '8003': { title: 'GRAI Asset Identifier', role: 'Primary Key', roleBadgeClass: 'badge-static', compaction: 'Radix-100 + Table E' },
+        '8004': { title: 'GIAI Asset Identifier', role: 'Primary Key', roleBadgeClass: 'badge-static', compaction: 'Radix-100 + 7-bit ASCII' }
+      };
+
+      const primaryAi = pathSegments[0];
+      const primaryRawVal = pathSegments[1];
+      const primaryNormalized = decodeURIComponent(primaryRawVal);
+
+      const pathQualifiers = [];
+      for (let i = 2; i < pathSegments.length; i += 2) {
+        if (i + 1 < pathSegments.length) {
+          pathQualifiers.push({
+            ai: pathSegments[i],
+            rawVal: pathSegments[i + 1],
+            val: decodeURIComponent(pathSegments[i + 1])
+          });
+        }
+      }
+
+      const queryAttributes = [];
+      const queryParams = new URLSearchParams(urlObj.search);
+      for (const [k, v] of queryParams.entries()) {
+        queryAttributes.push({
+          ai: k,
+          rawVal: v,
+          val: decodeURIComponent(v)
+        });
+      }
+
+      const allAttributes = [];
+      const primaryMeta = AI_DICTIONARY[primaryAi] || {
+        title: `Identification Key (${primaryAi})`,
+        role: 'Primary Key',
+        roleBadgeClass: 'badge-static',
+        compaction: 'Standard Radix-100 Compaction'
+      };
+      allAttributes.push({
+        ai: primaryAi,
+        title: primaryMeta.title,
+        role: primaryMeta.role,
+        roleBadgeClass: primaryMeta.roleBadgeClass,
+        rawVal: primaryRawVal,
+        normalizedVal: primaryNormalized,
+        compactionMethod: primaryMeta.compaction
+      });
+
+      for (const q of pathQualifiers) {
+        const meta = AI_DICTIONARY[q.ai] || {
+          title: `Key Qualifier (${q.ai})`,
+          role: 'Key Qualifier',
+          roleBadgeClass: 'badge-instance',
+          compaction: '7-Bit ASCII / Table E Compaction'
+        };
+        allAttributes.push({
+          ai: q.ai,
+          title: meta.title,
+          role: meta.role,
+          roleBadgeClass: meta.roleBadgeClass,
+          rawVal: q.rawVal,
+          normalizedVal: q.val,
+          compactionMethod: meta.compaction
+        });
+      }
+
+      for (const a of queryAttributes) {
+        const meta = AI_DICTIONARY[a.ai] || {
+          title: `Data Attribute (${a.ai})`,
+          role: 'Data Attribute',
+          roleBadgeClass: 'badge-instance',
+          compaction: 'Standard TDS Compaction'
+        };
+        allAttributes.push({
+          ai: a.ai,
+          title: meta.title,
+          role: meta.role,
+          roleBadgeClass: meta.roleBadgeClass,
+          rawVal: a.rawVal,
+          normalizedVal: a.val,
+          compactionMethod: meta.compaction
+        });
+      }
+
+      // Format canonical DL URI
+      let canonicalDl = `https://id.gs1.org/${primaryAi}/${encodeURIComponent(primaryNormalized)}`;
+      for (const q of pathQualifiers) {
+        canonicalDl += `/${q.ai}/${encodeURIComponent(q.val)}`;
+      }
+      if (queryAttributes.length > 0) {
+        const sortedQueries = [...queryAttributes].sort((a, b) => a.ai.localeCompare(b.ai, undefined, { numeric: true }));
+        canonicalDl += '?' + sortedQueries.map(q => `${encodeURIComponent(q.ai)}=${encodeURIComponent(q.val)}`).join('&');
+      }
+
+      // Format GS1 Element String
+      let elementString = `(${primaryAi})${primaryNormalized}`;
+      for (const q of pathQualifiers) {
+        elementString += `(${q.ai})${q.val}`;
+      }
+      for (const a of queryAttributes) {
+        elementString += `(${a.ai})${a.val}`;
+      }
+
+      // Format JSON String
+      const jsonPayload = {};
+      jsonPayload[primaryAi] = primaryNormalized;
+      for (const q of pathQualifiers) {
+        jsonPayload[q.ai] = q.val;
+      }
+      for (const a of queryAttributes) {
+        jsonPayload[a.ai] = a.val;
+      }
+      const jsonString = JSON.stringify(jsonPayload, null, 2);
+
+      return {
+        stem,
+        primaryAi,
+        primaryVal: primaryNormalized,
+        pathQualifiers,
+        queryAttributes,
+        allAttributes,
+        canonicalDl,
+        elementString,
+        jsonString
+      };
+    },
+
+    // --- PEDAGOGICAL PLAYGROUND 3: DUAL-STRATEGY HOSTNAME COMPACTION COMPARATOR ---
+    hostCompResult() {
+      const host = (this.hostCompInput || '').trim();
+      if (!host) return null;
+      const cls = (typeof TDTtranslator !== 'undefined') ? TDTtranslator : null;
+      const permRegex = (cls && cls.regexPermittedHostname) ? cls.regexPermittedHostname : /^[!%-?A-Z_a-z\x22]+$/;
+      if (!permRegex.test(host)) return null;
+
+      const localPrePad = (str, padChar, len) => str.length < len ? padChar.repeat(len - str.length) + str : str;
+      const buildLengthIndicator = (l) => localPrePad(l.toString(2), "0", 6);
+      const alphabet40 = (cls && cls.alphabetURNcode40) ? cls.alphabetURNcode40 : " ABCDEFGHIJKLMNOPQRSTUVWXYZ-.:0123456789";
+      const urnRegex = (cls && cls.regexURNcode40) ? cls.regexURNcode40 : /^[A-Z0-9\.:-]+$/;
+
+      // Strategy 0: URN Code 40 Polynomial
+      let code40Result = null;
+      if (urnRegex.test(host)) {
+        let workStr = host;
+        if (workStr.length % 3 > 0) {
+          workStr += " ".repeat(3 - (workStr.length % 3));
+        }
+        let binaryPayload = "";
+        const triplets = [];
+        for (let t = 0; t < workStr.length / 3; t++) {
+          const c1 = workStr.charAt(3 * t);
+          const c2 = workStr.charAt(3 * t + 1);
+          const c3 = workStr.charAt(3 * t + 2);
+          const i1 = alphabet40.indexOf(c1);
+          const i2 = alphabet40.indexOf(c2);
+          const i3 = alphabet40.indexOf(c3);
+          const val = (1600 * i1 + 40 * i2 + i3 + 1) >>> 0;
+          const bin16 = localPrePad(val.toString(2), "0", 16);
+          binaryPayload += bin16;
+          triplets.push({
+            raw: c1 + c2 + c3,
+            i1, i2, i3,
+            val,
+            bin16
+          });
+        }
+        code40Result = {
+          indicator: "0",
+          lengthBin: buildLengthIndicator(host.length),
+          payload: binaryPayload,
+          totalBits: 1 + 6 + binaryPayload.length,
+          triplets
+        };
+      }
+
+      // Strategy 1: Optimized 7-Bit ASCII + Tables
+      let optResult = null;
+      try {
+        let optimisations = [];
+        const fallbackTableA = [
+          { substring: 'qr.', binary: '0011110', bitLength: 7 },
+          { substring: 'www.', binary: '0011111', bitLength: 7 },
+          { substring: 'id.', binary: '0100000', bitLength: 7 },
+          { substring: '.com', binary: '1011011', bitLength: 7 },
+          { substring: '.org', binary: '1011100', bitLength: 7 },
+          { substring: '.net', binary: '1011101', bitLength: 7 },
+          { substring: '.int', binary: '1011110', bitLength: 7 },
+          { substring: '.edu', binary: '1100000', bitLength: 7 },
+          { substring: '.gov', binary: '1111011', bitLength: 7 },
+          { substring: '.mil', binary: '1111100', bitLength: 7 },
+          { substring: '.biz', binary: '1111101', bitLength: 7 },
+          { substring: '.eco', binary: '1111110', bitLength: 7 },
+          { substring: '.med', binary: '1111111', bitLength: 7 }
+        ];
+        const activeTableA = (cls && cls.optimisation7bitTableA && cls.optimisation7bitTableA.length > 0) ? cls.optimisation7bitTableA : fallbackTableA;
+        const tables = [
+          (cls && cls.optimisation14bitTableB4) || [],
+          (cls && cls.optimisation14bitTableB3) || [],
+          activeTableA,
+          (cls && cls.optimisation14bitTableB1) || [],
+          (cls && cls.optimisation14bitTableB2) || []
+        ];
+        for (const table of tables) {
+          for (const el of table) {
+            if (host.indexOf(el.substring) > -1) optimisations.push(el);
+          }
+        }
+        optimisations.sort((a, b) => {
+          if (b.substring.length !== a.substring.length) {
+            return b.substring.length - a.substring.length;
+          }
+          return (a.bitLength || a.binary.length) - (b.bitLength || b.binary.length);
+        });
+
+        let finalOptimisations = [];
+        let optimisationsRemoved = host;
+        for (let el of optimisations) {
+          let p = optimisationsRemoved.indexOf(el.substring);
+          if (p > -1) {
+            finalOptimisations.push(el);
+            optimisationsRemoved = optimisationsRemoved.replace(el.substring, "");
+          }
+        }
+
+        let tokens = [];
+        let cursor = 0;
+        let sb = [];
+        while (cursor < host.length) {
+          let found = false;
+          for (let o of finalOptimisations) {
+            if (host.startsWith(o.substring, cursor)) {
+              if (sb.length > 0) { tokens.push(sb.join("")); sb = []; }
+              tokens.push(o);
+              cursor += o.substring.length;
+              found = true;
+              break;
+            }
+          }
+          if (!found) { sb.push(host.charAt(cursor)); cursor++; }
+        }
+        if (sb.length > 0) tokens.push(sb.join(""));
+
+        let traceTokens = [];
+        let finalBinaryBuffer = [];
+        for (let t of tokens) {
+          if (typeof t === "string") {
+            for (let i = 0; i < t.length; i++) {
+              const ch = t.charAt(i);
+              const charCode = ch.charCodeAt(0);
+              const bits = charCode.toString(2).padStart(8, "0").substr(1);
+              finalBinaryBuffer.push(bits);
+              traceTokens.push({
+                str: ch,
+                type: 'literal',
+                source: '7-bit ASCII',
+                bitLength: 7,
+                bits
+              });
+            }
+          } else {
+            finalBinaryBuffer.push(t.binary);
+            traceTokens.push({
+              str: t.substring,
+              type: 'optimisation',
+              source: (t.bitLength === 7 ? 'Table A (7b)' : 'Table B (14b)'),
+              bitLength: t.bitLength || t.binary.length,
+              bits: t.binary
+            });
+          }
+        }
+        const asciiPayload = finalBinaryBuffer.join("");
+        const virtualLength = asciiPayload.length / 7;
+        optResult = {
+          indicator: "1",
+          lengthBin: buildLengthIndicator(virtualLength),
+          payload: asciiPayload,
+          totalBits: 1 + 6 + asciiPayload.length,
+          tokens: traceTokens
+        };
+      } catch (e) {}
+
+      let winner = 'strategy1';
+      if (code40Result && optResult) {
+        winner = (code40Result.totalBits <= optResult.totalBits) ? 'strategy0' : 'strategy1';
+      } else if (code40Result) {
+        winner = 'strategy0';
+      }
+
+      const winningObj = (winner === 'strategy0' ? code40Result : optResult) || { indicator: '1', lengthBin: '000000', payload: '', totalBits: 0 };
+      const runnerUpObj = winner === 'strategy0' ? optResult : code40Result;
+      const assembledBitstream = winningObj.indicator + winningObj.lengthBin + winningObj.payload;
+      const winningBits = winningObj.totalBits;
+      const otherBits = runnerUpObj ? runnerUpObj.totalBits : winningBits;
+      const bitDiff = Math.abs(otherBits - winningBits);
+      const savingsPercent = otherBits > 0 ? Math.round((bitDiff / otherBits) * 100) : 0;
+
+      let decodedHost = host;
+      if (cls && cls.internalBinary2Hostname) {
+        try {
+          decodedHost = cls.internalBinary2Hostname(assembledBitstream);
+        } catch (e) {
+          decodedHost = host;
+        }
+      }
+
+      return {
+        winner,
+        winningBits,
+        bitDiff,
+        savingsPercent,
+        indicator: winningObj.indicator,
+        lenBin: winningObj.lengthBin,
+        winningPayload: winningObj.payload,
+        assembledBitstream,
+        decodedHost,
+        code40Result: code40Result || { payload: '', totalBits: 0, triplets: [] },
+        optResult: optResult || { payload: '', totalBits: 0, tokens: [] }
+      };
     }
   },
   methods: {
+    loadHostCompPreset(key) {
+      const presets = {
+        'abcde': 'id.abcde.com',
+        'gs1': 'id.gs1.org',
+        'example': 'example.com',
+        'trace': 'trace.walmart.com',
+        'code40': 'XYZ-99.NET'
+      };
+      if (presets[key]) {
+        this.hostCompInput = presets[key];
+      }
+    },
+    loadDlPreset(key) {
+      const presets = {
+        'tradeItem': 'https://id.gs1.org/01/09521234123453/21/12345',
+        'multiAi': 'https://example.com/01/09521234123453/21/32a%2Fb?10=BATCH01&17=261231',
+        'customDomain': 'https://id.abcde.com/01/01234567890128/21/987XYZ',
+        'unorderedQuery': 'https://id.gs1.org/01/09521234123453?17=261231&10=BATCH01&21=32a%2Fb'
+      };
+      if (presets[key]) {
+        this.dlInput = presets[key];
+      }
+    },
     scrollTo(id) {
       this.currentSection = id;
       if (id === 'subfield-deconstructor') {
@@ -6411,8 +7530,8 @@ runTests();`,
       const sectionSubIds = {
         'purpose': ['standards-table'],
         'tech-stack': ['project-tree', 'table-artifacts', 'table-viewer', 'integration-recipes', 'headless-batch', 'web-embedding', 'web-workers-batch'],
-        'contracts': ['syntax-levels', 'test-vectors', 'scheme-directory'],
-        'architecture': ['transformation-pipeline', 'core-regex', 'regex-reference', 'regex-sandbox', 'schema-loading'],
+        'contracts': ['syntax-levels', 'test-vectors', 'scheme-directory', 'partition-visualizer'],
+        'architecture': ['transformation-pipeline', 'core-regex', 'regex-reference', 'regex-sandbox', 'schema-loading', 'dl-pipeline-visualizer'],
         'hostname-codec': ['56-bit-walkthrough'],
         'live-playground': ['subfield-deconstructor'],
         'codebase-ref': ['methods-index'],
