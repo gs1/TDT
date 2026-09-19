@@ -873,6 +873,18 @@
       background-color: #f8fafc;
     }
 
+    table.data-table td a {
+      color: var(--gs1-blue);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 600;
+      transition: color 0.15s ease;
+    }
+
+    table.data-table td a:hover {
+      color: var(--gs1-orange);
+    }
+
     /* Code Blocks & Monospace */
     code {
       font-family: 'Fira Code', Consolas, Monaco, monospace;
@@ -2382,7 +2394,7 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>GS1 Tag Data Standard (TDS)</strong></td>
+                <td><a href="https://ref.gs1.org/standards/tds/" target="_blank" rel="noopener noreferrer"><strong>GS1 Tag Data Standard (TDS)</strong></a></td>
                 <td>2.3 (Draft)</td>
                 <td>
                   <strong>Section 14.5.16</strong>: Custom Hostname / Domain Compaction (7-bit ASCII with optimizations vs. URN Code 40).<br>
@@ -2390,24 +2402,31 @@
                 </td>
               </tr>
               <tr>
-                <td><strong>GS1 Digital Link Standard</strong></td>
+                <td><a href="https://ref.gs1.org/standards/tdt/" target="_blank" rel="noopener noreferrer"><strong>GS1 Tag Data Translation (TDT)</strong></a></td>
+                <td>2.3 (Draft)</td>
+                <td>
+                  Machine-readable JSON and XML schema definitions, syntax translation grammar, and bidirectional transformation rules between EPC formats.
+                </td>
+              </tr>
+              <tr>
+                <td><a href="https://ref.gs1.org/standards/digital-link/" target="_blank" rel="noopener noreferrer"><strong>GS1 Digital Link Standard</strong></a></td>
                 <td>1.2</td>
                 <td>
                   URI structure parsing, AI key paths (e.g. <code>/01/</code>, <code>/21/</code>), attribute query strings, and canonical stem replacement (<code>https://id.gs1.org</code>).
                 </td>
               </tr>
               <tr>
-                <td><strong>GS1 General Specifications</strong></td>
+                <td><a href="https://ref.gs1.org/standards/genspecs/" target="_blank" rel="noopener noreferrer"><strong>GS1 General Specifications</strong></a></td>
                 <td>Release 26 (issued January 2026)</td>
                 <td>
                   GS1 Company Prefix (GCP) allocation rules, dynamic length boundary lookup (6–12 digits), and Luhn modulo-10 check digit algorithms.
                 </td>
               </tr>
               <tr>
-                <td><strong>GS1 Application Identifiers Dataset</strong></td>
+                <td><a href="https://ref.gs1.org/ai/" target="_blank" rel="noopener noreferrer"><strong>GS1 Application Identifiers Dataset</strong></a></td>
                 <td>Canonical</td>
                 <td>
-                  Machine-readable catalog of Application Identifiers, mandatory associations (<code>requires</code>), and mutual exclusions (<code>excludes</code>).
+                  Machine-readable catalog of Application Identifiers, mandatory associations (<code>requires</code>), and mutual exclusions (<code>excludes</code>). Available as JSON-LD at <a href="https://ref.gs1.org/ai/GS1_Application_Identifiers.jsonld" target="_blank" rel="noopener noreferrer"><code>GS1_Application_Identifiers.jsonld</code></a>.
                 </td>
               </tr>
             </tbody>
@@ -5212,11 +5231,11 @@ const SEARCH_INDEX = [
   },
   {
     id: "standards-table",
-    title: "Normative Standards: TDS 2.3, Digital Link 1.2, GenSpecs 26",
+    title: "Normative Standards: TDS 2.3, TDT 2.3, Digital Link 1.2, GenSpecs 26",
     section: "Section 1",
     badge: "STANDARDS",
-    keywords: "tds 2.3 section 14.5.16 section 14.5 table f digital link 1.2 genspecs 26 general specifications gcp company prefix luhn modulo-10 check digit application identifiers catalog requires excludes canonical stem",
-    content: "Normative standards implemented: GS1 Tag Data Standard (TDS) 2.3 Draft Section 14.5.16 (Custom Hostname / Domain Compaction) and Section 14.5 Table F (Compaction methods for GS1 Application Identifiers). GS1 Digital Link Standard 1.2 URI structure parsing, AI key paths, and canonical stem replacement (https://id.gs1.org). GS1 General Specifications Release 26 (issued January 2026) GCP Company Prefix allocation rules, dynamic length boundary lookup (6-12 digits), and Luhn modulo-10 check digit algorithms. GS1 Application Identifiers Dataset catalog of AIs, requires, and excludes."
+    keywords: "tds 2.3 tdt 2.3 tag data translation section 14.5.16 section 14.5 table f digital link 1.2 genspecs 26 general specifications gcp company prefix luhn modulo-10 check digit application identifiers catalog requires excludes canonical stem",
+    content: "Normative standards implemented: GS1 Tag Data Standard (TDS) 2.3 Draft Section 14.5.16 (Custom Hostname / Domain Compaction) and Section 14.5 Table F (Compaction methods for GS1 Application Identifiers). GS1 Tag Data Translation (TDT) 2.3 Draft machine-readable schema definitions and syntax translation grammar. GS1 Digital Link Standard 1.2 URI structure parsing, AI key paths, and canonical stem replacement (https://id.gs1.org). GS1 General Specifications Release 26 (issued January 2026) GCP Company Prefix allocation rules, dynamic length boundary lookup (6-12 digits), and Luhn modulo-10 check digit algorithms. GS1 Application Identifiers Dataset catalog of AIs, requires, and excludes."
   },
   {
     id: "tech-stack",
